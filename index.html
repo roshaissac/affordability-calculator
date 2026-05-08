@@ -1050,7 +1050,7 @@ function calculate() {
   window._lastClosingVar = closingVar;
   updateCCTotal();
 
-  el('results-area').style.display = '';
+  el('results-area').style.display = 'block';
   el('rPrice').textContent    = fmt(maxPrice);
   el('rPriceNote').textContent = `Binding: ${binding} at ${fmtPct(binding === 'GDS' ? gdsLimitPct : tdsLimitPct, 0)} limit  |  ${amortYears}-year amortization`;
 
@@ -1172,7 +1172,7 @@ function applyMode() {
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
   } else {
-    document.querySelectorAll('.advisor-only').forEach(e => e.style.display = '');
+    document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'block');
     el('clientPortalURL').textContent = getBaseURL() + '?mode=client';
     if (HAS_DATA) el('clientLoadedBanner').style.display = '';
     updateProvinceLTTNote();
