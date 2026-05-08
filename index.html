@@ -867,23 +867,18 @@ function getContactInfo() {
 }
 
 function sendToAdvisor() {
-  const encoded = encodeData(CLIENT_FIELDS);
-  const link    = getBaseURL() + '?d=' + encoded;
-  const inc     = Math.round(getVal('income1') + getVal('income2'));
-  const debts   = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
-  const dp      = dpMode === function sendToAdvisor() {
-  const c = getContactInfo();
-  const inc = Math.round(getVal('income1') + getVal('income2'));
-  const debts = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
-  const dp = (el('dpMode').value === 'pct')
+  var c = getContactInfo();
+  var inc = Math.round(getVal('income1') + getVal('income2'));
+  var debts = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
+  var dpEl = el('dpMode');
+  var dp = (dpEl && dpEl.value === 'pct')
     ? getVal('dpPct') + '% of purchase price'
     : '$' + Math.round(getVal('dpAmt')).toLocaleString();
-  const encoded = encodeData(CLIENT_FIELDS);
-  const link = getBaseURL() + '?d=' + encoded;
-  const priceEl = document.getElementById('rPrice');
-  const price = priceEl ? priceEl.textContent.trim() : 'Not yet calculated';
-
-  const formData = new FormData();
+  var encoded = encodeData(CLIENT_FIELDS);
+  var link = getBaseURL() + '?d=' + encoded;
+  var priceEl = document.getElementById('rPrice');
+  var price = priceEl ? priceEl.textContent.trim() : 'Not yet calculated';
+  var formData = new FormData();
   formData.append('form-name', 'lead-capture');
   formData.append('name', c.name || 'Prospect');
   formData.append('email', c.em || '');
@@ -893,7 +888,6 @@ function sendToAdvisor() {
   formData.append('downpayment', dp);
   formData.append('max_price', price);
   formData.append('calculator_link', link);
-
   fetch('/', { method: 'POST', body: formData })
     .then(function() {
       if (c.em && typeof emailjs !== 'undefined') {
@@ -917,19 +911,13 @@ function sendToAdvisor() {
       }
     })
     .catch(function() {
+      var nl = String.fromCharCode(10);
       var subj = encodeURIComponent('Home Affordability Lead' + (c.name ? ' - ' + c.name : ''));
-      var body = encodeURIComponent('Hi Rosh,
-
-Contact: ' + (c.name||'Prospect') + (c.em?' | '+c.em:'') + (c.ph?' | '+c.ph:'') + '
-
-Income: $' + inc.toLocaleString() + '/yr | Debts: $' + debts.toLocaleString() + '/mo | Down: ' + dp + '
-
-Calculator: ' + link + '
-
-Thank you');
+      var body = encodeURIComponent('Hi Rosh,' + nl + nl + 'Contact: ' + (c.name||'Prospect') + (c.em?' | '+c.em:'') + (c.ph?' | '+c.ph:'') + nl + nl + 'Income: $' + inc.toLocaleString() + '/yr | Debts: $' + debts.toLocaleString() + '/mo | Down: ' + dp + nl + nl + 'Calculator: ' + link);
       window.open('https://mail.google.com/mail/view/cm?to=rosh%40issacrealty.com&su=' + subj + '&body=' + body, '_blank');
     });
-}ion fmt(n)  { return '$' + Math.round(n).toLocaleString('en-CA'); }
+}
+
 function fmtPct(n, d=2) { return (+n).toFixed(d) + '%'; }
 function getVal(id, def=0) { const v = parseFloat(el(id)?.value); return isNaN(v) ? def : v; }
 function monthlyRate(ann) { return Math.pow(1 + ann / 2, 1/6) - 1; }
