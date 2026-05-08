@@ -187,14 +187,29 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 /* ── Responsive ── */
 @media(max-width:600px){
   .price-big{font-size:2.1rem}
-  .header-inner{padding:18px 16px;gap:14px}
-  .header-logo{height:40px}
   .container{padding:14px 12px}
 }
 
 /* ── Footer ── */
 .page-footer{text-align:center;padding:20px;font-size:0.72rem;color:var(--text-subtle);border-top:1px solid var(--grey);background:var(--white);margin-top:16px}
 .page-footer a{color:var(--orange);text-decoration:none;font-weight:600}
+
+/* ── Client contact capture ── */
+.client-contact-block{background:#f9f9f9;border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:16px;text-align:left}
+.client-contact-label{font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.client-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.client-contact-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.85rem;color:var(--text);background:var(--white);font-family:inherit;transition:border-color 0.15s}
+.client-contact-inp:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(247,147,76,0.12)}
+.client-contact-inp::placeholder{color:#bbb}
+@media(max-width:600px){.client-contact-grid{grid-template-columns:1fr}}
+
+/* ── Next Steps Grid ── */
+.next-steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px}
+.next-step-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;text-decoration:none;color:var(--text);font-family:inherit;font-size:0.82rem;font-weight:600;text-align:center;transition:border-color 0.15s,background 0.15s;min-height:76px}
+.next-step-btn:hover{border-color:var(--orange);background:#fff8f3}
+.ns-icon{font-size:1.5rem;line-height:1}
+.ns-label{font-size:0.75rem;font-weight:600;color:var(--text-muted);line-height:1.3}
+@media(max-width:600px){.next-steps-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -429,16 +444,49 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
     <!-- CLIENT SUBMIT CARD — visibility controlled by calculate() in client mode -->
     <div class="client-submit-card span-2" id="clientSubmitCard" style="display:none">
-      <h3>✅ Ready to Send Your Information?</h3>
-      <p style="margin-bottom:6px">Based on standard Canadian mortgage assumptions, your estimated home affordability is approximately:</p>
-      <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
-      <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
-      <p>Click the button below to open Gmail with your information pre-composed — no re-typing required on Rosh's end.</p>
-      <button class="btn btn-orange btn-block" style="font-size:1rem;padding:15px" onclick="sendToAdvisor()">
-        📧 Send My Information to Rosh at ISSAC REALTY →
-      </button>
-      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:12px">Your information is encoded in a private link — it is not stored on any server. Only Rosh will receive it.</p>
+  <h3 style="margin-bottom:6px">✅ Your Estimated Home Affordability</h3>
+  <p style="margin-bottom:6px;font-size:0.88rem;color:var(--text-muted)">Based on standard Canadian mortgage assumptions (Alberta defaults):</p>
+  <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
+  <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual rate and details.</div>
+
+  <!-- Contact capture — subtle, feels optional -->
+  <div class="client-contact-block">
+    <div class="client-contact-label">So Rosh can reach you personally</div>
+    <div class="client-contact-grid">
+      <input type="text"  id="firstName"   placeholder="First Name"   class="client-contact-inp">
+      <input type="text"  id="lastName"    placeholder="Last Name"    class="client-contact-inp">
+      <input type="email" id="clientEmail" placeholder="Email Address" class="client-contact-inp">
+      <input type="tel"   id="clientPhone" placeholder="Cell Number"   class="client-contact-inp">
     </div>
+  </div>
+
+  <p style="font-weight:600;margin-bottom:12px;margin-top:4px">Choose how you'd like to connect:</p>
+
+  <button class="btn btn-orange btn-block" style="font-size:1rem;padding:15px;margin-bottom:10px" onclick="sendToAdvisor()">
+    📧 Send My Information to Rosh →
+  </button>
+
+  <div class="next-steps-grid">
+    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.open('https://calendar.app.google/BqYn3gUMzmj44s2MA','_blank'))">
+      <span class="ns-icon">📅</span>
+      <span class="ns-label">Book a Call</span>
+    </button>
+    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.location.href='tel:+18254495083')">
+      <span class="ns-icon">📞</span>
+      <span class="ns-label">Call Rosh</span>
+    </button>
+    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.open('https://wa.me/18254495083?text=Hi%20Rosh,%20I\'m%20interested%20in%20your%20real%20estate%20services.','_blank'))">
+      <span class="ns-icon">💬</span>
+      <span class="ns-label">WhatsApp</span>
+    </button>
+    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.print())">
+      <span class="ns-icon">📄</span>
+      <span class="ns-label">Save / Print</span>
+    </button>
+  </div>
+
+  <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px;line-height:1.5">Your information is encoded in a private link — it is not stored on any server. Only Rosh will receive it.</p>
+</div>
 
   </div><!-- /grid-2 -->
 
@@ -566,6 +614,29 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     </div>
 
     <div style="height:28px"></div>
+
+  <!-- ── Advisor Next Steps ───────────────────────────────────────────── -->
+  <div class="card advisor-only" id="cardNextSteps" style="margin-top:16px">
+    <div class="card-title">🎯 Next Steps</div>
+    <div class="next-steps-grid">
+      <button class="next-step-btn" onclick="advisorPrint()">
+        <span class="ns-icon">📄</span>
+        <span class="ns-label">Save / Print</span>
+      </button>
+      <button class="next-step-btn" onclick="emailResultsToClient()">
+        <span class="ns-icon">📧</span>
+        <span class="ns-label">Email Results<br>to Client</span>
+      </button>
+      <a href="https://calendar.app.google/BqYn3gUMzmj44s2MA" target="_blank" class="next-step-btn">
+        <span class="ns-icon">📅</span>
+        <span class="ns-label">Book a Call</span>
+      </a>
+      <a href="https://wa.me/18254495083?text=Hi%20there,%20following%20up%20on%20your%20home%20affordability%20estimate%20from%20ISSAC%20REALTY." target="_blank" class="next-step-btn">
+        <span class="ns-icon">💬</span>
+        <span class="ns-label">WhatsApp<br>Client</span>
+      </a>
+    </div>
+  </div>
   </div><!-- /results-area -->
 
 </div><!-- /container -->
@@ -738,7 +809,7 @@ function updateCCTotal() {
 }
 
 // ─── URL encode / decode ─────────────────────────────────────────────────
-const CLIENT_FIELDS = ['income1','income2','otherIncome','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt'];
+const CLIENT_FIELDS = ['income1','income2','otherIncome','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt','firstName','lastName','clientEmail','clientPhone'];
 const ALL_FIELDS    = [...CLIENT_FIELDS,'contractRate','propTaxPct','propTaxFixed','heating','condoFees','hoaFees','gdsLimit','tdsLimit','closingPct','province'];
 
 function encodeData(fieldsArr) {
@@ -784,22 +855,45 @@ function copyClientPortalLink() {
   }).catch(() => { prompt('Copy this client link:', url); });
 }
 
+function getContactInfo() {
+  const fn = (el('firstName')?.value  || '').trim();
+  const ln = (el('lastName')?.value   || '').trim();
+  const em = (el('clientEmail')?.value|| '').trim();
+  const ph = (el('clientPhone')?.value|| '').trim();
+  return { fn, ln, em, ph,
+    name: [fn, ln].filter(Boolean).join(' ') || 'Prospect' };
+}
+
 function sendToAdvisor() {
   const encoded = encodeData(CLIENT_FIELDS);
   const link    = getBaseURL() + '?d=' + encoded;
   const inc     = Math.round(getVal('income1') + getVal('income2'));
   const debts   = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
   const dp      = dpMode === 'pct' ? getVal('dpPct') + '% of purchase price' : '$' + Math.round(getVal('dpAmt')).toLocaleString();
-  const summary = `Combined Annual Income: $${inc.toLocaleString()}\n• Monthly Debt Payments: $${debts.toLocaleString()}\n• Down Payment: ${dp}${getVal('otherIncome') > 0 ? '\n• Other Monthly Income: $' + Math.round(getVal('otherIncome')).toLocaleString() : ''}`;
-  const subj = encodeURIComponent('Home Affordability Assessment — My Information');
+  const c       = getContactInfo();
+  const contactLine = [
+    c.name !== 'Prospect' ? `Name: ${c.name}` : null,
+    c.em ? `Email: ${c.em}` : null,
+    c.ph ? `Cell: ${c.ph}` : null,
+  ].filter(Boolean).join('\n• ');
+  const subj = encodeURIComponent('Home Affordability Lead' + (c.name !== 'Prospect' ? ' — ' + c.name : ''));
   const body = encodeURIComponent(
-    'Hi Rosh,\n\nI have completed the client intake form for my home affordability assessment.\n' +
-    'Please click the link below to see my details pre-loaded in your calculator:\n\n' +
-    link + '\n\n' +
-    'Summary:\n• ' + summary + '\n\n' +
+    'Hi Rosh,\n\n' +
+    (contactLine ? '📋 Contact Details:\n• ' + contactLine + '\n\n' : '') +
+    '💰 Financial Summary:\n' +
+    '• Combined Annual Income: $' + inc.toLocaleString() + '\n' +
+    '• Monthly Debt Payments: $' + debts.toLocaleString() + '\n' +
+    '• Down Payment: ' + dp +
+    (getVal('otherIncome') > 0 ? '\n• Other Monthly Income: $' + Math.round(getVal('otherIncome')).toLocaleString() : '') + '\n\n' +
+    '🔗 Open pre-filled calculator:\n' + link + '\n\n' +
     'Please let me know how much I can afford!\n\nThank you'
   );
   window.open('https://mail.google.com/mail/?view=cm&to=rosh%40issacrealty.com&su=' + subj + '&body=' + body, '_blank');
+}
+
+function captureLeadAndGo(action) {
+  sendToAdvisor();
+  action();
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -875,8 +969,8 @@ function calculate() {
 
   // ── Client mode: simplified estimate with Alberta defaults ──────────────
   if (CLIENT_MODE) {
-    const clientTaxPct = 0.0065; // Alberta 0.65%
-    const clientQualRate = Math.max(0.055 + 0.02, 0.0525); // 5.5% contract + stress test
+    const clientTaxPct = 0.0065;
+    const clientQualRate = Math.max(0.055 + 0.02, 0.0525);
     const clientN   = 25 * 12;
     const clientQPF = paymentFactor(monthlyRate(clientQualRate), clientN);
     const clientFixedH = 150;
@@ -980,7 +1074,6 @@ function calculate() {
   el('dpDerived').textContent   = dpMode === 'pct' ? `≈ ${fmt(dpAmt)} (${fmtPct(dpPct*100)})` : `= ${fmtPct(dpPct*100)} of price`;
   el('cmhc-note').textContent   = cm > 0 ? `CMHC: ${fmtPct(cm*100)} premium — added to mortgage balance.` : 'No CMHC required (≥ 20% down).';
 
-  // Breakdown sections
   const bDiv = el('breakdownGrid'); bDiv.innerHTML = '';
   function section(title, rows) {
     const d = document.createElement('div');
@@ -1034,7 +1127,6 @@ function calculate() {
     ccT > 0 ? ['Grand Total to Prepare', fmt(dpAmt + closingVar + ccT), 'red', '', 'total'] : null,
   ]);
 
-  // Scenario table
   const rates = [contractRatePct-1, contractRatePct-0.5, contractRatePct, contractRatePct+0.5, contractRatePct+1].filter(r => r > 0);
   const downs = dpMode === 'pct'
     ? [Math.max(5, dpPct*100-10), dpPct*100, Math.min(40, dpPct*100+10)]
@@ -1059,7 +1151,6 @@ function calculate() {
   });
   el('scenarioTable').innerHTML = tbl + '</tbody>';
 
-  // Min DP warning
   const minDP = minDownAmt(maxPrice);
   const wEl   = document.getElementById('dpWarnBox');
   if (dpAmt < minDP * 0.99) {
@@ -1078,7 +1169,6 @@ function applyMode() {
     el('clientModeBanner').style.display = '';
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
-    // Province hidden in client mode — fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
   } else {
@@ -1096,6 +1186,42 @@ window.addEventListener('load', () => {
   calculate();
 });
 document.addEventListener('input', calculate);
+
+function advisorPrint() { window.print(); }
+
+function emailResultsToClient() {
+  const price = el('rPrice')?.textContent || '—';
+  const gds   = el('rGDSVal')?.textContent || '—';
+  const tds   = el('rTDSVal')?.textContent || '—';
+  const rate  = el('contractRate')?.value   || '—';
+  const amort = el('amort')?.value          || '—';
+  const subject = encodeURIComponent('Your Home Affordability Estimate — ISSAC REALTY');
+  const body = encodeURIComponent(
+`Hi,
+
+Here is your home affordability estimate based on the information you provided:
+
+  Estimated Max Purchase Price: ${price}
+  Contract Rate: ${rate}%
+  Amortization: ${amort} years
+  GDS Ratio: ${gds}
+  TDS Ratio: ${tds}
+
+These numbers are based on Canadian mortgage qualification rules (OSFI stress test, GDS/TDS limits). Your actual approval will depend on your lender and full application.
+
+I'd love to connect and walk you through the next steps.
+
+📅 Book a call: https://calendar.app.google/BqYn3gUMzmj44s2MA
+📞 Call me: +1 (825) 449-5083
+💬 WhatsApp: https://wa.me/18254495083
+
+Warm regards,
+Rosh
+ISSAC REALTY INC. | Dreamhouse Realty Ltd.
+rosh@issacrealty.com | +1 (825) 449-5083`
+  );
+  window.open(`https://mail.google.com/mail/?view=cm&to=&su=${subject}&body=${body}`, '_blank');
+}
 </script>
 </body>
 </html>
