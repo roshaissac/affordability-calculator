@@ -871,40 +871,60 @@ function sendToAdvisor() {
   var inc = Math.round(getVal('income1') + getVal('income2'));
   var debts = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
   var dpMode = document.getElementById('dpMode') ? document.getElementById('dpMode').value : 'pct';
-  var dp = dpMode === 'pct' ? getVal('dpPct') + '% of purchase price' : '$' + Math.round(getVal('dpAmt')).toLocaleString();
-  var encoded = encodeData(CLIENT_FIELDS);
-  var link = getBaseURL() + '?d=' + encoded;
-  var priceEl = document.getElementById('rPrice');
-  var price = priceEl ? priceEl.textContent.trim() : '';
+  var dp = dpMode === 'pct' ? Math.round(getVal('rPrice') * getVal('dpPct') / 100) : Math.round(getVal('dpAmt'));
+  var maxPriceEl = document.getElementById('rPrice');
+  var maxPrice = maxPriceEl ? Math.round(parseFloat(maxPriceEl.textContent.replace(/[^0-9.]/g,'')) || 0) : 0;
+  var link = window.location.href;
+  var nm = c.name || 'Prospect';
+  var em = c.em || '';
+  var ph = c.ph || '';
+
+  // Show loading state on the button
+  var btn = document.querySelector('button[onclick*="sendToAdvisor"]') || document.querySelector('button[onclick*="captureLeadAndGo"]');
+  var origText = btn ? btn.textContent : '';
+  if(btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+
+  // Build Netlify Forms POST
   var fd = new FormData();
   fd.append('form-name', 'lead-capture');
-  fd.append('name', c.name || 'Prospect');
-  fd.append('email', c.em || '');
-  fd.append('phone', c.ph || '');
-  fd.append('income', '$' + inc.toLocaleString() + '/yr');
-  fd.append('debts', '$' + debts.toLocaleString() + '/mo');
-  fd.append('downpayment', dp);
-  fd.append('max_price', price || 'Not yet calculated');
+  fd.append('name', nm);
+  fd.append('email', em);
+  fd.append('phone', ph);
+  fd.append('income', '$' + inc.toLocaleString());
+  fd.append('debts', '$' + debts.toLocaleString());
+  fd.append('downpayment', '$' + dp.toLocaleString());
+  fd.append('max_price', '$' + maxPrice.toLocaleString());
   fd.append('calculator_link', link);
+
   fetch('/', { method: 'POST', body: fd })
-    .then(function() {
-      if (c.em && typeof emailjs !== 'undefined') {
-        var fn2 = c.name ? c.name.split(' ')[0] : 'there';
-        emailjs.send('service_issacrealty', 'template_lead_reply', {
-          to_name: fn2, to_email: c.em, max_price: price || 'TBD',
-          income: '$' + inc.toLocaleString(), dp: dp,
-          calendar_link: 'https://calendar.app.google/BqYn3gUMzmj44s2MA',
-          calculator_link: link
-        }).catch(function(){});
+    .then(function(res) {
+      if(res.ok) {
+        if(btn) { btn.textContent = '✓ Sent to Rosh!'; btn.style.background = '#27ae60'; btn.style.color = '#fff'; }
+        // EmailJS auto-reply to lead
+        if(em && typeof emailjs !== 'undefined') {
+          var fn2 = nm.split(' ')[0];
+          emailjs.send('service_issacrealty', 'template_lead_reply', {
+            to_name: fn2, to_email: em,
+            max_price: '$' + maxPrice.toLocaleString(),
+            income: '$' + inc.toLocaleString(),
+            dp: '$' + dp.toLocaleString(),
+            calendar_link: 'https://calendar.app.google/BqYn3gUMzmj44s2MA',
+            calculator_link: link
+          }).catch(function(){});
+        }
+      } else {
+        // Fallback: Gmail compose
+        var subj = 'New Lead: ' + nm + ' - Max $' + maxPrice.toLocaleString();
+        var bdy = 'Name: ' + nm + '\nEmail: ' + em + '\nPhone: ' + ph + '\nIncome: $' + inc.toLocaleString() + '\nDebts: $' + debts.toLocaleString() + '\nMax Price: $' + maxPrice.toLocaleString() + '\n\nLink: ' + link;
+        window.open('https://mail.google.com/mail/?view=cm&to=rosh%40issacrealty.com&su=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(bdy), '_blank');
+        if(btn) { btn.textContent = origText; btn.disabled = false; }
       }
-      var btn = document.querySelector('[onclick*="sendToAdvisor"]');
-      if (btn) { var o=btn.textContent; btn.textContent='Sent!'; btn.style.background='#16a34a'; setTimeout(function(){btn.textContent=o;btn.style.background='';},4000); }
     })
     .catch(function() {
-      var nl = String.fromCharCode(10);
-      var subj = encodeURIComponent('Affordability Lead' + (c.name ? ' - ' + c.name : ''));
-      var bdy = encodeURIComponent('Hi Rosh,' + nl + (c.name||'Prospect') + (c.em?' '+c.em:'') + (c.ph?' '+c.ph:'') + nl + 'Income $' + inc.toLocaleString() + ' Debts $' + debts.toLocaleString() + nl + link);
-      window.open('https://mail.google.com/mail/view/cm?to=rosh%40issacrealty.com&su=' + subj + '&body=' + bdy, '_blank');
+      var subj = 'New Lead: ' + nm + ' - Max $' + maxPrice.toLocaleString();
+      var bdy = 'Name: ' + nm + '\nEmail: ' + em + '\nPhone: ' + ph + '\nIncome: $' + inc.toLocaleString() + '\nDebts: $' + debts.toLocaleString() + '\nMax Price: $' + maxPrice.toLocaleString() + '\n\nLink: ' + link;
+      window.open('https://mail.google.com/mail/?view=cm&to=rosh%40issacrealty.com&su=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(bdy), '_blank');
+      if(btn) { btn.textContent = origText; btn.disabled = false; }
     });
 }
 function captureLeadAndGo(action) {
@@ -1240,7 +1260,7 @@ rosh@issacrealty.com | +1 (825) 449-5083`
 }
 </script>
 
-<form name="lead-capture" netlify netlify-honeypot="bot-field" hidden>
+<form name="lead-capture" data-netlify="true" netlify-honeypot="bot-field" hidden>
   <input name="bot-field"><input name="name"><input name="email"><input name="phone"><input name="income"><input name="debts"><input name="downpayment"><input name="max_price"><input name="calculator_link">
 </form></body>
 </html>
