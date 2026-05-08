@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Know What You Can Afford — ISSAC REALTY</title>
+<meta name="description" content="Use our free Home Affordability Calculator to find out how much home you can qualify for. Powered by Issac Realty Inc.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#000000;--orange:#F7934C;--orange-dark:#e07830;--grey:#D9D9D9;--grey-light:#f5f5f5;--white:#ffffff;--text:#111111;--text-muted:#666666;--border:#e0e0e0;--radius:12px;--shadow:0 4px 24px rgba(0,0,0,0.10)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--grey-light);color:var(--text);line-height:1.5;min-height:100vh}
+.header{background:var(--black)}
+.header-inner{max-width:900px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;gap:14px}
+.header-logo{height:56px;width:auto;display:block;flex-shrink:0}
+.header-div{width:1.5px;height:44px;background:rgba(255,255,255,0.15);flex-shrink:0}
+.header-text h1{font-size:1.15rem;font-weight:700;color:#fff;letter-spacing:-0.02em}
+.header-text p{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:2px}
+.brand-tag{display:inline-block;background:var(--orange);border-radius:4px;padding:2px 8px;font-size:0.62rem;font-weight:800;letter-spacing:0.08em;color:#fff;text-transform:uppercase;margin-bottom:4px}
+.hero{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);color:#fff;padding:48px 24px 40px;text-align:center}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(247,147,76,0.18);border:1px solid rgba(247,147,76,0.4);border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:20px}
+.hero h2{font-size:2rem;font-weight:800;letter-spacing:-0.03em;line-height:1.2;margin-bottom:12px}
+.hero h2 span{color:var(--orange)}
+.hero p{font-size:1rem;color:rgba(255,255,255,0.65);max-width:520px;margin:0 auto 28px}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--orange);color:#fff;font-size:1rem;font-weight:700;padding:14px 28px;border-radius:10px;text-decoration:none;transition:background 0.2s,transform 0.15s;box-shadow:0 4px 16px rgba(247,147,76,0.4)}
+.hero-cta:hover{background:var(--orange-dark);transform:translateY(-1px)}
+.hero-stats{display:flex;justify-content:center;gap:32px;margin-top:32px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat strong{display:block;font-size:1.4rem;font-weight:800;color:var(--orange)}
+.hero-stat span{font-size:0.75rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.05em}
+.main{max-width:900px;margin:0 auto;padding:32px 16px 48px}
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:28px;margin-bottom:20px}
+.card-title{font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--orange);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.qr-wrap{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.qr-box{background:#fff;border:2px solid var(--border);border-radius:12px;padding:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 10px rgba(0,0,0,0.07)}
+.qr-info{flex:1;min-width:200px}
+.qr-info h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.qr-info p{font-size:0.85rem;color:var(--text-muted);margin-bottom:14px}
+.qr-download-btn{display:inline-flex;align-items:center;gap:7px;background:var(--grey-light);border:1px solid var(--border);border-radius:8px;padding:9px 16px;font-size:0.83rem;font-weight:600;color:var(--text);cursor:pointer;transition:background 0.15s;text-decoration:none}
+.qr-download-btn:hover{background:var(--grey)}
+.copy-row{display:flex;gap:10px;align-items:stretch}
+.copy-input{flex:1;border:2px solid var(--border);border-radius:8px;padding:11px 14px;font-size:0.87rem;color:var(--text-muted);background:var(--grey-light);outline:none;font-family:monospace;min-width:0}
+.copy-btn{display:flex;align-items:center;gap:8px;background:var(--black);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:0.9rem;font-weight:700;cursor:pointer;transition:background 0.15s,transform 0.1s;white-space:nowrap;flex-shrink:0}
+.copy-btn:hover{background:#333}
+.copy-btn.copied{background:#16a34a}
+.copy-feedback{font-size:0.8rem;color:#16a34a;font-weight:600;margin-top:8px;min-height:18px}
+.share-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.share-btn{display:flex;flex-direction:column;align-items:center;gap:7px;padding:16px 10px;border-radius:10px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:0.78rem;font-weight:700;color:var(--text);text-decoration:none;transition:transform 0.15s,box-shadow 0.15s,border-color 0.15s;text-align:center}
+.share-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,0.10)}
+.share-btn svg,.share-btn img{width:32px;height:32px;flex-shrink:0}
+.share-btn.whatsapp:hover{border-color:#25d366;color:#128c4b}
+.share-btn.sms:hover{border-color:#4285f4;color:#1a56c4}
+.share-btn.email:hover{border-color:#EA4335;color:#c5221f}
+.share-btn.facebook:hover{border-color:#1877f2;color:#1877f2}
+.share-btn.linkedin:hover{border-color:#0077b5;color:#0077b5}
+.share-btn.twitter:hover{border-color:#000;color:#000}
+.share-btn.native{background:var(--orange);border-color:var(--orange);color:#fff;flex-direction:row;justify-content:center;gap:10px;font-size:0.9rem;padding:14px 20px}
+.share-btn.native:hover{background:var(--orange-dark);border-color:var(--orange-dark)}
+.native-row{grid-column:1/-1}
+.preview-card{background:linear-gradient(135deg,#fff8f3,#fff);border:2px solid rgba(247,147,76,0.25);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:18px}
+.preview-icon{font-size:2.2rem;flex-shrink:0}
+.preview-text h3{font-size:1rem;font-weight:700;margin-bottom:4px}
+.preview-text p{font-size:0.83rem;color:var(--text-muted)}
+.preview-link{margin-top:10px;font-size:0.78rem;font-family:monospace;color:var(--orange);word-break:break-all}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.feat{background:#fff;border-radius:10px;padding:18px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.feat-icon{font-size:1.5rem;flex-shrink:0}
+.feat-text strong{display:block;font-size:0.9rem;font-weight:700;margin-bottom:3px}
+.feat-text span{font-size:0.8rem;color:var(--text-muted)}
+.footer{text-align:center;padding:24px;font-size:0.78rem;color:var(--text-muted)}
+.footer a{color:var(--orange);text-decoration:none}
+@media(max-width:600px){
+  .hero h2{font-size:1.45rem}
+  .hero-stats{gap:20px}
+  .qr-wrap{flex-direction:column;align-items:center;text-align:center}
+  .qr-info{min-width:0;width:100%}
+  .share-grid{grid-template-columns:repeat(3,1fr)}
+  .header-logo{height:44px}
+  .header-text h1{font-size:0.95rem}
+  .card{padding:20px 16px}
+}
+@media(max-width:360px){.share-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <img src="https://affordability-calculator-rosh-issac.netlify.app/assets/logo-issac.png" alt="Issac Realty Inc." class="header-logo" onerror="this.style.display='none'">
+    <div class="header-div"></div>
+    <div class="header-text">
+      <div class="brand-tag">Issac Realty Inc.</div>
+      <h1>Home Affordability Calculator</h1>
+      <p>Rosh Issac &nbsp;&middot;&nbsp; rosh@issacrealty.com</p>
+    </div>
+  </div>
+</header>
+<section class="hero">
+  <div class="hero-badge">&#11088; Free &amp; Instant &mdash; No Sign-Up</div>
+  <h2>Find Out <span>Exactly</span> How Much<br>Home You Can Afford</h2>
+  <p>Takes under 2 minutes. No obligation. Just your real numbers &mdash; powered by Canadian mortgage rules &amp; OSFI stress test.</p>
+  <a href="https://affordability-calculator-rosh-issac.netlify.app/?mode=client" target="_blank" class="hero-cta">&#128250; Start My Free Estimate</a>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>GDS &amp; TDS</strong><span>Ratio Analysis</span></div>
+    <div class="hero-stat"><strong>OSFI</strong><span>Stress Test</span></div>
+    <div class="hero-stat"><strong>CMHC</strong><span>Insurance Calc</span></div>
+    <div class="hero-stat"><strong>Closing</strong><span>Cost Breakdown</span></div>
+  </div>
+</section>
+<main class="main">
+  <div class="features">
+    <div class="feat"><div class="feat-icon">&#127968;</div><div class="feat-text"><strong>Max Purchase Price</strong><span>Based on your income &amp; debts</span></div></div>
+    <div class="feat"><div class="feat-icon">&#128202;</div><div class="feat-text"><strong>Rate Sensitivity Table</strong><span>See how rates affect affordability</span></div></div>
+    <div class="feat"><div class="feat-icon">&#128176;</div><div class="feat-text"><strong>Closing Costs</strong><span>Itemized estimate to prepare for</span></div></div>
+    <div class="feat"><div class="feat-icon">&#128241;</div><div class="feat-text"><strong>Sends to Advisor</strong><span>Data goes straight to Rosh</span></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">&#128279; Copy &amp; Share Link</div>
+    <div class="copy-row">
+      <input class="copy-input" id="linkInput" type="text" value="https://affordability-calculator-rosh-issac.netlify.app/?mode=client" readonly>
+      <button class="copy-btn" id="copyBtn" onclick="copyLink()">&#128203; Copy Link</button>
+    </div>
+    <div class="copy-feedback" id="copyFeedback"></div>
+  </div>
+  <div class="card">
+    <div class="card-title">&#128279; Share Directly</div>
+    <div class="share-grid">
+      <div class="native-row" id="nativeShareRow" style="display:none">
+        <button class="share-btn native" onclick="nativeShare()">&#128279; Share via Phone / Apps</button>
+      </div>
+      <a class="share-btn whatsapp" id="waBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 32 32"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.822.736 5.472 2.025 7.775L0 32l8.438-2.012A15.94 15.94 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0z" fill="#25D366"/><path d="M23.3 19.774c-.318-.159-1.878-.927-2.169-1.032-.291-.106-.503-.159-.714.159-.212.318-.82 1.032-1.005 1.244-.185.212-.371.238-.689.08-.318-.16-1.342-.495-2.557-1.577-.944-.843-1.582-1.884-1.767-2.202-.185-.318-.02-.49.139-.648.143-.142.318-.371.477-.556.16-.185.212-.318.318-.53.106-.212.053-.398-.026-.556-.08-.159-.714-1.72-.979-2.355-.258-.618-.52-.534-.714-.544l-.609-.01c-.212 0-.556.08-.847.398-.291.318-1.111 1.085-1.111 2.645 0 1.561 1.138 3.069 1.297 3.281.159.212 2.239 3.417 5.424 4.794.758.327 1.349.522 1.81.668.761.241 1.453.207 2.001.126.611-.091 1.878-.767 2.142-1.508.265-.742.265-1.378.185-1.508-.079-.133-.291-.212-.609-.371z" fill="#fff"/></svg>
+        WhatsApp
+      </a>
+      <a class="share-btn sms" id="smsBtn" href="#">
+        <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#34C759"/><path d="M6 8h20v13a2 2 0 0 1-2 2h-8l-5 3v-3H8a2 2 0 0 1-2-2V8z" fill="#fff"/></svg>
+        SMS / Text
+      </a>
+      <a class="share-btn email" id="emailBtn" href="#">
+        <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#EA4335"/><path d="M6 10l10 7 10-7" stroke="#fff" stroke-width="1.5" fill="none"/><rect x="6" y="10" width="20" height="14" rx="1" stroke="#fff" stroke-width="1.5" fill="none"/></svg>
+        Email
+      </a>
+      <a class="share-btn facebook" id="fbBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#1877F2"/><path d="M22 16h-4v-2c0-.828.672-1 1.5-1H22V9h-3.5C15.91 9 14 10.79 14 13.5V16h-3v4h3v9h4v-9h3l1-4z" fill="#fff"/></svg>
+        Facebook
+      </a>
+      <a class="share-btn linkedin" id="liBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#0077B5"/><path d="M10 13h3v10h-3zM11.5 11.5a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5zM15 13h2.8v1.4h.04C18.26 13.53 19.3 13 20.5 13c2.9 0 3.5 1.9 3.5 4.4V23h-3v-5c0-1.2-.02-2.75-1.68-2.75-1.68 0-1.94 1.31-1.94 2.66V23H15V13z" fill="#fff"/></svg>
+        LinkedIn
+      </a>
+      <a class="share-btn twitter" id="twBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 32 32"><rect width="32" height="32" rx="8" fill="#000"/><path d="M8 8h5l3.5 5L20.5 8H25l-6.5 8L25 24h-5l-4-5.5L11.5 24H7l7-8.5L8 8z" fill="#fff"/></svg>
+        X / Twitter
+      </a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">&#9639; QR Code &mdash; Print, Display or Screenshot</div>
+    <div class="qr-wrap">
+      <div class="qr-box"><div id="qrcode"></div></div>
+      <div class="qr-info">
+        <h3>Scan to Open Calculator</h3>
+        <p>Use this QR code on business cards, flyers, email signatures, social posts, or your website. Anyone who scans it goes straight to your lead form.</p>
+        <a class="qr-download-btn" id="qrDownloadBtn" href="#" download="issac-realty-affordability-qr.png">&#11015; Download QR Code (PNG)</a>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">&#128065; What Your Leads Will See</div>
+    <div class="preview-card">
+      <div class="preview-icon">&#127969;</div>
+      <div class="preview-text">
+        <h3>Mortgage Pre-Assessment &mdash; Issac Realty</h3>
+        <p>A clean, professional form where leads enter their income &amp; debts. One click sends their data directly to you, pre-filled in your advisor calculator.</p>
+        <div class="preview-link">https://affordability-calculator-rosh-issac.netlify.app/?mode=client</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:18px">
+      <a href="https://affordability-calculator-rosh-issac.netlify.app/?mode=client" target="_blank" class="hero-cta" style="font-size:0.9rem;padding:11px 22px">Preview as a Lead &rarr;</a>
+    </div>
+  </div>
+</main>
+<footer class="footer">
+  <p>Issac Realty Inc. &middot; Dreamhouse Realty Ltd. &middot; <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a></p>
+  <p style="margin-top:6px">For advisory use only &mdash; not a lender commitment.</p>
+</footer>
+<script>
+var LINK = 'https://affordability-calculator-rosh-issac.netlify.app/?mode=client';
+var MSG  = 'Hey! Use this free calculator to find out how much home you can afford 🏠 Takes 2 min, no sign-up: ' + LINK;
+var TITLE = 'Free Home Affordability Calculator — Issac Realty';
+document.getElementById('waBtn').href   = 'https://wa.me/?text=' + encodeURIComponent(MSG);
+document.getElementById('smsBtn').href  = 'sms:?body=' + encodeURIComponent(MSG);
+document.getElementById('emailBtn').href= 'mailto:?subject=' + encodeURIComponent(TITLE) + '&body=' + encodeURIComponent(MSG);
+document.getElementById('fbBtn').href   = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(LINK);
+document.getElementById('liBtn').href   = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(LINK);
+document.getElementById('twBtn').href   = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(MSG);
+if (navigator.share) { document.getElementById('nativeShareRow').style.display = 'block'; }
+function nativeShare() { navigator.share({ title: TITLE, text: 'Find out how much home you can afford — free, instant, no sign-up.', url: LINK }); }
+function copyLink() {
+  navigator.clipboard.writeText(LINK).then(function() {
+    var btn = document.getElementById('copyBtn');
+    var fb  = document.getElementById('copyFeedback');
+    btn.classList.add('copied');
+    btn.textContent = '✅ Copied!';
+    fb.textContent  = '✅ Link copied to clipboard — paste it anywhere!';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.textContent = '📋 Copy Link';
+      fb.textContent  = '';
+    }, 3000);
+  }).catch(function() {
+    document.getElementById('linkInput').select();
+    document.execCommand('copy');
+    document.getElementById('copyFeedback').textContent = '✅ Copied!';
+  });
+}
+window.addEventListener('load', function() {
+  var qr = new QRCode(document.getElementById('qrcode'), {
+    text: LINK, width: 180, height: 180,
+    colorDark: '#000000', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+  setTimeout(function() {
+    var canvas = document.querySelector('#qrcode canvas');
+    if (canvas) { document.getElementById('qrDownloadBtn').href = canvas.toDataURL('image/png'); }
+  }, 600);
+});
+</script>
+</body>
+</html>
