@@ -75,21 +75,6 @@
     .btn-secondary { background: var(--white); color: var(--black); }
     .btn-secondary:hover { background: var(--grey); }
     .btn:active { transform: scale(0.97); }
-    .chips-section { text-align: center; }
-    .chips-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; color: #888; margin-bottom: 10px; }
-    .chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .chip {
-      background: var(--black); color: var(--white); border-radius: 99px;
-      padding: 7px 16px; font-size: 13px; font-weight: 600;
-      display: inline-flex; align-items: center; gap: 6px;
-    }
-    .instructions {
-      background: #FFF8F3; border-left: 4px solid var(--orange);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      padding: 16px 20px; width: 100%; max-width: 420px;
-    }
-    .instructions p { font-size: 13px; color: #444; line-height: 1.6; }
-    .instructions strong { color: var(--black); }
     #toast {
       position: fixed; bottom: 28px; left: 50%;
       transform: translateX(-50%) translateY(80px);
@@ -116,7 +101,6 @@
       .qr-card img { width: 300px; height: 300px; }
       .short-url { font-size: 32px; }
       .tagline h1 { font-size: 22px; }
-      .chip { border: 1px solid #000; background: white; color: #000; }
     }
   </style>
 </head>
@@ -150,23 +134,6 @@
       <button class="btn btn-secondary" onclick="copyLink()">📋 Copy Link</button>
     </div>
 
-    <div class="chips-section">
-      <div class="chips-label">Use this on:</div>
-      <div class="chips">
-        <div class="chip"><span>📋</span> Open House</div>
-        <div class="chip"><span>💼</span> Business Card</div>
-        <div class="chip"><span>🏠</span> Yard Sign</div>
-      </div>
-    </div>
-
-    <div class="instructions">
-      <p>
-        <strong>For Rosh:</strong> Print this page and place it at your open house,
-        on your desk, or add it to your listing packages. Clients scan the QR code
-        and complete the affordability check in under 60 seconds — their results
-        go straight to you.
-      </p>
-    </div>
   </main>
 
   <footer>
@@ -216,3 +183,4 @@
   </script>
 </body>
 </html>
+
