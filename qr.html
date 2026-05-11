@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rosh Homes — QR Code | ISSAC REALTY</title>
+  <style>
+    :root {
+      --black: #000000;
+      --orange: #F7934C;
+      --grey: #D9D9D9;
+      --white: #FFFFFF;
+      --radius: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: var(--black);
+      color: var(--white);
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-name { font-size: 20px; font-weight: 700; letter-spacing: 0.08em; }
+    .brand-sub  { font-size: 11px; letter-spacing: 0.2em; color: var(--orange); text-transform: uppercase; margin-top: 2px; }
+    .agent-name { font-size: 14px; color: var(--grey); font-weight: 500; }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 24px 32px;
+      gap: 28px;
+      max-width: 640px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .tagline { text-align: center; }
+    .tagline h1 { font-size: 26px; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+    .tagline h1 span { color: var(--orange); }
+    .tagline p { font-size: 15px; color: #555; line-height: 1.5; }
+    .qr-card {
+      background: var(--white);
+      border: 3px solid var(--black);
+      border-radius: var(--radius);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+      width: 100%;
+      max-width: 420px;
+    }
+    .qr-card img { width: 260px; height: 260px; display: block; border-radius: 6px; }
+    .short-url { font-size: 28px; font-weight: 800; letter-spacing: 0.02em; text-align: center; }
+    .short-url span { color: var(--orange); }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 420px; }
+    .btn {
+      flex: 1; min-width: 140px; padding: 13px 20px; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer; border: 2px solid var(--black);
+      transition: background 0.15s, transform 0.1s; text-align: center;
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    }
+    .btn-primary { background: var(--orange); color: var(--white); border-color: var(--orange); }
+    .btn-primary:hover { background: #e07c38; }
+    .btn-secondary { background: var(--white); color: var(--black); }
+    .btn-secondary:hover { background: var(--grey); }
+    .btn:active { transform: scale(0.97); }
+    .chips-section { text-align: center; }
+    .chips-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.15em; color: #888; margin-bottom: 10px; }
+    .chips { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .chip {
+      background: var(--black); color: var(--white); border-radius: 99px;
+      padding: 7px 16px; font-size: 13px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .instructions {
+      background: #FFF8F3; border-left: 4px solid var(--orange);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 16px 20px; width: 100%; max-width: 420px;
+    }
+    .instructions p { font-size: 13px; color: #444; line-height: 1.6; }
+    .instructions strong { color: var(--black); }
+    #toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--black); color: var(--white);
+      padding: 12px 24px; border-radius: 99px; font-size: 14px; font-weight: 600;
+      transition: transform 0.3s ease; z-index: 999; pointer-events: none;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+    footer {
+      background: var(--black); color: var(--grey);
+      padding: 20px 32px; display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: center; gap: 16px; text-align: center;
+    }
+    footer a { color: var(--orange); text-decoration: none; font-weight: 600; font-size: 14px; }
+    footer a:hover { text-decoration: underline; }
+    footer span { font-size: 13px; }
+    .footer-divider { color: #555; font-size: 16px; }
+    @media print {
+      .btn-row, .instructions, footer, #toast { display: none !important; }
+      .agent-name { display: none; }
+      body { background: white; }
+      main { padding: 20px 16px; gap: 20px; }
+      .qr-card { box-shadow: none; border: 2px solid #000; page-break-inside: avoid; }
+      .qr-card img { width: 300px; height: 300px; }
+      .short-url { font-size: 32px; }
+      .tagline h1 { font-size: 22px; }
+      .chip { border: 1px solid #000; background: white; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="brand-name">ISSAC REALTY</div>
+      <div class="brand-sub">Real Estate</div>
+    </div>
+    <span class="agent-name">Rosh &mdash; Your Advisor</span>
+  </header>
+
+  <main>
+    <div class="tagline">
+      <h1>Scan to find out how much home<br>you can afford in <span>60 seconds</span></h1>
+      <p>No sign-up. No pressure. Just clear numbers tailored to you.</p>
+    </div>
+
+    <div class="qr-card">
+      <img
+        id="qrImage"
+        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&color=000000&bgcolor=ffffff&data=https%3A%2F%2Fbit.ly%2Frosh-homes"
+        alt="QR code for bit.ly/rosh-homes"
+        loading="eager"
+      >
+      <div class="short-url">bit.ly/<span>rosh-homes</span></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="downloadQR()">⬇ Download QR Code</button>
+      <button class="btn btn-secondary" onclick="copyLink()">📋 Copy Link</button>
+    </div>
+
+    <div class="chips-section">
+      <div class="chips-label">Use this on:</div>
+      <div class="chips">
+        <div class="chip"><span>📋</span> Open House</div>
+        <div class="chip"><span>💼</span> Business Card</div>
+        <div class="chip"><span>🏠</span> Yard Sign</div>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <p>
+        <strong>For Rosh:</strong> Print this page and place it at your open house,
+        on your desk, or add it to your listing packages. Clients scan the QR code
+        and complete the affordability check in under 60 seconds — their results
+        go straight to you.
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <span>Ready to talk?</span>
+    <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a>
+    <span class="footer-divider">|</span>
+    <a href="https://calendar.app.google/BqYn3gUMzmj44s2MA" target="_blank" rel="noopener">Book a Free Consultation &#8599;</a>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script>
+    const QR_URL   = "https://api.qrserver.com/v1/create-qr-code/?size=400x400&color=000000&bgcolor=ffffff&data=https%3A%2F%2Fbit.ly%2Frosh-homes";
+    const LINK_URL = "https://bit.ly/rosh-homes";
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 2500);
+    }
+
+    async function downloadQR() {
+      try {
+        const resp = await fetch(QR_URL);
+        const blob = await resp.blob();
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement("a");
+        a.href = url; a.download = "rosh-homes-qr.png"; a.click();
+        URL.revokeObjectURL(url);
+        showToast("QR code downloaded!");
+      } catch(e) { window.open(QR_URL, "_blank"); }
+    }
+
+    async function copyLink() {
+      try {
+        await navigator.clipboard.writeText(LINK_URL);
+        showToast("Link copied to clipboard!");
+      } catch(e) {
+        const el = document.createElement("textarea");
+        el.value = LINK_URL; el.style.cssText = "position:fixed;opacity:0";
+        document.body.appendChild(el); el.select();
+        document.execCommand("copy"); document.body.removeChild(el);
+        showToast("Link copied!");
+      }
+    }
+  </script>
+</body>
+</html>
