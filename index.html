@@ -902,10 +902,8 @@ function sendToAdvisor() {
     'Please let me know how much I can afford!\n\nThank you'
   );
 
-  window.open(
-    'https://mail.google.com/mail/?view=cm&to=rosh%40issacrealty.com&su=' + subj + '&body=' + body,
-    '_blank'
-  );
+  // mailto: works on all devices — Android, iPhone, desktop — opens default email app
+  window.location.href = 'mailto:rosh@issacrealty.com?subject=' + subj + '&body=' + body;
 }
 function captureLeadAndGo(action) {
   sendToAdvisor();
@@ -1206,37 +1204,75 @@ document.addEventListener('input', calculate);
 function advisorPrint() { window.print(); }
 
 function emailResultsToClient() {
-  const price = el('rPrice')?.textContent || '—';
-  const gds   = el('rGDSVal')?.textContent || '—';
-  const tds   = el('rTDSVal')?.textContent || '—';
-  const rate  = el('contractRate')?.value   || '—';
-  const amort = el('amort')?.value          || '—';
-  const subject = encodeURIComponent('Your Home Affordability Estimate — ISSAC REALTY');
+  // Pull results from the displayed output
+  const price   = el('rPrice')?.textContent?.trim()   || '—';
+  const gds     = el('rGDSVal')?.textContent?.trim()  || '—';
+  const tds     = el('rTDSVal')?.textContent?.trim()  || '—';
+  const rate    = el('contractRate')?.value            || '—';
+  const amort   = el('amort')?.value                  || '—';
+
+  // Pull monthly payment breakdown if available
+  const monthly = el('rMonthly')?.textContent?.trim() || '';
+  const propTax = el('rPropTax')?.textContent?.trim() || '';
+  const heat    = el('rHeat')?.textContent?.trim()    || '';
+  const condoFee= el('rCondo')?.textContent?.trim()   || '';
+
+  // Get closing costs if shown
+  const closing = el('rClosing')?.textContent?.trim() || '';
+
+  // Client contact info (pre-loaded from ?d= link)
+  const clientFN    = el('firstName')?.value?.trim()   || '';
+  const clientLN    = el('lastName')?.value?.trim()    || '';
+  const clientName  = [clientFN, clientLN].filter(Boolean).join(' ') || 'there';
+  const clientEmail = el('clientEmail')?.value?.trim() || '';
+
+  // Build the report link so client can view/share their results
+  const reportLink = getBaseURL() + '?d=' + encodeData(ALL_FIELDS);
+
+  const subject = encodeURIComponent('Your Home Affordability Estimate — Rosh Issac, ISSAC REALTY');
+
   const body = encodeURIComponent(
-`Hi,
+`Hi ${clientName},
 
-Here is your home affordability estimate based on the information you provided:
+It was great connecting with you! Here is your personalised home affordability estimate based on the numbers you shared with me.
 
-  Estimated Max Purchase Price: ${price}
-  Contract Rate: ${rate}%
-  Amortization: ${amort} years
-  GDS Ratio: ${gds}
-  TDS Ratio: ${tds}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ESTIMATED MAX PURCHASE PRICE
+  ${price}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-These numbers are based on Canadian mortgage qualification rules (OSFI stress test, GDS/TDS limits). Your actual approval will depend on your lender and full application.
+MORTGAGE DETAILS
+  • Contract Rate:       ${rate}%
+  • Amortization:        ${amort} years
+  • GDS Ratio:           ${gds}  (max allowed: 39%)
+  • TDS Ratio:           ${tds}  (max allowed: 44%)
+${monthly  ? '\nESTIMATED MONTHLY COSTS\n  • Mortgage Payment:    ' + monthly : ''}${propTax   ? '\n  • Property Tax:        ' + propTax   : ''}${heat      ? '\n  • Heat:                ' + heat      : ''}${condoFee  ? '\n  • Condo Fee:           ' + condoFee  : ''}${closing   ? '\n\nESTIMATED CLOSING COSTS\n  ' + closing               : ''}
 
-I'd love to connect and walk you through the next steps.
+These figures are based on Canadian mortgage qualification rules — OSFI stress test, GDS/TDS limits, and CMHC guidelines. Your actual approval will depend on your full lender application.
 
-📅 Book a call: https://calendar.app.google/BqYn3gUMzmj44s2MA
-📞 Call me: +1 (825) 449-5083
-💬 WhatsApp: https://wa.me/18254495083
+👉 VIEW YOUR FULL REPORT ONLINE:
+${reportLink}
+(Bookmark this link — it saves all your numbers)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+READY TO TAKE THE NEXT STEP?
+
+I'm here to help you find the right home within your budget and guide you through every step of the process.
+
+📅 Book a call:   https://calendar.app.google/BqYn3gUMzmj44s2MA
+📞 Call / Text:   +1 (825) 449-5083
+💬 WhatsApp:      https://wa.me/18254495083
+
+Please note: I am a licensed Realtor®, not a mortgage advisor. For a precise mortgage pre-approval, I am happy to refer you to a trusted licensed mortgage broker.
 
 Warm regards,
-Rosh
+Rosh Issac — Realtor®
 ISSAC REALTY INC. | Dreamhouse Realty Ltd.
 rosh@issacrealty.com | +1 (825) 449-5083`
   );
-  window.open(`https://mail.google.com/mail/?view=cm&to=&su=${subject}&body=${body}`, '_blank');
+
+  // mailto: works on all devices — Android, iPhone, desktop
+  window.location.href = 'mailto:' + encodeURIComponent(clientEmail) + '?subject=' + subject + '&body=' + body;
 }
 </script>
 
