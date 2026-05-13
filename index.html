@@ -10,6 +10,8 @@
 <link rel="apple-touch-icon" href="/assets/logo.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#F7934C">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('zN0MMe3GBsCE-2QS8');</script>
 <title>Home Affordability Calculator — ISSAC REALTY</title>
 <style>
 /* ── Reset & Base ── */
@@ -883,31 +885,47 @@ function sendToAdvisor() {
     ? getVal('dpPct') + '% of purchase price'
     : '$' + Math.round(getVal('dpAmt')).toLocaleString();
 
-  const contactLine = [
-    c.name !== 'Prospect' ? 'Name: ' + c.name : null,
-    c.em   ? 'Email: ' + c.em : null,
-    c.ph   ? 'Cell: '  + c.ph : null,
-  ].filter(Boolean).join('\n\u2022 ');
+  const btns = document.querySelectorAll('button[onclick*="sendToAdvisor"], button[onclick*="captureLeadAndGo"]');
+  btns.forEach(b => { b.textContent = 'Sending\u2026'; b.disabled = true; });
 
-  const subj = encodeURIComponent('Home Affordability Lead' + (c.name !== 'Prospect' ? ' \u2014 ' + c.name : ''));
-  const body = encodeURIComponent(
-    'Hi Rosh,\n\n' +
-    (contactLine ? '\uD83D\uDCCB Contact Details:\n\u2022 ' + contactLine + '\n\n' : '') +
-    '\uD83D\uDCB0 Financial Summary:\n' +
-    '\u2022 Combined Annual Income: $' + inc.toLocaleString() + '\n' +
-    '\u2022 Monthly Debt Payments: $' + debts.toLocaleString() + '\n' +
-    '\u2022 Down Payment: ' + dp +
-    (getVal('otherIncome') > 0 ? '\n\u2022 Other Monthly Income: $' + Math.round(getVal('otherIncome')).toLocaleString() : '') + '\n\n' +
-    '\uD83D\uDD17 Open pre-filled calculator:\n' + link + '\n\n' +
-    'Please let me know how much I can afford!\n\nThank you'
-  );
-
-  // mailto: works on all devices — Android, iPhone, desktop — opens default email app
-  window.location.href = 'mailto:rosh@issacrealty.com?subject=' + subj + '&body=' + body;
+  emailjs.send('service_0sryc6t', 'template_8x34j3t', {
+    subject:         'Home Affordability Lead' + (c.name !== 'Prospect' ? ' \u2014 ' + c.name : ''),
+    lead_name:       c.name !== 'Prospect' ? c.name : 'Anonymous',
+    lead_email:      c.em  || 'Not provided',
+    lead_phone:      c.ph  || 'Not provided',
+    income:          '$' + inc.toLocaleString() + ' /year',
+    debts:           '$' + debts.toLocaleString() + ' /month',
+    down_payment:    dp,
+    other_income:    getVal('otherIncome') > 0 ? '$' + Math.round(getVal('otherIncome')).toLocaleString() + ' /month' : 'None',
+    calculator_link: link
+  })
+  .then(() => {
+    btns.forEach(b => {
+      b.textContent = '\u2705 Sent to Rosh!';
+      b.style.background = '#27ae60';
+      b.style.color = '#fff';
+      b.disabled = false;
+    });
+  })
+  .catch(() => {
+    btns.forEach(b => { b.textContent = 'Send My Information to Rosh \u2192'; b.disabled = false; });
+    // Fallback: open mailto if EmailJS fails
+    const subj = encodeURIComponent('Home Affordability Lead' + (c.name !== 'Prospect' ? ' \u2014 ' + c.name : ''));
+    const body = encodeURIComponent(
+      'Name: ' + (c.name !== 'Prospect' ? c.name : 'Not provided') + '\n' +
+      'Email: ' + (c.em || 'Not provided') + '\n' +
+      'Phone: ' + (c.ph || 'Not provided') + '\n\n' +
+      'Income: $' + inc.toLocaleString() + '/year\n' +
+      'Debts: $' + debts.toLocaleString() + '/month\n' +
+      'Down Payment: ' + dp + '\n\n' +
+      'Calculator Link: ' + link
+    );
+    window.location.href = 'mailto:rosh@issacrealty.com?subject=' + subj + '&body=' + body;
+  });
 }
 function captureLeadAndGo(action) {
   sendToAdvisor();
-  action();
+  setTimeout(() => action(), 600);
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
