@@ -888,7 +888,7 @@ function sendToAdvisor() {
   const btns = document.querySelectorAll('button[onclick*="sendToAdvisor"], button[onclick*="captureLeadAndGo"]');
   btns.forEach(b => { b.textContent = 'Sending\u2026'; b.disabled = true; });
 
-  emailjs.send('service_0sryc6t', 'template_8x34j3t', {
+  emailjs.send('service_norvt9j', 'template_8x34j3t', {
     subject:         'Home Affordability Lead' + (c.name !== 'Prospect' ? ' \u2014 ' + c.name : ''),
     lead_name:       c.name !== 'Prospect' ? c.name : 'Anonymous',
     lead_email:      c.em  || 'Not provided',
