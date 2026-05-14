@@ -208,7 +208,7 @@
       margin-top: auto;
     }
     .logos img {
-      height: 38px;
+      height: 50px;
       width: auto;
       display: block;
     }
@@ -255,6 +255,12 @@
         width: 210mm;
         min-height: 297mm;
         box-shadow: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      header, footer, .top-bar, .bottom-bar {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
       }
     }
 
