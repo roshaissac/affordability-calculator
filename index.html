@@ -3,27 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Open Graph / WhatsApp preview -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://affordability-calculator.rosh-4d0.workers.dev/?mode=client">
-  <meta property="og:title" content="How much home can you afford? Find out in 60 seconds.">
-  <meta property="og:description" content="No sign-up. No pressure. Just clear numbers tailored to you — powered by ISSAC REALTY.">
-  <meta property="og:image" content="https://affordability-calculator.rosh-4d0.workers.dev/assets/logo.png">
-  <meta property="og:image:width" content="1050">
-  <meta property="og:image:height" content="400">
-<!-- PWA / iPhone Add to Home Screen -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Rosh Homes">
-<link rel="apple-touch-icon" href="/assets/logo.png">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#F7934C">
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init('zN0MMe3GBsCE-2QS8');</script>
 <title>Home Affordability Calculator — ISSAC REALTY</title>
 <style>
 /* ── Reset & Base ── */
-*{box-sizing:border-box;margin:0;padding:0} 
+*{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#111111;line-height:1.5}
 
 /* ── Brand tokens ── */
@@ -204,33 +187,16 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 /* ── Responsive ── */
 @media(max-width:600px){
   .price-big{font-size:2.1rem}
+  .header-inner{padding:18px 16px;gap:14px}
+  .header-logo{height:40px}
   .container{padding:14px 12px}
 }
 
 /* ── Footer ── */
 .page-footer{text-align:center;padding:20px;font-size:0.72rem;color:var(--text-subtle);border-top:1px solid var(--grey);background:var(--white);margin-top:16px}
 .page-footer a{color:var(--orange);text-decoration:none;font-weight:600}
-
-/* ── Client contact capture ── */
-.client-contact-block{background:#f9f9f9;border:1px solid var(--border);border-radius:9px;padding:14px 16px;margin-bottom:16px;text-align:left}
-.client-contact-label{font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
-.client-contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.client-contact-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.85rem;color:var(--text);background:var(--white);font-family:inherit;transition:border-color 0.15s}
-.client-contact-inp:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(247,147,76,0.12)}
-.client-contact-inp::placeholder{color:#bbb}
-@media(max-width:600px){.client-contact-grid{grid-template-columns:1fr}}
-
-/* ── Next Steps Grid ── */
-.next-steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px}
-.next-step-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:14px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;text-decoration:none;color:var(--text);font-family:inherit;font-size:0.82rem;font-weight:600;text-align:center;transition:border-color 0.15s,background 0.15s;min-height:76px}
-.next-step-btn:hover{border-color:var(--orange);background:#fff8f3}
-.ns-icon{font-size:1.5rem;line-height:1}
-.ns-label{font-size:0.75rem;font-weight:600;color:var(--text-muted);line-height:1.3}
-@media(max-width:600px){.next-steps-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>emailjs.init("zN0MMe3GBsCE-2QS8");</script></head>
+</head>
 <body>
 
 <!-- ══ ADVISOR HEADER ══════════════════════════════════════════════════ -->
@@ -254,7 +220,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     <div class="header-text">
       <div class="brand-tag">ISSAC REALTY INC.</div>
       <h1>Mortgage Pre-Assessment</h1>
-      <p>Fill in what you know — your Realtor&#174;, Rosh will complete the rest and share your full estimate.</p>
+      <p>Fill in what you know — your advisor Rosh will complete the rest and share your full estimate.</p>
     </div>
   </div>
 </div>
@@ -266,7 +232,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
 <!-- Client banner -->
 <div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
-  📋 Fill in what you know below. Fields you're unsure about can be left at their default — Rosh will adjust them for you. Click <strong>"Send My Information to Rosh"</strong> when done.
+  📋 Fill in what you know below. Fields you're unsure about can be left at their default — your advisor will adjust them. Click <strong>"Send My Information to Rosh"</strong> when done.
 </div>
 
 <div class="container">
@@ -463,49 +429,60 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
     <!-- CLIENT SUBMIT CARD — visibility controlled by calculate() in client mode -->
     <div class="client-submit-card span-2" id="clientSubmitCard" style="display:none">
-  <h3 style="margin-bottom:6px">✅ Your Estimated Home Affordability</h3>
-  <p style="margin-bottom:6px;font-size:0.88rem;color:var(--text-muted)">Based on standard Canadian mortgage assumptions (Alberta defaults):</p>
-  <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
-  <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual rate and details.</div>
-
-  <!-- Contact capture — subtle, feels optional -->
-  <div class="client-contact-block">
-    <div class="client-contact-label">So Rosh can break it down and walk you through it with more clarity</div>
-    <div class="client-contact-grid">
-      <input type="text"  id="firstName"   placeholder="First Name"   class="client-contact-inp">
-      <input type="text"  id="lastName"    placeholder="Last Name"    class="client-contact-inp">
-      <input type="email" id="clientEmail" placeholder="Email Address" class="client-contact-inp">
-      <input type="tel"   id="clientPhone" placeholder="Cell Number"   class="client-contact-inp">
+      <h3>✅ Ready to Send Your Information?</h3>
+      <p style="margin-bottom:6px">Based on standard Canadian mortgage assumptions, your estimated home affordability is approximately:</p>
+      <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
+      <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
+      <p>Click the button below to open Gmail with your information pre-composed — no re-typing required on Rosh's end.</p>
+      <button class="btn btn-orange btn-block" style="font-size:1rem;padding:15px" onclick="showContactModal()">
+        📧 Send My Information to Rosh at ISSAC REALTY →
+      </button>
+      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:12px">Your contact details will be saved securely so Rosh can follow up with your personalized assessment.</p>
     </div>
-  </div>
 
-  <p style="font-weight:600;margin-bottom:12px;margin-top:4px">Choose how you'd like to connect:</p>
-
-  <button class="btn btn-orange btn-block" style="font-size:1rem;padding:15px;margin-bottom:10px" onclick="sendToAdvisor()">
-    📧 Send My Information to Rosh →
-  </button>
-
-  <div class="next-steps-grid">
-    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.open('https://calendar.app.google/BqYn3gUMzmj44s2MA','_blank'))">
-      <span class="ns-icon">📅</span>
-      <span class="ns-label">Book a Call</span>
-    </button>
-    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.location.href='tel:+18254495083')">
-      <span class="ns-icon">📞</span>
-      <span class="ns-label">Call Rosh</span>
-    </button>
-    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.open('https://wa.me/18254495083?text=Hi%20Rosh,%20I\'m%20interested%20in%20your%20real%20estate%20services.','_blank'))">
-      <span class="ns-icon">💬</span>
-      <span class="ns-label">WhatsApp</span>
-    </button>
-    <button class="next-step-btn" onclick="captureLeadAndGo(() => window.print())">
-      <span class="ns-icon">📄</span>
-      <span class="ns-label">Save / Print</span>
-    </button>
-  </div>
-
-  <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px;line-height:1.5">Your information is encoded in a private link — it is not stored on any server. Only Rosh will receive it.</p>
-</div>
+    <!-- ── Contact capture modal ── -->
+    <div id="contactModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
+         z-index:9999;align-items:center;justify-content:center;">
+      <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:420px;width:90%;
+                  box-shadow:0 12px 48px rgba(0,0,0,0.22);position:relative;">
+        <button onclick="closeContactModal()" style="position:absolute;top:14px;right:16px;
+                background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;">×</button>
+        <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+                  color:var(--orange);font-weight:700;">Almost done</p>
+        <h3 style="margin:0 0 6px;font-size:1.2rem;">Where should Rosh send your assessment?</h3>
+        <p style="margin:0 0 20px;font-size:0.85rem;color:var(--text-muted);">
+          Your financial numbers stay in a private link. We just need a way to reach you.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <div>
+            <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px;">First Name *</label>
+            <input id="cm-first" type="text" placeholder="Jane"
+                   style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem;">
+          </div>
+          <div>
+            <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px;">Last Name</label>
+            <input id="cm-last" type="text" placeholder="Smith"
+                   style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem;">
+          </div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px;">Email *</label>
+          <input id="cm-email" type="email" placeholder="jane@email.com"
+                 style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem;">
+        </div>
+        <div style="margin-bottom:20px;">
+          <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px;">Cell Phone</label>
+          <input id="cm-phone" type="tel" placeholder="+1 403 555 0123"
+                 style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem;">
+        </div>
+        <button id="cm-submit" onclick="submitToRosh()"
+                style="width:100%;padding:13px;background:var(--orange);color:#fff;border:none;
+                       border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
+          Send to Rosh →
+        </button>
+        <div id="cm-status" style="margin-top:12px;font-size:0.82rem;text-align:center;color:#666;"></div>
+      </div>
+    </div>
 
   </div><!-- /grid-2 -->
 
@@ -633,35 +610,12 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     </div>
 
     <div style="height:28px"></div>
-
-  <!-- ── Advisor Next Steps ───────────────────────────────────────────── -->
-  <div class="card advisor-only" id="cardNextSteps" style="margin-top:16px">
-    <div class="card-title">🎯 Next Steps</div>
-    <div class="next-steps-grid">
-      <button class="next-step-btn" onclick="advisorPrint()">
-        <span class="ns-icon">📄</span>
-        <span class="ns-label">Save / Print</span>
-      </button>
-      <button class="next-step-btn" onclick="emailResultsToClient()">
-        <span class="ns-icon">📧</span>
-        <span class="ns-label">Email Results<br>to Client</span>
-      </button>
-      <a href="https://calendar.app.google/BqYn3gUMzmj44s2MA" target="_blank" class="next-step-btn">
-        <span class="ns-icon">📅</span>
-        <span class="ns-label">Book a Call</span>
-      </a>
-      <a href="https://wa.me/18254495083?text=Hi%20there,%20following%20up%20on%20your%20home%20affordability%20estimate%20from%20ISSAC%20REALTY." target="_blank" class="next-step-btn">
-        <span class="ns-icon">💬</span>
-        <span class="ns-label">WhatsApp<br>Client</span>
-      </a>
-    </div>
-  </div>
   </div><!-- /results-area -->
 
 </div><!-- /container -->
 
 <div class="page-footer">
-  Issac Realty Inc. &nbsp;·&nbsp; Dreamhouse Realty Ltd. &nbsp;·&nbsp; Rosh is a licensed Realtor&#174;, not a mortgage advisor. This estimate is for informational purposes only and does not constitute a lender commitment. For exact affordability figures, please consult a licensed mortgage broker — Rosh is happy to provide referrals.
+  Issac Realty Inc. &nbsp;·&nbsp; Dreamhouse Realty Ltd. &nbsp;·&nbsp; For advisory use only — not a lender commitment.
 </div>
 
 <!-- ══ BROKERAGE BADGE (fixed bottom-right, always visible) ═══════════ -->
@@ -828,7 +782,7 @@ function updateCCTotal() {
 }
 
 // ─── URL encode / decode ─────────────────────────────────────────────────
-const CLIENT_FIELDS = ['income1','income2','otherIncome','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt','firstName','lastName','clientEmail','clientPhone'];
+const CLIENT_FIELDS = ['income1','income2','otherIncome','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt'];
 const ALL_FIELDS    = [...CLIENT_FIELDS,'contractRate','propTaxPct','propTaxFixed','heating','condoFees','hoaFees','gdsLimit','tdsLimit','closingPct','province'];
 
 function encodeData(fieldsArr) {
@@ -874,66 +828,79 @@ function copyClientPortalLink() {
   }).catch(() => { prompt('Copy this client link:', url); });
 }
 
-function getContactInfo() {
-  const fn = (el('firstName')?.value  || '').trim();
-  const ln = (el('lastName')?.value   || '').trim();
-  const em = (el('clientEmail')?.value|| '').trim();
-  const ph = (el('clientPhone')?.value|| '').trim();
-  return { fn, ln, em, ph,
-    name: [fn, ln].filter(Boolean).join(' ') || 'Prospect' };
+// ── Web app endpoint — paste your deployed Apps Script URL here ──
+const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxoHC-DzZSJHR0OHis-G8YZGK8bFzgpXoVuJt2UaPnX-lsAzOfml2cWK9RnoS62GA92_g/exec';
+
+function showContactModal() {
+  document.getElementById('contactModal').style.display = 'flex';
+  document.getElementById('cm-first').focus();
+}
+function closeContactModal() {
+  document.getElementById('contactModal').style.display = 'none';
+  document.getElementById('cm-status').textContent = '';
 }
 
-function sendToAdvisor() {
-  const encoded = encodeData(CLIENT_FIELDS);
-  const link    = getBaseURL() + '?d=' + encoded;
-  const c       = getContactInfo();
-  const inc     = Math.round(getVal('income1') + getVal('income2'));
-  const debts   = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
-  const dp      = dpMode === 'pct'
-    ? getVal('dpPct') + '% of purchase price'
-    : '$' + Math.round(getVal('dpAmt')).toLocaleString();
+function submitToRosh() {
+  const firstName = document.getElementById('cm-first').value.trim();
+  const lastName  = document.getElementById('cm-last').value.trim();
+  const email     = document.getElementById('cm-email').value.trim();
+  const phone     = document.getElementById('cm-phone').value.trim();
 
-  const btns = document.querySelectorAll('button[onclick*="sendToAdvisor"], button[onclick*="captureLeadAndGo"]');
-  btns.forEach(b => { b.textContent = 'Sending\u2026'; b.disabled = true; });
+  if (!firstName) { alert('Please enter your first name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
 
-  emailjs.send('service_norvt9j', 'template_8x34j3t', {
-    subject:         'Home Affordability Lead' + (c.name !== 'Prospect' ? ' \u2014 ' + c.name : ''),
-    lead_name:       c.name !== 'Prospect' ? c.name : 'Anonymous',
-    lead_email:      c.em  || 'Not provided',
-    lead_phone:      c.ph  || 'Not provided',
-    income:          '$' + inc.toLocaleString() + ' /year',
-    debts:           '$' + debts.toLocaleString() + ' /month',
-    down_payment:    dp,
-    other_income:    getVal('otherIncome') > 0 ? '$' + Math.round(getVal('otherIncome')).toLocaleString() + ' /month' : 'None',
-    calculator_link: link
-  })
-  .then(() => {
-    btns.forEach(b => {
-      b.textContent = '\u2705 Sent to Rosh!';
-      b.style.background = '#27ae60';
-      b.style.color = '#fff';
-      b.disabled = false;
-    });
-  })
-  .catch(() => {
-    btns.forEach(b => { b.textContent = 'Send My Information to Rosh \u2192'; b.disabled = false; });
-    // Fallback: open mailto if EmailJS fails
-    const subj = encodeURIComponent('Home Affordability Lead' + (c.name !== 'Prospect' ? ' \u2014 ' + c.name : ''));
-    const body = encodeURIComponent(
-      'Name: ' + (c.name !== 'Prospect' ? c.name : 'Not provided') + '\n' +
-      'Email: ' + (c.em || 'Not provided') + '\n' +
-      'Phone: ' + (c.ph || 'Not provided') + '\n\n' +
-      'Income: $' + inc.toLocaleString() + '/year\n' +
-      'Debts: $' + debts.toLocaleString() + '/month\n' +
-      'Down Payment: ' + dp + '\n\n' +
-      'Calculator Link: ' + link
-    );
-    window.location.href = 'mailto:rosh@issacrealty.com?subject=' + subj + '&body=' + body;
-  });
-}
-function captureLeadAndGo(action) {
-  sendToAdvisor();
-  setTimeout(() => action(), 600);
+  // Build pre-filled calculator link with buyer's financial data
+  const encoded  = encodeData(CLIENT_FIELDS);
+  const calcLink = getBaseURL() + '?d=' + encoded;
+
+  // Financial summary for the email body
+  const inc    = Math.round(getVal('income1') + getVal('income2'));
+  const debts  = Math.round(getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt'));
+  const dp     = dpMode === 'pct' ? getVal('dpPct') + '% of purchase price' : '$' + Math.round(getVal('dpAmt')).toLocaleString();
+  const afford = document.getElementById('clientAffordEstimate')?.textContent || '';
+
+  // Update UI
+  const btn = document.getElementById('cm-submit');
+  const status = document.getElementById('cm-status');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  status.textContent = '';
+
+  // POST to Apps Script web app (fire-and-forget, no-cors)
+  if (WEB_APP_URL !== 'PASTE_WEB_APP_URL_HERE') {
+    fetch(WEB_APP_URL, {
+      method : 'POST',
+      mode   : 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body   : JSON.stringify({
+        firstName, lastName, email, phone,
+        income      : '$' + inc.toLocaleString(),
+        downPayment : dp,
+        debts       : '$' + debts.toLocaleString() + '/mo',
+        affordEstimate: afford,
+        calcLink,
+      }),
+    }).catch(() => {}); // silent — we open Gmail regardless
+  }
+
+  // Open Gmail compose with pre-filled link
+  const summary = `Combined Annual Income: $${inc.toLocaleString()}\n• Monthly Debt Payments: $${debts.toLocaleString()}/mo\n• Down Payment: ${dp}`;
+  const subj = encodeURIComponent('Home Affordability Assessment — ' + firstName + (lastName ? ' ' + lastName : ''));
+  const body = encodeURIComponent(
+    'Hi Rosh,\n\nI\'ve completed the affordability calculator. Please click the link below to see my numbers pre-loaded:\n\n' +
+    calcLink + '\n\n' +
+    'Quick summary:\n• ' + summary + (afford ? '\n• Estimated buying power: ' + afford : '') + '\n\n' +
+    'My contact details:\n' +
+    'Name: ' + firstName + (lastName ? ' ' + lastName : '') + '\n' +
+    'Email: ' + email + (phone ? '\nPhone: ' + phone : '') + '\n\n' +
+    'Please let me know how much I can afford!\n\nThank you,\n' + firstName
+  );
+  window.open('https://mail.google.com/mail/?view=cm&to=rosh%40issacrealty.com&su=' + subj + '&body=' + body, '_blank');
+
+  // Show success in modal
+  btn.textContent = '✅ Sent!';
+  status.innerHTML = 'Your information has been sent to Rosh.<br>Check your email for a confirmation shortly.';
+  setTimeout(closeContactModal, 3000);
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -1009,8 +976,8 @@ function calculate() {
 
   // ── Client mode: simplified estimate with Alberta defaults ──────────────
   if (CLIENT_MODE) {
-    const clientTaxPct = 0.0065;
-    const clientQualRate = Math.max(0.055 + 0.02, 0.0525);
+    const clientTaxPct = 0.0065; // Alberta 0.65%
+    const clientQualRate = Math.max(0.055 + 0.02, 0.0525); // 5.5% contract + stress test
     const clientN   = 25 * 12;
     const clientQPF = paymentFactor(monthlyRate(clientQualRate), clientN);
     const clientFixedH = 150;
@@ -1090,7 +1057,7 @@ function calculate() {
   window._lastClosingVar = closingVar;
   updateCCTotal();
 
-  el('results-area').style.display = 'block';
+  el('results-area').style.display = '';
   el('rPrice').textContent    = fmt(maxPrice);
   el('rPriceNote').textContent = `Binding: ${binding} at ${fmtPct(binding === 'GDS' ? gdsLimitPct : tdsLimitPct, 0)} limit  |  ${amortYears}-year amortization`;
 
@@ -1114,6 +1081,7 @@ function calculate() {
   el('dpDerived').textContent   = dpMode === 'pct' ? `≈ ${fmt(dpAmt)} (${fmtPct(dpPct*100)})` : `= ${fmtPct(dpPct*100)} of price`;
   el('cmhc-note').textContent   = cm > 0 ? `CMHC: ${fmtPct(cm*100)} premium — added to mortgage balance.` : 'No CMHC required (≥ 20% down).';
 
+  // Breakdown sections
   const bDiv = el('breakdownGrid'); bDiv.innerHTML = '';
   function section(title, rows) {
     const d = document.createElement('div');
@@ -1167,6 +1135,7 @@ function calculate() {
     ccT > 0 ? ['Grand Total to Prepare', fmt(dpAmt + closingVar + ccT), 'red', '', 'total'] : null,
   ]);
 
+  // Scenario table
   const rates = [contractRatePct-1, contractRatePct-0.5, contractRatePct, contractRatePct+0.5, contractRatePct+1].filter(r => r > 0);
   const downs = dpMode === 'pct'
     ? [Math.max(5, dpPct*100-10), dpPct*100, Math.min(40, dpPct*100+10)]
@@ -1191,6 +1160,7 @@ function calculate() {
   });
   el('scenarioTable').innerHTML = tbl + '</tbody>';
 
+  // Min DP warning
   const minDP = minDownAmt(maxPrice);
   const wEl   = document.getElementById('dpWarnBox');
   if (dpAmt < minDP * 0.99) {
@@ -1209,10 +1179,11 @@ function applyMode() {
     el('clientModeBanner').style.display = '';
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
+    // Province hidden in client mode — fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
   } else {
-    document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'block');
+    document.querySelectorAll('.advisor-only').forEach(e => e.style.display = '');
     el('clientPortalURL').textContent = getBaseURL() + '?mode=client';
     if (HAS_DATA) el('clientLoadedBanner').style.display = '';
     updateProvinceLTTNote();
@@ -1226,81 +1197,6 @@ window.addEventListener('load', () => {
   calculate();
 });
 document.addEventListener('input', calculate);
-
-function advisorPrint() { window.print(); }
-
-function emailResultsToClient() {
-  // Pull results from the displayed output
-  const price   = el('rPrice')?.textContent?.trim()   || '—';
-  const gds     = el('rGDSVal')?.textContent?.trim()  || '—';
-  const tds     = el('rTDSVal')?.textContent?.trim()  || '—';
-  const rate    = el('contractRate')?.value            || '—';
-  const amort   = el('amort')?.value                  || '—';
-
-  // Pull monthly payment breakdown if available
-  const monthly = el('rMonthly')?.textContent?.trim() || '';
-  const propTax = el('rPropTax')?.textContent?.trim() || '';
-  const heat    = el('rHeat')?.textContent?.trim()    || '';
-  const condoFee= el('rCondo')?.textContent?.trim()   || '';
-
-  // Get closing costs if shown
-  const closing = el('rClosing')?.textContent?.trim() || '';
-
-  // Client contact info (pre-loaded from ?d= link)
-  const clientFN    = el('firstName')?.value?.trim()   || '';
-  const clientLN    = el('lastName')?.value?.trim()    || '';
-  const clientName  = [clientFN, clientLN].filter(Boolean).join(' ') || 'there';
-  const clientEmail = el('clientEmail')?.value?.trim() || '';
-
-  // Build the report link so client can view/share their results
-  const reportLink = getBaseURL() + '?d=' + encodeData(ALL_FIELDS);
-
-  const subject = encodeURIComponent('Your Home Affordability Estimate — Rosh Issac, ISSAC REALTY');
-
-  const body = encodeURIComponent(
-`Hi ${clientName},
-
-It was great connecting with you! Here is your personalised home affordability estimate based on the numbers you shared with me.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ESTIMATED MAX PURCHASE PRICE
-  ${price}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-MORTGAGE DETAILS
-  • Contract Rate:       ${rate}%
-  • Amortization:        ${amort} years
-  • GDS Ratio:           ${gds}  (max allowed: 39%)
-  • TDS Ratio:           ${tds}  (max allowed: 44%)
-${monthly  ? '\nESTIMATED MONTHLY COSTS\n  • Mortgage Payment:    ' + monthly : ''}${propTax   ? '\n  • Property Tax:        ' + propTax   : ''}${heat      ? '\n  • Heat:                ' + heat      : ''}${condoFee  ? '\n  • Condo Fee:           ' + condoFee  : ''}${closing   ? '\n\nESTIMATED CLOSING COSTS\n  ' + closing               : ''}
-
-These figures are based on Canadian mortgage qualification rules — OSFI stress test, GDS/TDS limits, and CMHC guidelines. Your actual approval will depend on your full lender application.
-
-👉 VIEW YOUR FULL REPORT ONLINE:
-${reportLink}
-(Bookmark this link — it saves all your numbers)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-READY TO TAKE THE NEXT STEP?
-
-I'm here to help you find the right home within your budget and guide you through every step of the process.
-
-📅 Book a call:   https://calendar.app.google/BqYn3gUMzmj44s2MA
-📞 Call / Text:   +1 (825) 449-5083
-💬 WhatsApp:      https://wa.me/18254495083
-
-Please note: I am a licensed Realtor®, not a mortgage advisor. For a precise mortgage pre-approval, I am happy to refer you to a trusted licensed mortgage broker.
-
-Warm regards,
-Rosh Issac — Realtor®
-ISSAC REALTY INC. | Dreamhouse Realty Ltd.
-rosh@issacrealty.com | +1 (825) 449-5083`
-  );
-
-  // mailto: works on all devices — Android, iPhone, desktop
-  window.location.href = 'mailto:' + encodeURIComponent(clientEmail) + '?subject=' + subject + '&body=' + body;
-}
 </script>
-
 </body>
 </html>
