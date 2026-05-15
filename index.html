@@ -609,6 +609,27 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       </div>
     </div>
 
+    <!-- ── NEXT STEPS (advisor — shown only when viewing a client submission) ── -->
+    <div class="card span-2" id="nextStepsCard" style="display:none;margin-top:18px;border:2px solid var(--orange);background:#fff8f3">
+      <div class="card-title" style="color:var(--orange)">✅ Next Steps — Client Submission Review</div>
+      <p style="font-size:0.85rem;color:#444;margin:0 0 16px">
+        You're viewing a client's pre-filled numbers. Review the results above, then choose an action below.
+      </p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button class="btn btn-orange" onclick="sendAdvisoryEmail()" style="padding:11px 22px;font-size:0.92rem">
+          📧 Send Advisory to Client
+        </button>
+        <button class="btn" onclick="window.print()" style="padding:11px 22px;font-size:0.92rem;background:#444;color:#fff;border:none;border-radius:8px;cursor:pointer">
+          🖨️ Print / Save as PDF
+        </button>
+      </div>
+      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <label style="font-size:0.78rem;font-weight:600;white-space:nowrap">Client Email:</label>
+        <input id="advisoryClientEmail" type="email" placeholder="paste client email from your alert email"
+          style="flex:1;min-width:220px;padding:8px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.85rem">
+      </div>
+    </div>
+
     <div style="height:28px"></div>
   </div><!-- /results-area -->
 
@@ -880,27 +901,48 @@ function submitToRosh() {
         affordEstimate: afford,
         calcLink,
       }),
-    }).catch(() => {}); // silent — we open Gmail regardless
+    }).catch(() => {});
   }
-
-  // Open Gmail compose with pre-filled link
-  const summary = `Combined Annual Income: $${inc.toLocaleString()}\n• Monthly Debt Payments: $${debts.toLocaleString()}/mo\n• Down Payment: ${dp}`;
-  const subj = encodeURIComponent('Home Affordability Assessment — ' + firstName + (lastName ? ' ' + lastName : ''));
-  const body = encodeURIComponent(
-    'Hi Rosh,\n\nI\'ve completed the affordability calculator. Please click the link below to see my numbers pre-loaded:\n\n' +
-    calcLink + '\n\n' +
-    'Quick summary:\n• ' + summary + (afford ? '\n• Estimated buying power: ' + afford : '') + '\n\n' +
-    'My contact details:\n' +
-    'Name: ' + firstName + (lastName ? ' ' + lastName : '') + '\n' +
-    'Email: ' + email + (phone ? '\nPhone: ' + phone : '') + '\n\n' +
-    'Please let me know how much I can afford!\n\nThank you,\n' + firstName
-  );
-  window.open('https://mail.google.com/mail/?view=cm&to=rosh%40issacrealty.com&su=' + subj + '&body=' + body, '_blank');
 
   // Show success in modal
   btn.textContent = '✅ Sent!';
   status.innerHTML = 'Your information has been sent to Rosh.<br>Check your email for a confirmation shortly.';
   setTimeout(closeContactModal, 3000);
+}
+
+// ─── Advisory email (advisor reviewing client submission) ─────────────────
+function sendAdvisoryEmail() {
+  const clientEmail = (document.getElementById('advisoryClientEmail')?.value || '').trim();
+  const price    = document.getElementById('rPrice')?.textContent        || '—';
+  const gds      = document.getElementById('rGDSVal')?.textContent       || '—';
+  const tds      = document.getElementById('rTDSVal')?.textContent       || '—';
+  const monthly  = document.getElementById('rMonthlyTotal')?.textContent || '—';
+  const pi       = document.getElementById('rMonthlyPI')?.textContent    || '—';
+  const qualRate = document.getElementById('rQualRate')?.textContent     || '—';
+  const mortgage = document.getElementById('rMortgage')?.textContent     || '—';
+  const subj = encodeURIComponent('Your Home Affordability Assessment — ISSAC REALTY');
+  const body = encodeURIComponent(
+    'Hi,\n\n' +
+    'Thank you for using our Affordability Calculator. Based on the financial details you provided, here is your personalized assessment:\n\n' +
+    '📊 RESULTS SUMMARY\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+    'Maximum Affordable Home Price : ' + price    + '\n' +
+    'Estimated Mortgage Amount     : ' + mortgage + '\n' +
+    'Monthly P&I Payment           : ' + pi       + '\n' +
+    'Total Monthly Housing Cost    : ' + monthly  + '\n' +
+    'GDS Ratio                     : ' + gds      + '\n' +
+    'TDS Ratio                     : ' + tds      + '\n' +
+    'Qualifying Rate (Stress Test) : ' + qualRate + '\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'These numbers are based on the information you entered and current Canadian mortgage rules (OSFI B-20 stress test, CMHC guidelines). ' +
+    'Actual lender approval may vary depending on your credit score, employment history, and other factors.\n\n' +
+    'I'd love to walk you through these results and discuss your next steps. Please reply to this email or call/text me directly.\n\n' +
+    'Warm regards,\nRosh Issac\nISSAC REALTY · Dreamhouse Realty Ltd.\n' +
+    'rosh@issacrealty.com\n\n' +
+    'Disclaimer: This assessment is for advisory purposes only and does not constitute a mortgage approval or lender commitment.'
+  );
+  const to  = clientEmail ? encodeURIComponent(clientEmail) : '';
+  window.open('https://mail.google.com/mail/?view=cm' + (to ? '&to=' + to : '') + '&su=' + subj + '&body=' + body, '_blank');
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -1185,7 +1227,10 @@ function applyMode() {
   } else {
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = '');
     el('clientPortalURL').textContent = getBaseURL() + '?mode=client';
-    if (HAS_DATA) el('clientLoadedBanner').style.display = '';
+    if (HAS_DATA) {
+      el('clientLoadedBanner').style.display = '';
+      el('nextStepsCard').style.display = '';
+    }
     updateProvinceLTTNote();
   }
 }
