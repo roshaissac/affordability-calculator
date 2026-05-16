@@ -1291,7 +1291,7 @@ function applyMode() {
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
   } else {
-    document.querySelectorAll('.advisor-only').forEach(e => e.style.display = '');
+    document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'block');
     el('clientPortalURL').textContent = getBaseURL() + '?mode=client';
     if (HAS_DATA) {
       el('clientLoadedBanner').style.display = '';
