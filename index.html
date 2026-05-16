@@ -429,15 +429,26 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
     <!-- CLIENT SUBMIT CARD — visibility controlled by calculate() in client mode -->
     <div class="client-submit-card span-2" id="clientSubmitCard" style="display:none">
-      <h3>✅ Ready to Send Your Information?</h3>
+      <h3>✅ Your Estimate is Ready — Connect with Rosh</h3>
       <p style="margin-bottom:6px">Based on standard Canadian mortgage assumptions, your estimated home affordability is approximately:</p>
       <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
       <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
-      <p>Click the button below to open Gmail with your information pre-composed — no re-typing required on Rosh's end.</p>
-      <button class="btn btn-orange btn-block" style="font-size:1rem;padding:15px" onclick="showContactModal()">
-        📧 Send My Information to Rosh at ISSAC REALTY →
-      </button>
-      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:12px">Your contact details will be saved securely so Rosh can follow up with your personalized assessment.</p>
+      <p style="margin:18px 0 10px;font-weight:600;font-size:0.95rem;color:#333">How would you like to connect?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:400px;margin:0 auto">
+        <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="showContactModal('email')">
+          <span style="font-size:1.3rem">📧</span>
+          <span><strong>Get My Full Assessment by Email</strong><br><span style="font-size:0.78rem;opacity:0.85">Rosh will reply with a detailed affordability report</span></span>
+        </button>
+        <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="showContactModal('whatsapp')">
+          <span style="font-size:1.3rem">💬</span>
+          <span><strong>Chat with Rosh on WhatsApp</strong><br><span style="font-size:0.78rem;opacity:0.85">Quick questions? Message Rosh directly</span></span>
+        </button>
+        <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="showContactModal('booking')">
+          <span style="font-size:1.3rem">📅</span>
+          <span><strong>Book a Free Consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time — 15-min call, no obligation</span></span>
+        </button>
+      </div>
+      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">We collect your contact info before connecting — your financial numbers stay private.</p>
     </div>
 
     <!-- ── Contact capture modal ── -->
@@ -449,8 +460,8 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
                 background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;">×</button>
         <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
                   color:var(--orange);font-weight:700;">Almost done</p>
-        <h3 style="margin:0 0 6px;font-size:1.2rem;">Where should Rosh send your assessment?</h3>
-        <p style="margin:0 0 20px;font-size:0.85rem;color:var(--text-muted);">
+        <h3 id="cm-heading" style="margin:0 0 6px;font-size:1.2rem;">Where should Rosh send your assessment?</h3>
+        <p id="cm-subhead" style="margin:0 0 20px;font-size:0.85rem;color:var(--text-muted);">
           Your financial numbers stay in a private link. We just need a way to reach you.
         </p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
@@ -849,10 +860,31 @@ function copyClientPortalLink() {
   }).catch(() => { prompt('Copy this client link:', url); });
 }
 
-// ── Web app endpoint — paste your deployed Apps Script URL here ──
-const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxoHC-DzZSJHR0OHis-G8YZGK8bFzgpXoVuJt2UaPnX-lsAzOfml2cWK9RnoS62GA92_g/exec';
+// ── Contact / routing config ──────────────────────────────────────────────
+const WEB_APP_URL     = 'https://script.google.com/macros/s/AKfycbxoHC-DzZSJHR0OHis-G8YZGK8bFzgpXoVuJt2UaPnX-lsAzOfml2cWK9RnoS62GA92_g/exec';
+const ROSH_WHATSAPP   = '18254495083';          // WhatsApp Business number (digits only)
+const ROSH_BOOKING    = 'PASTE_CALENDLY_URL_HERE'; // booking link — replace when ready
 
-function showContactModal() {
+let _cmDest = 'email'; // tracks which CTA opened the modal
+
+function showContactModal(dest) {
+  _cmDest = dest || 'email';
+  // Dynamic modal copy based on destination
+  const cfg = {
+    email    : { head: 'Where should Rosh send your assessment?',
+                 sub : 'Your financial numbers stay in a private link. We just need a way to reach you.',
+                 btn : 'Send to Rosh →' },
+    whatsapp : { head: 'Just a quick intro before we chat',
+                 sub : 'Rosh will message you on WhatsApp with your personalized assessment.',
+                 btn : 'Continue to WhatsApp →' },
+    booking  : { head: 'A few details before you book',
+                 sub : 'We\'ll save your information, then open the booking calendar.',
+                 btn : 'Continue to Booking →' },
+  };
+  const c = cfg[_cmDest] || cfg.email;
+  document.getElementById('cm-heading').textContent  = c.head;
+  document.getElementById('cm-subhead').textContent  = c.sub;
+  document.getElementById('cm-submit').textContent   = c.btn;
   document.getElementById('contactModal').style.display = 'flex';
   document.getElementById('cm-first').focus();
 }
@@ -904,10 +936,33 @@ function submitToRosh() {
     }).catch(() => {});
   }
 
-  // Show success in modal
-  btn.textContent = '✅ Sent!';
-  status.innerHTML = 'Your information has been sent to Rosh.<br>Check your email for a confirmation shortly.';
-  setTimeout(closeContactModal, 3000);
+  // Show success then route to destination
+  btn.textContent = '✅ Done!';
+  const destMessages = {
+    email    : 'Your info is saved. Rosh will email you shortly!',
+    whatsapp : 'Opening WhatsApp now…',
+    booking  : 'Opening the booking calendar…',
+  };
+  status.innerHTML = destMessages[_cmDest] || destMessages.email;
+
+  setTimeout(() => {
+    closeContactModal();
+    if (_cmDest === 'whatsapp') {
+      const waMsg = encodeURIComponent(
+        'Hi Rosh! I just completed the Home Affordability Calculator on your website. ' +
+        'My name is ' + firstName + (lastName ? ' ' + lastName : '') + '. ' +
+        'I\'d love to chat about my options — my estimated buying power is ' + (afford || 'shown in the calculator') + '.'
+      );
+      window.open('https://wa.me/' + ROSH_WHATSAPP + '?text=' + waMsg, '_blank');
+    } else if (_cmDest === 'booking') {
+      if (ROSH_BOOKING !== 'PASTE_CALENDLY_URL_HERE') {
+        window.open(ROSH_BOOKING, '_blank');
+      } else {
+        alert('Booking link coming soon! Rosh has been notified and will reach out to schedule a call.');
+      }
+    }
+    // 'email' — Apps Script already handled everything, nothing more to open
+  }, 1500);
 }
 
 // ─── Advisory email (advisor reviewing client submission) ─────────────────
