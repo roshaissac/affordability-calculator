@@ -626,19 +626,20 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       <p style="font-size:0.85rem;color:#444;margin:0 0 16px">
         You're viewing a client's pre-filled numbers. Review the results above, then choose an action below.
       </p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-        <button class="btn btn-orange" onclick="sendAdvisoryEmail()" style="padding:11px 22px;font-size:0.92rem">
-          📧 Send Advisory to Client
-        </button>
-        <button class="btn" onclick="window.print()" style="padding:11px 22px;font-size:0.92rem;background:#444;color:#fff;border:none;border-radius:8px;cursor:pointer">
-          🖨️ Print / Save as PDF
-        </button>
-      </div>
-      <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <div style="margin-bottom:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
         <label style="font-size:0.78rem;font-weight:600;white-space:nowrap">Client Email:</label>
         <input id="advisoryClientEmail" type="email" placeholder="paste client email from your alert email"
           style="flex:1;min-width:220px;padding:8px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.85rem">
       </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button id="advisorySendBtn" class="btn btn-orange" onclick="sendAdvisoryEmail()" style="padding:11px 22px;font-size:0.92rem">
+          &#x1F4E7; Send Advisory to Client
+        </button>
+        <button class="btn" onclick="window.print()" style="padding:11px 22px;font-size:0.92rem;background:#444;color:#fff;border:none;border-radius:8px;cursor:pointer">
+          &#x1F5A8; Print / Save as PDF
+        </button>
+      </div>
+      <div id="advisoryStatus" style="margin-top:10px;font-size:0.85rem;font-weight:600"></div>
     </div>
 
     <div style="height:28px"></div>
@@ -972,39 +973,36 @@ function submitToRosh() {
   }, 1500);
 }
 
-// ─── Advisory email (advisor reviewing client submission) ─────────────────
+// ─── Advisory email — sent server-side via Apps Script (no Gmail app needed) ─
 function sendAdvisoryEmail() {
   const clientEmail = (document.getElementById('advisoryClientEmail')?.value || '').trim();
-  const price    = document.getElementById('rPrice')?.textContent        || '—';
-  const gds      = document.getElementById('rGDSVal')?.textContent       || '—';
-  const tds      = document.getElementById('rTDSVal')?.textContent       || '—';
-  const monthly  = document.getElementById('rMonthlyTotal')?.textContent || '—';
-  const pi       = document.getElementById('rMonthlyPI')?.textContent    || '—';
-  const qualRate = document.getElementById('rQualRate')?.textContent     || '—';
-  const mortgage = document.getElementById('rMortgage')?.textContent     || '—';
-  const subj = encodeURIComponent('Your Home Affordability Assessment — ISSAC REALTY');
-  const body = encodeURIComponent(
-    'Hi,\n\n' +
-    'Thank you for using our Affordability Calculator. Based on the financial details you provided, here is your personalized assessment:\n\n' +
-    '📊 RESULTS SUMMARY\n' +
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-    'Maximum Affordable Home Price : ' + price    + '\n' +
-    'Estimated Mortgage Amount     : ' + mortgage + '\n' +
-    'Monthly P&I Payment           : ' + pi       + '\n' +
-    'Total Monthly Housing Cost    : ' + monthly  + '\n' +
-    'GDS Ratio                     : ' + gds      + '\n' +
-    'TDS Ratio                     : ' + tds      + '\n' +
-    'Qualifying Rate (Stress Test) : ' + qualRate + '\n' +
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
-    'These numbers are based on the information you entered and current Canadian mortgage rules (OSFI B-20 stress test, CMHC guidelines). ' +
-    'Actual lender approval may vary depending on your credit score, employment history, and other factors.\n\n' +
-    'I\'d love to walk you through these results and discuss your next steps. Please reply to this email or call/text me directly.\n\n' +
-    'Warm regards,\nRosh Issac\nISSAC REALTY · Dreamhouse Realty Ltd.\n' +
-    'rosh@issacrealty.com\n\n' +
-    'Disclaimer: This assessment is for advisory purposes only and does not constitute a mortgage approval or lender commitment.'
-  );
-  const to  = clientEmail ? encodeURIComponent(clientEmail) : '';
-  window.open('https://mail.google.com/mail/?view=cm' + (to ? '&to=' + to : '') + '&su=' + subj + '&body=' + body, '_blank');
+  if (!clientEmail || !clientEmail.includes('@')) {
+    alert('Please enter the client\'s email address first.');
+    return;
+  }
+  const btn    = document.getElementById('advisorySendBtn');
+  const status = document.getElementById('advisoryStatus');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  status.textContent = '';
+
+  const payload = JSON.stringify({
+    action    : 'sendAdvisory',
+    clientEmail,
+    price     : document.getElementById('rPrice')?.textContent        || '',
+    mortgage  : document.getElementById('rMortgage')?.textContent     || '',
+    pi        : document.getElementById('rMonthlyPI')?.textContent    || '',
+    monthly   : document.getElementById('rMonthlyTotal')?.textContent || '',
+    gds       : document.getElementById('rGDSVal')?.textContent       || '',
+    tds       : document.getElementById('rTDSVal')?.textContent       || '',
+    qualRate  : document.getElementById('rQualRate')?.textContent     || '',
+  });
+
+  navigator.sendBeacon(WEB_APP_URL, payload);
+
+  btn.textContent = '✅ Sent!';
+  status.style.color = '#2a7a2a';
+  status.textContent = 'Advisory emailed to ' + clientEmail + '. Check your sent folder shortly.';
 }
 
 // ─── Advisor mode switch (from client view) ───────────────────────────────
