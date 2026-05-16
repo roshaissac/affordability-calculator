@@ -648,6 +648,9 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
 <div class="page-footer">
   Issac Realty Inc. &nbsp;·&nbsp; Dreamhouse Realty Ltd. &nbsp;·&nbsp; For advisory use only — not a lender commitment.
+  <span id="advisorModeLink" style="display:none">&nbsp;·&nbsp;
+    <a href="javascript:void(0)" onclick="switchToAdvisorMode()" style="color:var(--orange);text-decoration:none;font-weight:600">Advisor Mode →</a>
+  </span>
 </div>
 
 <!-- ══ BROKERAGE BADGE (fixed bottom-right, always visible) ═══════════ -->
@@ -1000,6 +1003,13 @@ function sendAdvisoryEmail() {
   window.open('https://mail.google.com/mail/?view=cm' + (to ? '&to=' + to : '') + '&su=' + subj + '&body=' + body, '_blank');
 }
 
+// ─── Advisor mode switch (from client view) ───────────────────────────────
+function switchToAdvisorMode() {
+  // Preserve the client's encoded data in the URL so it pre-fills the advisor calculator
+  const encoded = encodeData(CLIENT_FIELDS);
+  window.location.href = getBaseURL() + '?d=' + encoded;
+}
+
 // ─── Helpers ─────────────────────────────────────────────────────────────
 function el(id)  { return document.getElementById(id); }
 function fmt(n)  { return '$' + Math.round(n).toLocaleString('en-CA'); }
@@ -1276,6 +1286,7 @@ function applyMode() {
     el('clientModeBanner').style.display = '';
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
+    el('advisorModeLink').style.display = '';
     // Province hidden in client mode — fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
