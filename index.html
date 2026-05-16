@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home Affordability Calculator — ISSAC REALTY</title>
+<title>Home Affordability Calculator ‚Äî ISSAC REALTY</title>
 <style>
-/* ── Reset & Base ── */
+/* ‚îÄ‚îÄ Reset & Base ‚îÄ‚îÄ */
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#111111;line-height:1.5}
 
-/* ── Brand tokens ── */
+/* ‚îÄ‚îÄ Brand tokens ‚îÄ‚îÄ */
 :root{
   --black:#000000;
   --orange:#F7934C;
@@ -25,7 +25,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   --radius:10px;
 }
 
-/* ── Headers ── */
+/* ‚îÄ‚îÄ Headers ‚îÄ‚îÄ */
 .header-advisor,.header-client{background:var(--black);color:var(--white);padding:0}
 .header-inner{max-width:1200px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;gap:18px}
 .header-logo-issac{height:64px;width:auto;display:block;flex-shrink:0}
@@ -39,7 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .header-logo-issac{height:50px}
   .header-text h1{font-size:1.1rem}
 }
-/* Dreamhouse brokerage — fixed bottom-right badge */
+/* Dreamhouse brokerage ‚Äî fixed bottom-right badge */
 .brokerage-badge{position:fixed;bottom:18px;right:18px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:3px;pointer-events:none}
 .brokerage-badge-label{font-size:0.58rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:0.09em;text-align:right}
 .brokerage-badge-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:5px 10px;box-shadow:0 2px 10px rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center}
@@ -50,12 +50,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
   .brokerage-badge-box img{height:30px}
 }
 
-/* ── Banners ── */
+/* ‚îÄ‚îÄ Banners ‚îÄ‚îÄ */
 .banner{padding:11px 24px;font-size:0.84rem;font-weight:500;display:flex;align-items:center;gap:10px}
 .banner-client-loaded{background:#fff8f3;color:#7a3b10;border-bottom:2px solid var(--orange)}
 .banner-client-mode{background:#fffbf7;color:#7a3b10;border-bottom:2px solid var(--orange);font-size:0.81rem;padding:10px 24px}
 
-/* ── Layout ── */
+/* ‚îÄ‚îÄ Layout ‚îÄ‚îÄ */
 .container{max-width:1200px;margin:0 auto;padding:24px 20px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .span-2{grid-column:1/-1}
@@ -81,7 +81,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 .dp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
 .dp-derived{padding:9px 12px;background:var(--grey-light);border-radius:7px;font-size:0.84rem;color:#333;border:1.5px solid var(--border);min-height:37px;display:flex;align-items:center;font-weight:700}
 
-/* ── Buttons ── */
+/* ‚îÄ‚îÄ Buttons ‚îÄ‚îÄ */
 .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em}
 .btn-block{display:flex;width:100%;justify-content:center;margin-top:10px;padding:13px}
 .btn-black{background:var(--black);color:var(--white)}.btn-black:hover{background:#222}
@@ -89,21 +89,21 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 .btn-outline{background:var(--white);color:var(--black);border:1.5px solid var(--black)}.btn-outline:hover{background:var(--grey-light)}
 .btn-sm{padding:7px 13px;font-size:0.78rem;font-weight:700;border-radius:6px}
 
-/* ── Share panel (advisor) ── */
+/* ‚îÄ‚îÄ Share panel (advisor) ‚îÄ‚îÄ */
 .share-panel{background:#fffbf7;border:1.5px solid var(--orange);border-radius:var(--radius);padding:16px 18px;margin-bottom:20px}
 .share-panel-title{font-size:0.72rem;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px}
 .share-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .share-url-box{flex:1;min-width:200px;padding:9px 12px;background:var(--white);border:1.5px solid var(--grey);border-radius:7px;font-size:0.78rem;color:#444;font-family:monospace;word-break:break-all}
 .copy-feedback{font-size:0.78rem;color:var(--orange);font-weight:700;display:none}
 
-/* ── Client submit card ── */
+/* ‚îÄ‚îÄ Client submit card ‚îÄ‚îÄ */
 .client-submit-card{background:var(--white);border:2px solid var(--orange);border-radius:12px;padding:24px;text-align:center;margin-top:4px}
 .client-submit-card h3{font-size:1rem;font-weight:800;color:var(--black);margin-bottom:6px}
 .client-submit-card p{font-size:0.83rem;color:var(--text-muted);margin-bottom:18px;line-height:1.55}
 .client-afford-estimate{font-size:2.4rem;font-weight:800;color:var(--orange);letter-spacing:-0.03em;line-height:1;margin:10px 0 4px}
 .client-afford-note{font-size:0.73rem;color:var(--text-muted);margin-bottom:18px;line-height:1.5}
 
-/* ── Results hero ── */
+/* ‚îÄ‚îÄ Results hero ‚îÄ‚îÄ */
 .result-hero{background:var(--black);color:var(--white);border-radius:12px;padding:26px 28px;margin-bottom:18px}
 .result-hero h2{font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
 .price-big{font-size:2.8rem;font-weight:800;color:var(--orange);letter-spacing:-0.03em;line-height:1}
@@ -118,7 +118,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 .col-green{color:#68d391}.col-yellow{color:#f6e05e}.col-red{color:#fc8181}.col-blue{color:var(--orange)}
 .fill-green{background:#68d391}.fill-yellow{background:#f6e05e}.fill-red{background:#fc8181}
 
-/* ── Breakdown ── */
+/* ‚îÄ‚îÄ Breakdown ‚îÄ‚îÄ */
 .breakdown-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;margin-top:16px}
 .bk-title{font-size:0.7rem;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:0.09em;padding-bottom:8px;border-bottom:2px solid var(--orange);margin-bottom:10px}
 .bk-row{display:flex;justify-content:space-between;padding:6px 0;font-size:0.86rem;border-bottom:1px solid var(--grey-mid)}
@@ -133,14 +133,14 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 .bk-row.sub .bk-label{color:var(--text-subtle)}
 .bk-row.sub .bk-val{color:#555;font-weight:500}
 
-/* ── Alerts ── */
+/* ‚îÄ‚îÄ Alerts ‚îÄ‚îÄ */
 .warning-box{background:#fff8f3;border:1.5px solid var(--orange);border-radius:7px;padding:10px 14px;font-size:0.8rem;color:#7a3b10;margin-bottom:14px}
 .info-box{background:#fffbf7;border:1.5px solid #fbd38d;border-radius:7px;padding:10px 14px;font-size:0.79rem;color:#7a3b10;line-height:1.55}
 .info-box strong{display:block;margin-bottom:2px}
 .success-box{background:#f9fafb;border:1.5px solid var(--grey);border-radius:7px;padding:10px 14px;font-size:0.82rem;color:#333;line-height:1.5}
 .ab-note{background:#f0f7ff;border:1.5px solid #90cdf4;border-radius:7px;padding:9px 13px;font-size:0.78rem;color:#2b4c7e;line-height:1.5}
 
-/* ── Scenario table ── */
+/* ‚îÄ‚îÄ Scenario table ‚îÄ‚îÄ */
 .scenario-table{width:100%;border-collapse:collapse;font-size:0.82rem;margin-top:12px}
 .scenario-table th{background:var(--grey-light);padding:8px 12px;text-align:right;font-weight:700;color:#333;border-bottom:2px solid var(--grey);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em}
 .scenario-table th:first-child{text-align:left}
@@ -149,7 +149,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 .scenario-table tr.highlight td{background:#fff8f3;font-weight:700;color:var(--orange)}
 .scenario-table tr:last-child td{border-bottom:none}
 
-/* ── Closing costs panel ── */
+/* ‚îÄ‚îÄ Closing costs panel ‚îÄ‚îÄ */
 .cc-panel{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white);margin-bottom:20px;box-shadow:var(--shadow)}
 .cc-header{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;background:var(--grey-light);cursor:pointer;user-select:none;transition:background 0.15s;border-bottom:1px solid var(--border)}
 .cc-header:hover{background:var(--grey-mid)}
@@ -180,11 +180,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 .cc-total-sub{font-size:0.7rem;color:var(--text-muted);margin-top:2px}
 @media(max-width:680px){.cc-item{grid-template-columns:20px 1fr;gap:8px}.cc-range,.cc-inp{grid-column:2}}
 
-/* ── Results visibility ── */
+/* ‚îÄ‚îÄ Results visibility ‚îÄ‚îÄ */
 #results-area{display:none}
 .advisor-only,.client-only{display:none}
 
-/* ── Responsive ── */
+/* ‚îÄ‚îÄ Responsive ‚îÄ‚îÄ */
 @media(max-width:600px){
   .price-big{font-size:2.1rem}
   .header-inner{padding:18px 16px;gap:14px}
@@ -192,14 +192,14 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
   .container{padding:14px 12px}
 }
 
-/* ── Footer ── */
+/* ‚îÄ‚îÄ Footer ‚îÄ‚îÄ */
 .page-footer{text-align:center;padding:20px;font-size:0.72rem;color:var(--text-subtle);border-top:1px solid var(--grey);background:var(--white);margin-top:16px}
 .page-footer a{color:var(--orange);text-decoration:none;font-weight:600}
 </style>
 </head>
 <body>
 
-<!-- ══ ADVISOR HEADER ══════════════════════════════════════════════════ -->
+<!-- ‚ïê‚ïê ADVISOR HEADER ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê -->
 <div class="header-advisor" id="headerAdvisor">
   <div class="header-inner">
     <img src="assets/logo.png" alt="Issac Realty Inc." class="header-logo-issac" onerror="this.style.display='none'">
@@ -207,12 +207,12 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     <div class="header-text">
       <div class="brand-tag">ISSAC REALTY INC.</div>
       <h1>Home Affordability Calculator</h1>
-      <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
+      <p>GDS/TDS ¬∑ OSFI Stress Test ¬∑ CMHC ¬∑ Closing Cost Analysis</p>
     </div>
   </div>
 </div>
 
-<!-- ══ CLIENT HEADER ═══════════════════════════════════════════════════ -->
+<!-- ‚ïê‚ïê CLIENT HEADER ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê -->
 <div class="header-client" id="headerClient" style="display:none">
   <div class="header-inner">
     <img src="assets/logo.png" alt="Issac Realty Inc." class="header-logo-issac" onerror="this.style.display='none'">
@@ -220,52 +220,52 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     <div class="header-text">
       <div class="brand-tag">ISSAC REALTY INC.</div>
       <h1>Mortgage Pre-Assessment</h1>
-      <p>Fill in what you know — your advisor Rosh will complete the rest and share your full estimate.</p>
+      <p>Fill in what you know ‚Äî your advisor Rosh will complete the rest and share your full estimate.</p>
     </div>
   </div>
 </div>
 
 <!-- Advisor banner: shown when client data pre-loaded -->
 <div class="banner banner-client-loaded" id="clientLoadedBanner" style="display:none">
-  ✅ <strong>Client data pre-loaded from intake form.</strong> Review the fields below, complete the mortgage assumptions, then click <strong>Execute Affordability Estimate</strong>.
+  ‚úÖ <strong>Client data pre-loaded from intake form.</strong> Review the fields below, complete the mortgage assumptions, then click <strong>Execute Affordability Estimate</strong>.
 </div>
 
 <!-- Client banner -->
 <div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
-  📋 Fill in what you know below. Fields you're unsure about can be left at their default — your advisor will adjust them. Click <strong>"Send My Information to Rosh"</strong> when done.
+  üìã Fill in what you know below. Fields you're unsure about can be left at their default ‚Äî your advisor will adjust them. Click <strong>"Send My Information to Rosh"</strong> when done.
 </div>
 
 <div class="container">
 
-  <!-- ── SHARE PANEL (advisor only) ──────────────────────────────────── -->
+  <!-- ‚îÄ‚îÄ SHARE PANEL (advisor only) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ -->
   <div class="share-panel advisor-only" id="sharePanelAdvisor" style="margin-bottom:20px">
-    <div class="share-panel-title">📤 Send Client Intake Link</div>
-    <p style="font-size:0.81rem;color:#555;margin-bottom:10px">Copy the link below and send it to your client. They fill in their income &amp; debts, then click Send — their data arrives pre-filled in your calculator.</p>
+    <div class="share-panel-title">üì§ Send Client Intake Link</div>
+    <p style="font-size:0.81rem;color:#555;margin-bottom:10px">Copy the link below and send it to your client. They fill in their income &amp; debts, then click Send ‚Äî their data arrives pre-filled in your calculator.</p>
     <div class="share-row">
-      <div class="share-url-box" id="clientPortalURL">Loading…</div>
-      <button class="btn btn-orange btn-sm" onclick="copyClientPortalLink()">📋 Copy Link</button>
-      <span class="copy-feedback" id="copyFeedbackPortal">✓ Copied!</span>
+      <div class="share-url-box" id="clientPortalURL">Loading‚Ä¶</div>
+      <button class="btn btn-orange btn-sm" onclick="copyClientPortalLink()">üìã Copy Link</button>
+      <span class="copy-feedback" id="copyFeedbackPortal">‚úì Copied!</span>
     </div>
   </div>
 
-  <!-- ── INPUT GRID ───────────────────────────────────────────────────── -->
+  <!-- ‚îÄ‚îÄ INPUT GRID ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ -->
   <div class="grid-2" style="margin-bottom:20px">
 
     <!-- Card 1: Income & Down Payment -->
     <div class="card">
-      <div class="card-title">💰 Income &amp; Down Payment</div>
+      <div class="card-title">üí∞ Income &amp; Down Payment</div>
       <div class="field">
-        <label>Annual Gross Income — Applicant 1</label>
+        <label>Annual Gross Income ‚Äî Applicant 1</label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="income1" value="120000" min="0" step="1000"></div>
       </div>
       <div class="field">
-        <label>Annual Gross Income — Applicant 2 <span style="font-weight:400;color:#888">(if any)</span></label>
+        <label>Annual Gross Income ‚Äî Applicant 2 <span style="font-weight:400;color:#888">(if any)</span></label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="income2" value="0" min="0" step="1000"></div>
       </div>
       <div class="field">
         <label>Other Monthly Income <span style="font-weight:400;color:#888">(rental, alimony, etc.)</span></label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="otherIncome" value="0" min="0" step="100"></div>
-        <div class="hint">Included at 100%; lenders may apply 50–80% for rental income.</div>
+        <div class="hint">Included at 100%; lenders may apply 50‚Äì80% for rental income.</div>
       </div>
       <div class="field" style="margin-top:4px">
         <label>Down Payment</label>
@@ -281,7 +281,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
           <div id="wrap-amt" class="input-wrap" style="display:none">
             <span class="pre">$</span><input type="number" id="dpAmt" value="150000" min="0" step="5000">
           </div>
-          <div class="dp-derived" id="dpDerived">= —</div>
+          <div class="dp-derived" id="dpDerived">= ‚Äî</div>
         </div>
         <div class="hint" id="cmhc-note"></div>
       </div>
@@ -289,7 +289,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
     <!-- Card 2: Existing Monthly Debts -->
     <div class="card">
-      <div class="card-title">📋 Existing Monthly Debt Payments</div>
+      <div class="card-title">üìã Existing Monthly Debt Payments</div>
       <div class="hint" style="margin-bottom:14px">Use <strong>minimum monthly payments</strong>. Do <strong>not</strong> include current rent.</div>
       <div class="field">
         <label>Auto Loan Payment(s)</label>
@@ -314,7 +314,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
     <!-- Card 3: Mortgage Assumptions (ADVISOR ONLY) -->
     <div class="card advisor-only" id="cardAssumptions">
-      <div class="card-title">⚙️ Mortgage Assumptions</div>
+      <div class="card-title">‚öôÔ∏è Mortgage Assumptions</div>
       <div class="field">
         <label>Province</label>
         <select id="province" onchange="onProvinceChange()" style="padding:9px 12px;width:100%">
@@ -330,7 +330,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
           <option value="SK">Saskatchewan</option>
         </select>
         <div class="ab-note" id="provinceLTTNote" style="margin-top:8px;font-size:0.78rem">
-          🏛️ <strong>Alberta has no provincial Land Transfer Tax.</strong> Only nominal Land Title Transfer Fees apply (~$300–$600). Factor this into your Legal/Notary line below.
+          üèõÔ∏è <strong>Alberta has no provincial Land Transfer Tax.</strong> Only nominal Land Title Transfer Fees apply (~$300‚Äì$600). Factor this into your Legal/Notary line below.
         </div>
       </div>
       <div class="field">
@@ -366,7 +366,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       <div class="field">
         <label>Monthly Heating / Utilities Estimate</label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="heating" value="150" min="50" max="800" step="25"></div>
-        <div class="hint">Lenders use $150–$200/mo standard.</div>
+        <div class="hint">Lenders use $150‚Äì$200/mo standard.</div>
       </div>
       <div class="field">
         <label>Monthly Condo Fees <span style="font-weight:400;color:#888">(if applicable)</span></label>
@@ -376,30 +376,30 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       <div class="field">
         <label>Annual HOA Fees <span style="font-weight:400;color:#888">(freehold, if any)</span></label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="hoaFees" value="0" min="0" step="100"></div>
-        <div class="hint">Converted to monthly (÷12), counted 100% in GDS/TDS.</div>
+        <div class="hint">Converted to monthly (√∑12), counted 100% in GDS/TDS.</div>
       </div>
     </div>
 
     <!-- Card 4: Ratios & Profession (ADVISOR ONLY) -->
     <div class="card advisor-only" id="cardRatios">
-      <div class="card-title">📐 Qualifying Ratios &amp; Settings</div>
+      <div class="card-title">üìê Qualifying Ratios &amp; Settings</div>
       <div class="field">
         <label>Profession / Lender Program</label>
         <select id="profType" onchange="onProfChange()" style="padding:9px 12px;width:100%">
-          <option value="standard">Standard — No Special Program</option>
-          <optgroup label="─── Healthcare Professionals ───">
+          <option value="standard">Standard ‚Äî No Special Program</option>
+          <optgroup label="‚îÄ‚îÄ‚îÄ Healthcare Professionals ‚îÄ‚îÄ‚îÄ">
             <option value="physician">Physician / Medical Doctor (MD, DO, Resident)</option>
             <option value="dentist">Dentist (DDS, DMD)</option>
             <option value="veterinarian">Veterinarian (DVM)</option>
             <option value="pharmacist">Pharmacist (PharmD, RPh)</option>
             <option value="optometrist">Optometrist (OD)</option>
-            <option value="allied">Allied Health (NP, Physio, Chiro…)</option>
+            <option value="allied">Allied Health (NP, Physio, Chiro‚Ä¶)</option>
           </optgroup>
-          <optgroup label="─── Legal / Financial ───">
+          <optgroup label="‚îÄ‚îÄ‚îÄ Legal / Financial ‚îÄ‚îÄ‚îÄ">
             <option value="lawyer">Lawyer / Notary / Barrister</option>
             <option value="cpa">Accountant (CPA, CGA, CMA)</option>
           </optgroup>
-          <optgroup label="─── Engineering ───">
+          <optgroup label="‚îÄ‚îÄ‚îÄ Engineering ‚îÄ‚îÄ‚îÄ">
             <option value="engineer">Professional Engineer (P.Eng)</option>
           </optgroup>
         </select>
@@ -408,7 +408,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       <div class="field">
         <label>Maximum GDS Limit</label>
         <div class="input-wrap"><input type="number" id="gdsLimit" value="39" min="25" max="50" step="1" class="suf-pad"><span class="suf">%</span></div>
-        <div class="hint">Housing costs only. Standard: 32–39%.</div>
+        <div class="hint">Housing costs only. Standard: 32‚Äì39%.</div>
       </div>
       <div class="field">
         <label>Maximum TDS Limit</label>
@@ -416,48 +416,48 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
         <div class="hint">All debts + housing. Standard: 44%. Healthcare programs: up to 50%.</div>
       </div>
       <div class="field">
-        <label>Closing Costs — % of Purchase Price</label>
+        <label>Closing Costs ‚Äî % of Purchase Price</label>
         <div class="input-wrap"><input type="number" id="closingPct" value="2.5" min="0.5" max="10" step="0.25" class="suf-pad"><span class="suf">%</span></div>
-        <div class="hint">Legal, title insurance, appraisal. Typically 1.5–3% in AB (no provincial LTT).</div>
+        <div class="hint">Legal, title insurance, appraisal. Typically 1.5‚Äì3% in AB (no provincial LTT).</div>
       </div>
       <div class="info-box" style="margin-top:10px">
-        <strong>🧪 Stress Test — OSFI B-20</strong>
+        <strong>üß™ Stress Test ‚Äî OSFI B-20</strong>
         Qualification uses <strong>max(contract rate + 2%, 5.25%)</strong>. Actual payments use contract rate.
       </div>
-      <button class="btn btn-black btn-block" onclick="calculate()">⚡ Execute Affordability Estimate</button>
+      <button class="btn btn-black btn-block" onclick="calculate()">‚ö° Execute Affordability Estimate</button>
     </div>
 
-    <!-- CLIENT SUBMIT CARD — visibility controlled by calculate() in client mode -->
+    <!-- CLIENT SUBMIT CARD ‚Äî visibility controlled by calculate() in client mode -->
     <div class="client-submit-card span-2" id="clientSubmitCard" style="display:none">
-      <h3>✅ Your Estimate is Ready — Connect with Rosh</h3>
+      <h3>‚úÖ Your Estimate is Ready ‚Äî Connect with Rosh</h3>
       <p style="margin-bottom:6px">Based on standard Canadian mortgage assumptions, your estimated home affordability is approximately:</p>
-      <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
-      <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
+      <div class="client-afford-estimate" id="clientAffordEstimate">‚Äî</div>
+      <div class="client-afford-note">Using 5.5% rate ¬∑ 25-yr amortization ¬∑ Alberta property tax ¬∑ GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
       <p style="margin:18px 0 10px;font-weight:600;font-size:0.95rem;color:#333">How would you like to connect?</p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:400px;margin:0 auto">
         <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="showContactModal('email')">
-          <span style="font-size:1.3rem">📧</span>
+          <span style="font-size:1.3rem">üìß</span>
           <span><strong>Get My Full Assessment by Email</strong><br><span style="font-size:0.78rem;opacity:0.85">Rosh will reply with a detailed affordability report</span></span>
         </button>
         <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="showContactModal('whatsapp')">
-          <span style="font-size:1.3rem">💬</span>
+          <span style="font-size:1.3rem">üí¨</span>
           <span><strong>Chat with Rosh on WhatsApp</strong><br><span style="font-size:0.78rem;opacity:0.85">Quick questions? Message Rosh directly</span></span>
         </button>
         <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="showContactModal('booking')">
-          <span style="font-size:1.3rem">📅</span>
-          <span><strong>Book a Free Consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time — 15-min call, no obligation</span></span>
+          <span style="font-size:1.3rem">üìÖ</span>
+          <span><strong>Book a Free Consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time ‚Äî 15-min call, no obligation</span></span>
         </button>
       </div>
-      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">We collect your contact info before connecting — your financial numbers stay private.</p>
+      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">We collect your contact info before connecting ‚Äî your financial numbers stay private.</p>
     </div>
 
-    <!-- ── Contact capture modal ── -->
+    <!-- ‚îÄ‚îÄ Contact capture modal ‚îÄ‚îÄ -->
     <div id="contactModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
          z-index:9999;align-items:center;justify-content:center;">
       <div style="background:#fff;border-radius:14px;padding:32px 28px;max-width:420px;width:90%;
                   box-shadow:0 12px 48px rgba(0,0,0,0.22);position:relative;">
         <button onclick="closeContactModal()" style="position:absolute;top:14px;right:16px;
-                background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;">×</button>
+                background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888;">√ó</button>
         <p style="margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
                   color:var(--orange);font-weight:700;">Almost done</p>
         <h3 id="cm-heading" style="margin:0 0 6px;font-size:1.2rem;">Where should Rosh send your assessment?</h3>
@@ -489,7 +489,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
         <button id="cm-submit" onclick="submitToRosh()"
                 style="width:100%;padding:13px;background:var(--orange);color:#fff;border:none;
                        border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
-          Send to Rosh →
+          Send to Rosh ‚Üí
         </button>
         <div id="cm-status" style="margin-top:12px;font-size:0.82rem;text-align:center;color:#666;"></div>
       </div>
@@ -497,23 +497,23 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
   </div><!-- /grid-2 -->
 
-  <!-- ── CLOSING COSTS PANEL (advisor only) ─────────────────────────── -->
+  <!-- ‚îÄ‚îÄ CLOSING COSTS PANEL (advisor only) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ -->
   <div class="cc-panel advisor-only" id="closingCostsPanel">
     <div class="cc-header" onclick="toggleCC()">
       <div style="display:flex;align-items:center;gap:10px">
-        <span style="font-size:1.05rem">💳</span>
+        <span style="font-size:1.05rem">üí≥</span>
         <div>
           <div class="cc-header-title">Anticipated Closing &amp; Move-In Expenses</div>
-          <div style="font-size:0.73rem;color:var(--text-muted);margin-top:1px">Detailed itemized budget — informational, not factored into affordability</div>
+          <div style="font-size:0.73rem;color:var(--text-muted);margin-top:1px">Detailed itemized budget ‚Äî informational, not factored into affordability</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
         <span class="cc-header-total" id="ccHeaderTotal">$0 selected</span>
-        <span class="cc-chevron" id="ccChevron">▼</span>
+        <span class="cc-chevron" id="ccChevron">‚ñº</span>
       </div>
     </div>
     <div class="cc-body" id="ccBody">
-      <div class="cc-info">⚠️ <strong>Budget awareness only.</strong> These are real one-time costs beyond your down payment. Amounts are estimates — edit any cell to match your situation.</div>
+      <div class="cc-info">‚ö†Ô∏è <strong>Budget awareness only.</strong> These are real one-time costs beyond your down payment. Amounts are estimates ‚Äî edit any cell to match your situation.</div>
       <div id="ccItemsContainer"></div>
       <div class="cc-totals">
         <div class="cc-total-box">
@@ -530,84 +530,84 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     </div>
   </div>
 
-  <!-- ── RESULTS (advisor only) ──────────────────────────────────────── -->
+  <!-- ‚îÄ‚îÄ RESULTS (advisor only) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ -->
   <div id="results-area" class="advisor-only">
 
     <div class="result-hero">
       <h2>Maximum Affordable Home Price</h2>
-      <div class="price-big" id="rPrice">—</div>
+      <div class="price-big" id="rPrice">‚Äî</div>
       <div class="price-note" id="rPriceNote"></div>
       <div class="stats-grid">
         <div class="stat-box">
           <div class="stat-box-label">GDS Ratio</div>
-          <div class="stat-box-value" id="rGDSVal">—</div>
+          <div class="stat-box-value" id="rGDSVal">‚Äî</div>
           <div class="stat-box-sub" id="rGDSLimit"></div>
           <div class="ratio-track"><div class="ratio-fill" id="rGDSBar" style="width:0%"></div></div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">TDS Ratio</div>
-          <div class="stat-box-value" id="rTDSVal">—</div>
+          <div class="stat-box-value" id="rTDSVal">‚Äî</div>
           <div class="stat-box-sub" id="rTDSLimit"></div>
           <div class="ratio-track"><div class="ratio-fill" id="rTDSBar" style="width:0%"></div></div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">Qualifying Rate (Stress Test)</div>
-          <div class="stat-box-value col-blue" id="rQualRate">—</div>
+          <div class="stat-box-value col-blue" id="rQualRate">‚Äî</div>
           <div class="stat-box-sub" id="rContractRate"></div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">Actual Monthly P&amp;I</div>
-          <div class="stat-box-value col-green" id="rMonthlyPI">—</div>
+          <div class="stat-box-value col-green" id="rMonthlyPI">‚Äî</div>
           <div class="stat-box-sub">At contract rate</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">Total Monthly Housing</div>
-          <div class="stat-box-value col-yellow" id="rMonthlyTotal">—</div>
+          <div class="stat-box-value col-yellow" id="rMonthlyTotal">‚Äî</div>
           <div class="stat-box-sub">P&amp;I + tax + heat + fees</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">Mortgage (incl. CMHC)</div>
-          <div class="stat-box-value" id="rMortgage">—</div>
+          <div class="stat-box-value" id="rMortgage">‚Äî</div>
           <div class="stat-box-sub" id="rMortgageSub"></div>
         </div>
       </div>
     </div>
 
     <div class="card span-2">
-      <div class="card-title">📊 Detailed Breakdown</div>
+      <div class="card-title">üìä Detailed Breakdown</div>
       <div class="breakdown-grid" id="breakdownGrid"></div>
     </div>
 
     <div class="card span-2" style="margin-top:18px">
-      <div class="card-title">🔄 Sensitivity — Price vs. Rate &amp; Down Payment</div>
-      <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px">★ = your current inputs. Highlighted row = your rate.</div>
+      <div class="card-title">üîÑ Sensitivity ‚Äî Price vs. Rate &amp; Down Payment</div>
+      <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px">‚òÖ = your current inputs. Highlighted row = your rate.</div>
       <div style="overflow-x:auto"><table class="scenario-table" id="scenarioTable"></table></div>
     </div>
 
     <div class="card span-2" style="margin-top:18px">
-      <div class="card-title">📖 Key Terms &amp; Rules</div>
+      <div class="card-title">üìñ Key Terms &amp; Rules</div>
       <div class="breakdown-grid">
         <div>
           <div class="bk-title">Ratios</div>
-          <div class="bk-row"><span class="bk-label"><strong>GDS</strong> — Gross Debt Service</span></div>
-          <div class="bk-row sub"><span class="bk-label">(P&amp;I + Tax + Heating + 50% Condo + 100% HOA/mo) ÷ Gross Income ≤ 39%</span></div>
-          <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>TDS</strong> — Total Debt Service</span></div>
-          <div class="bk-row sub"><span class="bk-label">(GDS items + all other debts) ÷ Gross Income ≤ 44%</span></div>
+          <div class="bk-row"><span class="bk-label"><strong>GDS</strong> ‚Äî Gross Debt Service</span></div>
+          <div class="bk-row sub"><span class="bk-label">(P&amp;I + Tax + Heating + 50% Condo + 100% HOA/mo) √∑ Gross Income ‚â§ 39%</span></div>
+          <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>TDS</strong> ‚Äî Total Debt Service</span></div>
+          <div class="bk-row sub"><span class="bk-label">(GDS items + all other debts) √∑ Gross Income ‚â§ 44%</span></div>
           <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>Stress Test</strong> OSFI B-20</span></div>
           <div class="bk-row sub"><span class="bk-label">Qualify at max(contract + 2%, 5.25%). Actual payments use contract rate.</span></div>
           <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>Rate Compounding</strong></span></div>
-          <div class="bk-row sub"><span class="bk-label">Canadian mortgages: semi-annual. Monthly rate = (1 + r/2)^(1/6) − 1</span></div>
+          <div class="bk-row sub"><span class="bk-label">Canadian mortgages: semi-annual. Monthly rate = (1 + r/2)^(1/6) ‚àí 1</span></div>
         </div>
         <div>
           <div class="bk-title">CMHC Mortgage Insurance</div>
           <div class="bk-row"><span class="bk-label">Down &lt; 20%</span><span class="bk-val">Insurance required</span></div>
-          <div class="bk-row sub"><span class="bk-label">5.00–9.99% down</span><span class="bk-val">4.00% of mortgage</span></div>
-          <div class="bk-row sub"><span class="bk-label">10.00–14.99% down</span><span class="bk-val">3.10% of mortgage</span></div>
-          <div class="bk-row sub"><span class="bk-label">15.00–19.99% down</span><span class="bk-val">2.80% of mortgage</span></div>
-          <div class="bk-row"><span class="bk-label">Down ≥ 20%</span><span class="bk-val green">No CMHC premium</span></div>
+          <div class="bk-row sub"><span class="bk-label">5.00‚Äì9.99% down</span><span class="bk-val">4.00% of mortgage</span></div>
+          <div class="bk-row sub"><span class="bk-label">10.00‚Äì14.99% down</span><span class="bk-val">3.10% of mortgage</span></div>
+          <div class="bk-row sub"><span class="bk-label">15.00‚Äì19.99% down</span><span class="bk-val">2.80% of mortgage</span></div>
+          <div class="bk-row"><span class="bk-label">Down ‚â• 20%</span><span class="bk-val green">No CMHC premium</span></div>
           <div class="bk-title" style="margin-top:14px">Min. Down Payment</div>
-          <div class="bk-row"><span class="bk-label">Price ≤ $500,000</span><span class="bk-val">5% minimum</span></div>
-          <div class="bk-row"><span class="bk-label">$500K–$999,999</span><span class="bk-val">5% on 1st $500K + 10% on rest</span></div>
+          <div class="bk-row"><span class="bk-label">Price ‚â§ $500,000</span><span class="bk-val">5% minimum</span></div>
+          <div class="bk-row"><span class="bk-label">$500K‚Äì$999,999</span><span class="bk-val">5% on 1st $500K + 10% on rest</span></div>
           <div class="bk-row"><span class="bk-label">$1,000,000+</span><span class="bk-val">20% minimum</span></div>
         </div>
         <div>
@@ -620,18 +620,18 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       </div>
     </div>
 
-    <!-- ── NEXT STEPS (advisor — shown only when viewing a client submission) ── -->
+    <!-- ‚îÄ‚îÄ NEXT STEPS (advisor ‚Äî shown only when viewing a client submission) ‚îÄ‚îÄ -->
     <div class="card span-2" id="nextStepsCard" style="display:none;margin-top:18px;border:2px solid var(--orange);background:#fff8f3">
-      <div class="card-title" style="color:var(--orange)">✅ Next Steps — Client Submission Review</div>
+      <div class="card-title" style="color:var(--orange)">‚úÖ Next Steps ‚Äî Client Submission Review</div>
       <p style="font-size:0.85rem;color:#444;margin:0 0 16px">
         You're viewing a client's pre-filled numbers. Review the results above, then choose an action below.
       </p>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
         <button class="btn btn-orange" onclick="sendAdvisoryEmail()" style="padding:11px 22px;font-size:0.92rem">
-          📧 Send Advisory to Client
+          üìß Send Advisory to Client
         </button>
         <button class="btn" onclick="window.print()" style="padding:11px 22px;font-size:0.92rem;background:#444;color:#fff;border:none;border-radius:8px;cursor:pointer">
-          🖨️ Print / Save as PDF
+          üñ®Ô∏è Print / Save as PDF
         </button>
       </div>
       <div style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
@@ -647,13 +647,13 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 </div><!-- /container -->
 
 <div class="page-footer">
-  Issac Realty Inc. &nbsp;·&nbsp; Dreamhouse Realty Ltd. &nbsp;·&nbsp; For advisory use only — not a lender commitment.
-  <span id="advisorModeLink" style="display:none">&nbsp;·&nbsp;
-    <a href="javascript:void(0)" onclick="switchToAdvisorMode()" style="color:var(--orange);text-decoration:none;font-weight:600">Advisor Mode →</a>
+  Issac Realty Inc. &nbsp;¬∑&nbsp; Dreamhouse Realty Ltd. &nbsp;¬∑&nbsp; For advisory use only ‚Äî not a lender commitment.
+  <span id="advisorModeLink" style="display:none">&nbsp;¬∑&nbsp;
+    <a href="javascript:void(0)" onclick="switchToAdvisorMode()" style="color:var(--orange);text-decoration:none;font-weight:600">Advisor Mode ‚Üí</a>
   </span>
 </div>
 
-<!-- ══ BROKERAGE BADGE (fixed bottom-right, always visible) ═══════════ -->
+<!-- ‚ïê‚ïê BROKERAGE BADGE (fixed bottom-right, always visible) ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê -->
 <div class="brokerage-badge">
   <div class="brokerage-badge-label">Brokerage</div>
   <div class="brokerage-badge-box">
@@ -664,32 +664,32 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 </div>
 
 <script>
-// ─── Mode detection ──────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Mode detection ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const URL_PARAMS   = new URLSearchParams(window.location.search);
 const CLIENT_MODE  = URL_PARAMS.get('mode') === 'client';
 const HAS_DATA     = URL_PARAMS.get('d') != null;
 
-// ─── State ───────────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ State ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 let dpMode = 'pct';
 let ptMode = 'pct';
 
-// ─── Province data ───────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Province data ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const PROVINCE_TAX_PCT = {
   AB:0.65, BC:0.55, MB:1.25, NB:1.45, NL:0.85,
   NS:1.20, ON:1.00, PE:0.70, QC:1.00, SK:0.90
 };
 
 const PROVINCE_LTT_NOTES = {
-  AB: { cls:'ab-note',   text:'🏛️ <strong>Alberta has no provincial Land Transfer Tax.</strong> Only nominal Land Title Transfer Fees apply (~$300–$600). Factor this into your Legal/Notary line below.' },
-  SK: { cls:'ab-note',   text:'🏛️ <strong>Saskatchewan has no provincial Land Transfer Tax.</strong> Small title registration fees apply (~$500).' },
-  NL: { cls:'ab-note',   text:'🏛️ <strong>Newfoundland has no provincial Land Transfer Tax.</strong> Small registration fees apply.' },
-  BC: { cls:'info-box',  text:'⚠️ <strong>BC Property Transfer Tax (PTT):</strong> 1% on first $200K · 2% on $200K–$2M · 3% on $2M–$3M · 5% above $3M. First-time buyers may qualify for the PTT exemption.' },
-  ON: { cls:'info-box',  text:'⚠️ <strong>Ontario Land Transfer Tax (LTT):</strong> 0.5–2.5% of purchase price. First-time buyers receive a rebate up to $4,000. Toronto buyers pay an additional municipal LTT.' },
-  QC: { cls:'info-box',  text:'⚠️ <strong>Quebec Welcome Tax (Bienvenue):</strong> 0.5% on first $58,900 · 1% on $58,900–$294,600 · 1.5% above $294,600 (2024 thresholds).' },
-  MB: { cls:'info-box',  text:'⚠️ <strong>Manitoba Land Transfer Tax:</strong> 0.5% on first $30K · 1% on $30K–$90K · 1.5% on $90K–$150K · 2% above $150K. First-time buyers may get a partial rebate.' },
-  NS: { cls:'info-box',  text:'⚠️ <strong>Nova Scotia Deed Transfer Tax:</strong> Typically 1.5% of purchase price (set by municipality).' },
-  NB: { cls:'info-box',  text:'⚠️ <strong>New Brunswick Land Transfer Tax:</strong> 1% of purchase price.' },
-  PE: { cls:'info-box',  text:'⚠️ <strong>PEI Real Property Transfer Tax:</strong> 1% of purchase price.' },
+  AB: { cls:'ab-note',   text:'üèõÔ∏è <strong>Alberta has no provincial Land Transfer Tax.</strong> Only nominal Land Title Transfer Fees apply (~$300‚Äì$600). Factor this into your Legal/Notary line below.' },
+  SK: { cls:'ab-note',   text:'üèõÔ∏è <strong>Saskatchewan has no provincial Land Transfer Tax.</strong> Small title registration fees apply (~$500).' },
+  NL: { cls:'ab-note',   text:'üèõÔ∏è <strong>Newfoundland has no provincial Land Transfer Tax.</strong> Small registration fees apply.' },
+  BC: { cls:'info-box',  text:'‚ö†Ô∏è <strong>BC Property Transfer Tax (PTT):</strong> 1% on first $200K ¬∑ 2% on $200K‚Äì$2M ¬∑ 3% on $2M‚Äì$3M ¬∑ 5% above $3M. First-time buyers may qualify for the PTT exemption.' },
+  ON: { cls:'info-box',  text:'‚ö†Ô∏è <strong>Ontario Land Transfer Tax (LTT):</strong> 0.5‚Äì2.5% of purchase price. First-time buyers receive a rebate up to $4,000. Toronto buyers pay an additional municipal LTT.' },
+  QC: { cls:'info-box',  text:'‚ö†Ô∏è <strong>Quebec Welcome Tax (Bienvenue):</strong> 0.5% on first $58,900 ¬∑ 1% on $58,900‚Äì$294,600 ¬∑ 1.5% above $294,600 (2024 thresholds).' },
+  MB: { cls:'info-box',  text:'‚ö†Ô∏è <strong>Manitoba Land Transfer Tax:</strong> 0.5% on first $30K ¬∑ 1% on $30K‚Äì$90K ¬∑ 1.5% on $90K‚Äì$150K ¬∑ 2% above $150K. First-time buyers may get a partial rebate.' },
+  NS: { cls:'info-box',  text:'‚ö†Ô∏è <strong>Nova Scotia Deed Transfer Tax:</strong> Typically 1.5% of purchase price (set by municipality).' },
+  NB: { cls:'info-box',  text:'‚ö†Ô∏è <strong>New Brunswick Land Transfer Tax:</strong> 1% of purchase price.' },
+  PE: { cls:'info-box',  text:'‚ö†Ô∏è <strong>PEI Real Property Transfer Tax:</strong> 1% of purchase price.' },
 };
 
 function onProvinceChange() {
@@ -714,18 +714,18 @@ function updateProvinceLTTNote() {
   }
 }
 
-// ─── Profession profiles ─────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Profession profiles ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const PROF = {
   standard:    { gds:39, tds:44, note:null },
-  physician:   { gds:39, tds:50, note:'<strong>Healthcare Professional Mortgage Program</strong> — Licensed physicians and residents. TDS up to 50% at Scotiabank, TD, National Bank, BMO, RBC. Requires proof of licensure or signed employment/residency contract.' },
-  dentist:     { gds:39, tds:50, note:'<strong>Healthcare Professional Program</strong> — Dentists (DDS/DMD) qualify same as physicians. TDS up to 50% at major lenders.' },
-  veterinarian:{ gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> — Licensed DVMs may access professional mortgage programs with TDS up to 48% at select lenders.' },
-  pharmacist:  { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> — Licensed pharmacists (RPh/PharmD). TDS up to 48% at select lenders. Proof of provincial college registration required.' },
-  optometrist: { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> — Optometrists (OD) registered with their provincial college. TDS up to 48% at select lenders.' },
-  allied:      { gds:39, tds:46, note:'<strong>Allied Healthcare Program</strong> — Nurse Practitioners, Physiotherapists, Chiropractors, Midwives. TDS up to ~46% at select lenders. Confirm eligibility with a broker.' },
-  lawyer:      { gds:39, tds:46, note:'<strong>Professional Mortgage Program</strong> — Lawyers and notaries called to the bar. TDS up to 46% at select lenders. Requires proof of bar admission.' },
-  cpa:         { gds:39, tds:44, note:'<strong>CPA Designation</strong> — Standard ratios typically apply. Some lenders offer preferential rates. TDS 44%.' },
-  engineer:    { gds:39, tds:44, note:'<strong>P.Eng Designation</strong> — Standard mortgage ratios apply. Some lenders may offer preferential pricing.' },
+  physician:   { gds:39, tds:50, note:'<strong>Healthcare Professional Mortgage Program</strong> ‚Äî Licensed physicians and residents. TDS up to 50% at Scotiabank, TD, National Bank, BMO, RBC. Requires proof of licensure or signed employment/residency contract.' },
+  dentist:     { gds:39, tds:50, note:'<strong>Healthcare Professional Program</strong> ‚Äî Dentists (DDS/DMD) qualify same as physicians. TDS up to 50% at major lenders.' },
+  veterinarian:{ gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> ‚Äî Licensed DVMs may access professional mortgage programs with TDS up to 48% at select lenders.' },
+  pharmacist:  { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> ‚Äî Licensed pharmacists (RPh/PharmD). TDS up to 48% at select lenders. Proof of provincial college registration required.' },
+  optometrist: { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> ‚Äî Optometrists (OD) registered with their provincial college. TDS up to 48% at select lenders.' },
+  allied:      { gds:39, tds:46, note:'<strong>Allied Healthcare Program</strong> ‚Äî Nurse Practitioners, Physiotherapists, Chiropractors, Midwives. TDS up to ~46% at select lenders. Confirm eligibility with a broker.' },
+  lawyer:      { gds:39, tds:46, note:'<strong>Professional Mortgage Program</strong> ‚Äî Lawyers and notaries called to the bar. TDS up to 46% at select lenders. Requires proof of bar admission.' },
+  cpa:         { gds:39, tds:44, note:'<strong>CPA Designation</strong> ‚Äî Standard ratios typically apply. Some lenders offer preferential rates. TDS 44%.' },
+  engineer:    { gds:39, tds:44, note:'<strong>P.Eng Designation</strong> ‚Äî Standard mortgage ratios apply. Some lenders may offer preferential pricing.' },
 };
 
 function onProfChange() {
@@ -739,36 +739,36 @@ function onProfChange() {
   calculate();
 }
 
-// ─── Closing cost items ──────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Closing cost items ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const CC_ITEMS = [
-  { id:'legal',      grp:'Transaction & Legal Fees',    label:'Legal / Notary Fees',                hint:'Lawyer/notary for title transfer, mortgage registration, disbursements. Ask for all-in quote.',       range:'$1,500–$3,000',    def:2000, on:true  },
-  { id:'titleins',   grp:'Transaction & Legal Fees',    label:'Title Insurance',                     hint:'Protects against title defects, errors, fraud. Required by most lenders.',                           range:'$250–$600',        def:400,  on:true  },
-  { id:'appraisal',  grp:'Transaction & Legal Fees',    label:'Property Appraisal',                  hint:'Independent valuation — lender may require on unusual properties.',                                  range:'$300–$600',        def:400,  on:true  },
-  { id:'taxadj',     grp:'Transaction & Legal Fees',    label:'Property Tax Adjustment',             hint:'Pro-rated reimbursement to seller for taxes prepaid beyond closing date.',                           range:'$500–$3,000',      def:1200, on:true  },
-  { id:'survey',     grp:'Transaction & Legal Fees',    label:'Real Property Report / Survey',       hint:'May be waived with title insurance. Needed if lender requires it.',                                  range:'$800–$2,000',      def:0,    on:false },
-  { id:'statuscert', grp:'Transaction & Legal Fees',    label:'Status Certificate (Condos only)',    hint:'Reviews condo corp financials, reserve fund, special assessments, bylaws.',                          range:'$100–$250',        def:0,    on:false },
-  { id:'discharge',  grp:'Transaction & Legal Fees',    label:'Mortgage Discharge / Break Penalty',  hint:'If breaking an existing mortgage early. IRD penalty or 3-months interest.',                          range:'$300–$10,000+',    def:0,    on:false },
-  { id:'intadj',     grp:'Transaction & Legal Fees',    label:'Interest Adjustment (mid-month)',     hint:'Interest on new mortgage from closing date to month-end, paid at closing.',                          range:'$0–$1,500',        def:0,    on:false },
-  { id:'homeinspect',grp:'Inspections & Insurance',     label:'Home Inspection',                     hint:'Strongly recommended. Licensed inspector checks structure, roof, systems, electrical, plumbing.',     range:'$400–$700',        def:500,  on:true  },
-  { id:'homeins',    grp:'Inspections & Insurance',     label:"Homeowner's Insurance — 1st Year",    hint:'Required by lender before closing. Covers fire, theft, liability. Compare quotes.',                  range:'$1,200–$3,500/yr', def:1800, on:true  },
-  { id:'lifeins',    grp:'Inspections & Insurance',     label:'Mortgage Life / Disability Insurance',hint:'Optional — pays mortgage if you die or are disabled. Buy independently for better value.',            range:'Varies',           def:0,    on:false },
-  { id:'warranty',   grp:'Inspections & Insurance',     label:'Home Warranty (resale program)',      hint:'New builds: Tarion or provincial warranty. Resale: optional extended warranty plans.',                range:'$600–$1,200/yr',   def:0,    on:false },
-  { id:'radon',      grp:'Inspections & Insurance',     label:'Radon Gas Testing',                   hint:"Recommended for homes with basements. Radon is Canada's #2 cause of lung cancer.",                   range:'$150–$350',        def:0,    on:false },
-  { id:'septic',     grp:'Inspections & Insurance',     label:'Septic / Sewage Inspection',          hint:'Essential for rural properties. Includes pump-out, inspection, written report.',                      range:'$300–$700',        def:0,    on:false },
-  { id:'well',       grp:'Inspections & Insurance',     label:'Well Water Testing',                  hint:'Required by most lenders for well-water properties. Bacteria + chemical analysis.',                  range:'$200–$500',        def:0,    on:false },
-  { id:'moving',     grp:'Moving & Initial Setup',      label:'Moving Company',                      hint:'Local 1-BR: ~$800–$1,500 | Local 3-BR: ~$2,000–$4,000 | Long-distance: varies. Get 3 quotes.',       range:'$800–$10,000+',    def:2000, on:true  },
-  { id:'storage',    grp:'Moving & Initial Setup',      label:'Storage & Packing Supplies',          hint:'Boxes, bubble wrap, tape. Add temp storage if closing dates misalign.',                              range:'$200–$800',        def:400,  on:true  },
-  { id:'utilities',  grp:'Moving & Initial Setup',      label:'Utility Connection & Setup Fees',     hint:'Hydro, natural gas, internet, water meter activation and deposits.',                                  range:'$300–$900',        def:500,  on:true  },
-  { id:'locks',      grp:'Moving & Initial Setup',      label:'Lock Replacement / Rekeying',         hint:'Rekey or replace all exterior locks on possession day — standard security practice.',                 range:'$200–$600',        def:300,  on:true  },
-  { id:'cleaning',   grp:'Moving & Initial Setup',      label:'Professional Move-In Cleaning',       hint:'Deep clean before moving in — especially for vacant or tenanted properties.',                         range:'$200–$600',        def:0,    on:false },
-  { id:'address',    grp:'Moving & Initial Setup',      label:'Address Changes & Mail Forwarding',   hint:"Canada Post, driver's license, CRA, bank accounts, vehicle registration, subscriptions.",            range:'$100–$300',        def:150,  on:false },
-  { id:'repairs',    grp:'Immediate Home Costs',        label:'Immediate Repairs & Touch-Ups',       hint:'Minor fixes from inspection, paint, caulking. Budget conservatively.',                               range:'$1,000–$15,000',   def:3000, on:true  },
-  { id:'appliances', grp:'Immediate Home Costs',        label:'New Appliances (if not included)',    hint:'Fridge, stove, dishwasher, washer/dryer. Bundle for savings.',                                       range:'$1,500–$8,000',    def:0,    on:false },
-  { id:'window',     grp:'Immediate Home Costs',        label:'Window Coverings & Blinds',           hint:'New builds rarely include. Measure all windows before ordering.',                                     range:'$500–$3,000',      def:0,    on:false },
-  { id:'landscaping',grp:'Immediate Home Costs',        label:'Landscaping & Outdoor Setup',         hint:'Lawn mower, snow blower, garden tools, outdoor furniture.',                                          range:'$500–$5,000',      def:0,    on:false },
-  { id:'furniture',  grp:'Immediate Home Costs',        label:'Furniture & Décor',                   hint:'New or additional pieces for a larger space.',                                                       range:'$2,000–$15,000',   def:0,    on:false },
+  { id:'legal',      grp:'Transaction & Legal Fees',    label:'Legal / Notary Fees',                hint:'Lawyer/notary for title transfer, mortgage registration, disbursements. Ask for all-in quote.',       range:'$1,500‚Äì$3,000',    def:2000, on:true  },
+  { id:'titleins',   grp:'Transaction & Legal Fees',    label:'Title Insurance',                     hint:'Protects against title defects, errors, fraud. Required by most lenders.',                           range:'$250‚Äì$600',        def:400,  on:true  },
+  { id:'appraisal',  grp:'Transaction & Legal Fees',    label:'Property Appraisal',                  hint:'Independent valuation ‚Äî lender may require on unusual properties.',                                  range:'$300‚Äì$600',        def:400,  on:true  },
+  { id:'taxadj',     grp:'Transaction & Legal Fees',    label:'Property Tax Adjustment',             hint:'Pro-rated reimbursement to seller for taxes prepaid beyond closing date.',                           range:'$500‚Äì$3,000',      def:1200, on:true  },
+  { id:'survey',     grp:'Transaction & Legal Fees',    label:'Real Property Report / Survey',       hint:'May be waived with title insurance. Needed if lender requires it.',                                  range:'$800‚Äì$2,000',      def:0,    on:false },
+  { id:'statuscert', grp:'Transaction & Legal Fees',    label:'Status Certificate (Condos only)',    hint:'Reviews condo corp financials, reserve fund, special assessments, bylaws.',                          range:'$100‚Äì$250',        def:0,    on:false },
+  { id:'discharge',  grp:'Transaction & Legal Fees',    label:'Mortgage Discharge / Break Penalty',  hint:'If breaking an existing mortgage early. IRD penalty or 3-months interest.',                          range:'$300‚Äì$10,000+',    def:0,    on:false },
+  { id:'intadj',     grp:'Transaction & Legal Fees',    label:'Interest Adjustment (mid-month)',     hint:'Interest on new mortgage from closing date to month-end, paid at closing.',                          range:'$0‚Äì$1,500',        def:0,    on:false },
+  { id:'homeinspect',grp:'Inspections & Insurance',     label:'Home Inspection',                     hint:'Strongly recommended. Licensed inspector checks structure, roof, systems, electrical, plumbing.',     range:'$400‚Äì$700',        def:500,  on:true  },
+  { id:'homeins',    grp:'Inspections & Insurance',     label:"Homeowner's Insurance ‚Äî 1st Year",    hint:'Required by lender before closing. Covers fire, theft, liability. Compare quotes.',                  range:'$1,200‚Äì$3,500/yr', def:1800, on:true  },
+  { id:'lifeins',    grp:'Inspections & Insurance',     label:'Mortgage Life / Disability Insurance',hint:'Optional ‚Äî pays mortgage if you die or are disabled. Buy independently for better value.',            range:'Varies',           def:0,    on:false },
+  { id:'warranty',   grp:'Inspections & Insurance',     label:'Home Warranty (resale program)',      hint:'New builds: Tarion or provincial warranty. Resale: optional extended warranty plans.',                range:'$600‚Äì$1,200/yr',   def:0,    on:false },
+  { id:'radon',      grp:'Inspections & Insurance',     label:'Radon Gas Testing',                   hint:"Recommended for homes with basements. Radon is Canada's #2 cause of lung cancer.",                   range:'$150‚Äì$350',        def:0,    on:false },
+  { id:'septic',     grp:'Inspections & Insurance',     label:'Septic / Sewage Inspection',          hint:'Essential for rural properties. Includes pump-out, inspection, written report.',                      range:'$300‚Äì$700',        def:0,    on:false },
+  { id:'well',       grp:'Inspections & Insurance',     label:'Well Water Testing',                  hint:'Required by most lenders for well-water properties. Bacteria + chemical analysis.',                  range:'$200‚Äì$500',        def:0,    on:false },
+  { id:'moving',     grp:'Moving & Initial Setup',      label:'Moving Company',                      hint:'Local 1-BR: ~$800‚Äì$1,500 | Local 3-BR: ~$2,000‚Äì$4,000 | Long-distance: varies. Get 3 quotes.',       range:'$800‚Äì$10,000+',    def:2000, on:true  },
+  { id:'storage',    grp:'Moving & Initial Setup',      label:'Storage & Packing Supplies',          hint:'Boxes, bubble wrap, tape. Add temp storage if closing dates misalign.',                              range:'$200‚Äì$800',        def:400,  on:true  },
+  { id:'utilities',  grp:'Moving & Initial Setup',      label:'Utility Connection & Setup Fees',     hint:'Hydro, natural gas, internet, water meter activation and deposits.',                                  range:'$300‚Äì$900',        def:500,  on:true  },
+  { id:'locks',      grp:'Moving & Initial Setup',      label:'Lock Replacement / Rekeying',         hint:'Rekey or replace all exterior locks on possession day ‚Äî standard security practice.',                 range:'$200‚Äì$600',        def:300,  on:true  },
+  { id:'cleaning',   grp:'Moving & Initial Setup',      label:'Professional Move-In Cleaning',       hint:'Deep clean before moving in ‚Äî especially for vacant or tenanted properties.',                         range:'$200‚Äì$600',        def:0,    on:false },
+  { id:'address',    grp:'Moving & Initial Setup',      label:'Address Changes & Mail Forwarding',   hint:"Canada Post, driver's license, CRA, bank accounts, vehicle registration, subscriptions.",            range:'$100‚Äì$300',        def:150,  on:false },
+  { id:'repairs',    grp:'Immediate Home Costs',        label:'Immediate Repairs & Touch-Ups',       hint:'Minor fixes from inspection, paint, caulking. Budget conservatively.',                               range:'$1,000‚Äì$15,000',   def:3000, on:true  },
+  { id:'appliances', grp:'Immediate Home Costs',        label:'New Appliances (if not included)',    hint:'Fridge, stove, dishwasher, washer/dryer. Bundle for savings.',                                       range:'$1,500‚Äì$8,000',    def:0,    on:false },
+  { id:'window',     grp:'Immediate Home Costs',        label:'Window Coverings & Blinds',           hint:'New builds rarely include. Measure all windows before ordering.',                                     range:'$500‚Äì$3,000',      def:0,    on:false },
+  { id:'landscaping',grp:'Immediate Home Costs',        label:'Landscaping & Outdoor Setup',         hint:'Lawn mower, snow blower, garden tools, outdoor furniture.',                                          range:'$500‚Äì$5,000',      def:0,    on:false },
+  { id:'furniture',  grp:'Immediate Home Costs',        label:'Furniture & D√©cor',                   hint:'New or additional pieces for a larger space.',                                                       range:'$2,000‚Äì$15,000',   def:0,    on:false },
   { id:'hst',        grp:'Immediate Home Costs',        label:'GST / HST on New Construction',       hint:'Alberta: 5% GST only (no PST). Ontario: ~13% HST before rebate. Confirm whether purchase price already includes tax.',  range:'Province-dependent', def:0, on:false },
-  { id:'reserve',    grp:'Long-Term Reserve',           label:'Emergency / Capital Reserve Fund',    hint:"Set aside 1–3% of home value per year for unexpected repairs. Don't deplete savings.",               range:'$5,000–$20,000',   def:5000, on:false },
+  { id:'reserve',    grp:'Long-Term Reserve',           label:'Emergency / Capital Reserve Fund',    hint:"Set aside 1‚Äì3% of home value per year for unexpected repairs. Don't deplete savings.",               range:'$5,000‚Äì$20,000',   def:5000, on:false },
 ];
 
 function buildCCItems() {
@@ -816,7 +816,7 @@ function updateCCTotal() {
   document.getElementById('ccGrandTotal').textContent   = fmt((window._lastDpAmt || 0) + (window._lastClosingVar || 0) + t);
 }
 
-// ─── URL encode / decode ─────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ URL encode / decode ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const CLIENT_FIELDS = ['income1','income2','otherIncome','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt'];
 const ALL_FIELDS    = [...CLIENT_FIELDS,'contractRate','propTaxPct','propTaxFixed','heating','condoFees','hoaFees','gdsLimit','tdsLimit','closingPct','province'];
 
@@ -852,7 +852,7 @@ function getBaseURL() {
   return window.location.origin + window.location.pathname;
 }
 
-// ─── Sharing ─────────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Sharing ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function copyClientPortalLink() {
   const url = getBaseURL() + '?mode=client';
   document.getElementById('clientPortalURL').textContent = url;
@@ -863,7 +863,7 @@ function copyClientPortalLink() {
   }).catch(() => { prompt('Copy this client link:', url); });
 }
 
-// ── Contact / routing config ──────────────────────────────────────────────
+// ‚îÄ‚îÄ Contact / routing config ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 const WEB_APP_URL     = 'https://script.google.com/macros/s/AKfycbxoHC-DzZSJHR0OHis-G8YZGK8bFzgpXoVuJt2UaPnX-lsAzOfml2cWK9RnoS62GA92_g/exec';
 const ROSH_WHATSAPP   = '18254495083';          // WhatsApp Business number (digits only)
 const ROSH_BOOKING    = 'https://calendar.app.google/88aQwcD1kWahi27Z9'; // Google Calendar booking
@@ -876,13 +876,13 @@ function showContactModal(dest) {
   const cfg = {
     email    : { head: 'Where should Rosh send your assessment?',
                  sub : 'Your financial numbers stay in a private link. We just need a way to reach you.',
-                 btn : 'Send to Rosh →' },
+                 btn : 'Send to Rosh ‚Üí' },
     whatsapp : { head: 'Just a quick intro before we chat',
                  sub : 'Rosh will message you on WhatsApp with your personalized assessment.',
-                 btn : 'Continue to WhatsApp →' },
+                 btn : 'Continue to WhatsApp ‚Üí' },
     booking  : { head: 'A few details before you book',
                  sub : 'We\'ll save your information, then open the booking calendar.',
-                 btn : 'Continue to Booking →' },
+                 btn : 'Continue to Booking ‚Üí' },
   };
   const c = cfg[_cmDest] || cfg.email;
   document.getElementById('cm-heading').textContent  = c.head;
@@ -919,71 +919,75 @@ function submitToRosh() {
   const btn = document.getElementById('cm-submit');
   const status = document.getElementById('cm-status');
   btn.disabled = true;
-  btn.textContent = 'Sending…';
+  btn.textContent = 'Sending‚Ä¶';
   status.textContent = '';
 
-  // POST to Apps Script web app (fire-and-forget, no-cors)
+  // POST to Apps Script ‚Äî sendBeacon is fire-and-forget and avoids the iOS
+  // Safari bug where fetch(mode:'no-cors') to script.google.com triggers a
+  // native "Sign in with Google" auth sheet that blocks the submission.
   if (WEB_APP_URL !== 'PASTE_WEB_APP_URL_HERE') {
-    fetch(WEB_APP_URL, {
-      method : 'POST',
-      mode   : 'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body   : JSON.stringify({
-        firstName, lastName, email, phone,
-        income      : '$' + inc.toLocaleString(),
-        downPayment : dp,
-        debts       : '$' + debts.toLocaleString() + '/mo',
-        affordEstimate: afford,
-        calcLink,
-      }),
-    }).catch(() => {});
+    const payload = JSON.stringify({
+      firstName, lastName, email, phone,
+      income      : '$' + inc.toLocaleString(),
+      downPayment : dp,
+      debts       : '$' + debts.toLocaleString() + '/mo',
+      affordEstimate: afford,
+      calcLink,
+    });
+    if (typeof navigator.sendBeacon === 'function') {
+      navigator.sendBeacon(WEB_APP_URL, payload);
+    } else {
+      fetch(WEB_APP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:payload }).catch(()=>{});
+    }
   }
 
-  // Show success then route to destination
-  btn.textContent = '✅ Done!';
+  // iOS Safari blocks window.open() inside setTimeout (gesture expires after ~1s).
+  // Open any external URL NOW, synchronously, while the tap gesture is still active.
+  if (_cmDest === 'whatsapp') {
+    const waMsg = encodeURIComponent(
+      'Hi Rosh! I just completed the Home Affordability Calculator on your website. ' +
+      'My name is ' + firstName + (lastName ? ' ' + lastName : '') + '. ' +
+      'I\'d love to chat about my options ‚Äî my estimated buying power is ' + (afford || 'shown in the calculator') + '.'
+    );
+    window.open('https://wa.me/' + ROSH_WHATSAPP + '?text=' + waMsg, '_blank');
+  } else if (_cmDest === 'booking') {
+    if (ROSH_BOOKING !== 'PASTE_CALENDLY_URL_HERE') {
+      window.open(ROSH_BOOKING, '_blank');
+    } else {
+      alert('Booking link coming soon! Rosh has been notified and will reach out to schedule a call.');
+    }
+  }
+
+  // Show success state then close modal
+  btn.textContent = '‚úÖ Done!';
   const destMessages = {
     email    : 'Your info is saved. Rosh will email you shortly!',
-    whatsapp : 'Opening WhatsApp now…',
-    booking  : 'Opening the booking calendar…',
+    whatsapp : 'Opening WhatsApp now‚Ä¶',
+    booking  : 'Opening the booking calendar‚Ä¶',
   };
   status.innerHTML = destMessages[_cmDest] || destMessages.email;
 
   setTimeout(() => {
     closeContactModal();
-    if (_cmDest === 'whatsapp') {
-      const waMsg = encodeURIComponent(
-        'Hi Rosh! I just completed the Home Affordability Calculator on your website. ' +
-        'My name is ' + firstName + (lastName ? ' ' + lastName : '') + '. ' +
-        'I\'d love to chat about my options — my estimated buying power is ' + (afford || 'shown in the calculator') + '.'
-      );
-      window.open('https://wa.me/' + ROSH_WHATSAPP + '?text=' + waMsg, '_blank');
-    } else if (_cmDest === 'booking') {
-      if (ROSH_BOOKING !== 'PASTE_CALENDLY_URL_HERE') {
-        window.open(ROSH_BOOKING, '_blank');
-      } else {
-        alert('Booking link coming soon! Rosh has been notified and will reach out to schedule a call.');
-      }
-    }
-    // 'email' — Apps Script already handled everything, nothing more to open
   }, 1500);
 }
 
-// ─── Advisory email (advisor reviewing client submission) ─────────────────
+// ‚îÄ‚îÄ‚îÄ Advisory email (advisor reviewing client submission) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function sendAdvisoryEmail() {
   const clientEmail = (document.getElementById('advisoryClientEmail')?.value || '').trim();
-  const price    = document.getElementById('rPrice')?.textContent        || '—';
-  const gds      = document.getElementById('rGDSVal')?.textContent       || '—';
-  const tds      = document.getElementById('rTDSVal')?.textContent       || '—';
-  const monthly  = document.getElementById('rMonthlyTotal')?.textContent || '—';
-  const pi       = document.getElementById('rMonthlyPI')?.textContent    || '—';
-  const qualRate = document.getElementById('rQualRate')?.textContent     || '—';
-  const mortgage = document.getElementById('rMortgage')?.textContent     || '—';
-  const subj = encodeURIComponent('Your Home Affordability Assessment — ISSAC REALTY');
+  const price    = document.getElementById('rPrice')?.textContent        || '‚Äî';
+  const gds      = document.getElementById('rGDSVal')?.textContent       || '‚Äî';
+  const tds      = document.getElementById('rTDSVal')?.textContent       || '‚Äî';
+  const monthly  = document.getElementById('rMonthlyTotal')?.textContent || '‚Äî';
+  const pi       = document.getElementById('rMonthlyPI')?.textContent    || '‚Äî';
+  const qualRate = document.getElementById('rQualRate')?.textContent     || '‚Äî';
+  const mortgage = document.getElementById('rMortgage')?.textContent     || '‚Äî';
+  const subj = encodeURIComponent('Your Home Affordability Assessment ‚Äî ISSAC REALTY');
   const body = encodeURIComponent(
     'Hi,\n\n' +
     'Thank you for using our Affordability Calculator. Based on the financial details you provided, here is your personalized assessment:\n\n' +
-    '📊 RESULTS SUMMARY\n' +
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+    'üìä RESULTS SUMMARY\n' +
+    '‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ\n' +
     'Maximum Affordable Home Price : ' + price    + '\n' +
     'Estimated Mortgage Amount     : ' + mortgage + '\n' +
     'Monthly P&I Payment           : ' + pi       + '\n' +
@@ -991,11 +995,11 @@ function sendAdvisoryEmail() {
     'GDS Ratio                     : ' + gds      + '\n' +
     'TDS Ratio                     : ' + tds      + '\n' +
     'Qualifying Rate (Stress Test) : ' + qualRate + '\n' +
-    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    '‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ‚îÅ\n\n' +
     'These numbers are based on the information you entered and current Canadian mortgage rules (OSFI B-20 stress test, CMHC guidelines). ' +
     'Actual lender approval may vary depending on your credit score, employment history, and other factors.\n\n' +
     'I\'d love to walk you through these results and discuss your next steps. Please reply to this email or call/text me directly.\n\n' +
-    'Warm regards,\nRosh Issac\nISSAC REALTY · Dreamhouse Realty Ltd.\n' +
+    'Warm regards,\nRosh Issac\nISSAC REALTY ¬∑ Dreamhouse Realty Ltd.\n' +
     'rosh@issacrealty.com\n\n' +
     'Disclaimer: This assessment is for advisory purposes only and does not constitute a mortgage approval or lender commitment.'
   );
@@ -1003,14 +1007,14 @@ function sendAdvisoryEmail() {
   window.open('https://mail.google.com/mail/?view=cm' + (to ? '&to=' + to : '') + '&su=' + subj + '&body=' + body, '_blank');
 }
 
-// ─── Advisor mode switch (from client view) ───────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Advisor mode switch (from client view) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function switchToAdvisorMode() {
   // Preserve the client's encoded data in the URL so it pre-fills the advisor calculator
   const encoded = encodeData(CLIENT_FIELDS);
   window.location.href = getBaseURL() + '?d=' + encoded;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Helpers ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function el(id)  { return document.getElementById(id); }
 function fmt(n)  { return '$' + Math.round(n).toLocaleString('en-CA'); }
 function fmtPct(n, d=2) { return (+n).toFixed(d) + '%'; }
@@ -1029,7 +1033,7 @@ function minDownAmt(price) {
   return 25000 + (price - 500000) * 0.10;
 }
 
-// ─── Mode toggles ────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Mode toggles ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function setDPMode(m) {
   dpMode = m;
   el('btn-pct').classList.toggle('active', m === 'pct');
@@ -1047,7 +1051,7 @@ function setPTMode(m) {
   calculate();
 }
 
-// ─── Core solver ─────────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Core solver ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function computeMaxPrice(maxHousing, ptM, ptParam, fixedHCosts, qualPF, dpm, dpPctIn, dpAmtIn) {
   if (dpm === 'pct') {
     const dp = dpPctIn, cm = cmhcRate(dp);
@@ -1074,14 +1078,14 @@ function computeMaxPrice(maxHousing, ptM, ptParam, fixedHCosts, qualPF, dpm, dpP
   }
 }
 
-// ─── Main calculate ───────────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Main calculate ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function calculate() {
   const inc1 = getVal('income1'), inc2 = getVal('income2'), incOth = getVal('otherIncome');
   const monthlyGross = (inc1 + inc2) / 12 + incOth;
   const totalDebts   = getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt');
   el('totalDebtsDisplay').textContent = fmt(totalDebts) + ' / mo';
 
-  // ── Client mode: simplified estimate with Alberta defaults ──────────────
+  // ‚îÄ‚îÄ Client mode: simplified estimate with Alberta defaults ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
   if (CLIENT_MODE) {
     const clientTaxPct = 0.0065; // Alberta 0.65%
     const clientQualRate = Math.max(0.055 + 0.02, 0.0525); // 5.5% contract + stress test
@@ -1101,11 +1105,11 @@ function calculate() {
       if (estimEl) estimEl.textContent = fmt(est);
       const dpPct = dpMode === 'pct' ? dpPctIn : Math.min(dpAmtIn / est, 1);
       el('dpDerived').textContent = dpMode === 'pct'
-        ? `≈ ${fmt(est * dpPctIn)} (${fmtPct(dpPctIn * 100)})`
+        ? `‚âà ${fmt(est * dpPctIn)} (${fmtPct(dpPctIn * 100)})`
         : `= ${fmtPct(dpPct * 100)} of price`;
       el('cmhc-note').textContent = cmhcRate(dpPct) > 0
-        ? `CMHC premium applies — estimated.`
-        : 'No CMHC required (≥ 20% down).';
+        ? `CMHC premium applies ‚Äî estimated.`
+        : 'No CMHC required (‚â• 20% down).';
       card.style.display = '';
     } else {
       card.style.display = 'none';
@@ -1113,7 +1117,7 @@ function calculate() {
     return;
   }
 
-  // ── Advisor mode: full calculation ──────────────────────────────────────
+  // ‚îÄ‚îÄ Advisor mode: full calculation ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
   const contractRatePct = getVal('contractRate', 5.5);
   const contractRateAnn = contractRatePct / 100;
   const qualRateAnn     = Math.max(contractRateAnn + 0.02, 0.0525);
@@ -1184,9 +1188,9 @@ function calculate() {
   el('rMonthlyPI').textContent  = fmt(monthlyPI_act);
   el('rMonthlyTotal').textContent = fmt(actualMonthly);
   el('rMortgage').textContent   = fmt(totalMortg);
-  el('rMortgageSub').textContent  = cm > 0 ? `Base: ${fmt(baseMortg)} + CMHC: ${fmt(cmhcPrem)} (${fmtPct(cm*100)})` : 'No CMHC premium (≥ 20% down)';
-  el('dpDerived').textContent   = dpMode === 'pct' ? `≈ ${fmt(dpAmt)} (${fmtPct(dpPct*100)})` : `= ${fmtPct(dpPct*100)} of price`;
-  el('cmhc-note').textContent   = cm > 0 ? `CMHC: ${fmtPct(cm*100)} premium — added to mortgage balance.` : 'No CMHC required (≥ 20% down).';
+  el('rMortgageSub').textContent  = cm > 0 ? `Base: ${fmt(baseMortg)} + CMHC: ${fmt(cmhcPrem)} (${fmtPct(cm*100)})` : 'No CMHC premium (‚â• 20% down)';
+  el('dpDerived').textContent   = dpMode === 'pct' ? `‚âà ${fmt(dpAmt)} (${fmtPct(dpPct*100)})` : `= ${fmtPct(dpPct*100)} of price`;
+  el('cmhc-note').textContent   = cm > 0 ? `CMHC: ${fmtPct(cm*100)} premium ‚Äî added to mortgage balance.` : 'No CMHC required (‚â• 20% down).';
 
   // Breakdown sections
   const bDiv = el('breakdownGrid'); bDiv.innerHTML = '';
@@ -1217,10 +1221,10 @@ function calculate() {
     ['Property Tax', fmt(monthlyPropTax) + '/mo' + (ptMode==='fixed'?' (fixed)':'')],
     ['Heating / Utilities', fmt(heating) + '/mo'],
     condoFees > 0 ? ['Condo Fees (full)', fmt(condoFees) + '/mo'] : null,
-    condoFees > 0 ? ['  ↳ GDS-counted (50%)', fmt(condoFees*0.5) + '/mo', '', '', 'sub'] : null,
+    condoFees > 0 ? ['  ‚Ü≥ GDS-counted (50%)', fmt(condoFees*0.5) + '/mo', '', '', 'sub'] : null,
     getVal('hoaFees') > 0 ? ['HOA (monthly equiv.)', fmt(hoaMonthly) + '/mo'] : null,
     ['Total Monthly Housing', fmt(actualMonthly) + '/mo', '', '', 'total'],
-    ['  ↳ P&I at qualifying rate', fmt(monthlyPI_qual) + '/mo', '', '', 'sub'],
+    ['  ‚Ü≥ P&I at qualifying rate', fmt(monthlyPI_qual) + '/mo', '', '', 'sub'],
   ]);
   section('Debt Service Ratios', [
     ['GDS Housing (qualifying)', fmt(gdsComp) + '/mo'],
@@ -1254,14 +1258,14 @@ function calculate() {
     const qpf  = paymentFactor(monthlyRate(qa), n);
     const isCur = Math.abs(r - contractRatePct) < 0.01;
     tbl += `<tr${isCur?' class="highlight"':''}>`;
-    tbl += `<td>${fmtPct(r)} ${isCur?'★':''}</td>`;
+    tbl += `<td>${fmtPct(r)} ${isCur?'‚òÖ':''}</td>`;
     downs.forEach(d => {
       const dA = dpMode === 'pct' ? d/100 : d;
       const p1 = computeMaxPrice(gdsLimit*monthlyGross,              ptMode, ptParam, fixedHCosts, qpf, dpMode, dA, dA);
       const p2 = computeMaxPrice(tdsLimit*monthlyGross-totalDebts,   ptMode, ptParam, fixedHCosts, qpf, dpMode, dA, dA);
       const p  = Math.min(p1, p2);
       const bold = isCur && Math.abs(d - (dpMode==='pct' ? dpPct*100 : dpAmt)) < (dpMode==='pct' ? 0.5 : 1);
-      tbl += `<td${bold?' style="font-weight:800"':''}>${p > 0 ? fmt(p) : '—'}</td>`;
+      tbl += `<td${bold?' style="font-weight:800"':''}>${p > 0 ? fmt(p) : '‚Äî'}</td>`;
     });
     tbl += '</tr>';
   });
@@ -1273,12 +1277,12 @@ function calculate() {
   if (dpAmt < minDP * 0.99) {
     const box = wEl || document.createElement('div');
     box.id = 'dpWarnBox'; box.className = 'warning-box';
-    box.innerHTML = `⚠️ <strong>Down payment below regulatory minimum</strong> for ${fmt(maxPrice)} (min ≈ ${fmt(minDP)} / ${fmtPct(minDP/maxPrice*100)}). Increase down payment or reduce target price.`;
+    box.innerHTML = `‚ö†Ô∏è <strong>Down payment below regulatory minimum</strong> for ${fmt(maxPrice)} (min ‚âà ${fmt(minDP)} / ${fmtPct(minDP/maxPrice*100)}). Increase down payment or reduce target price.`;
     if (!wEl) el('results-area').prepend(box);
   } else if (wEl) wEl.remove();
 }
 
-// ─── Apply mode on load ───────────────────────────────────────────────────
+// ‚îÄ‚îÄ‚îÄ Apply mode on load ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
 function applyMode() {
   if (CLIENT_MODE) {
     el('headerAdvisor').style.display    = 'none';
@@ -1287,7 +1291,7 @@ function applyMode() {
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
     el('advisorModeLink').style.display = '';
-    // Province hidden in client mode — fix to AB so math runs immediately
+    // Province hidden in client mode ‚Äî fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
   } else {
