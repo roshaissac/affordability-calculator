@@ -1168,7 +1168,7 @@ function calculate() {
   window._lastClosingVar = closingVar;
   updateCCTotal();
 
-  el('results-area').style.display = '';
+  el('results-area').style.display = 'block';
   el('rPrice').textContent    = fmt(maxPrice);
   el('rPriceNote').textContent = `Binding: ${binding} at ${fmtPct(binding === 'GDS' ? gdsLimitPct : tdsLimitPct, 0)} limit  |  ${amortYears}-year amortization`;
 
