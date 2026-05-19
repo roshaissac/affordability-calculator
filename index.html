@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Home Affordability Calculator — Rosh Issac </title>
+<title>Home Affordability Calculator - Issac Real Estate Team</title>
+<meta property="og:title" content="Home Affordability Calculator - Issac Real Estate Team">
+<meta property="og:description" content="Find out how much home you can comfortably afford. Free, instant, based on your actual numbers.">
+<meta property="og:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
 <style>
 /* ── Reset & Base ── */
 *{box-sizing:border-box;margin:0;padding:0}
@@ -202,10 +208,17 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <!-- ══ ADVISOR HEADER ══════════════════════════════════════════════════ -->
 <div class="header-advisor" id="headerAdvisor">
   <div class="header-inner">
-    <img src="assets/logo.png" alt="Issac Realty Inc." class="header-logo-issac" onerror="this.style.display='none'">
+    <div style="flex-shrink:0">
+      <img src="assets/The%20Team%20Logo.png" alt="Issac Real Estate Team" class="header-logo-issac"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div style="display:none;color:#fff;line-height:1.25">
+        <div style="font-size:1.05rem;font-weight:800;letter-spacing:-0.01em"><span style="color:var(--orange)">Rosh Issac</span> Real Estate Team</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px">Associates of Dreamhouse Realty</div>
+      </div>
+    </div>
     <div class="header-divider"></div>
     <div class="header-text">
-      <div class="brand-tag">ISSAC REALTY INC.</div>
+      <div style="margin-bottom:5px"><span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span> <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400">Realtor&#174;</span></div>
       <h1>Home Affordability Calculator</h1>
       <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
     </div>
@@ -215,12 +228,19 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <!-- ══ CLIENT HEADER ═══════════════════════════════════════════════════ -->
 <div class="header-client" id="headerClient" style="display:none">
   <div class="header-inner">
-    <img src="assets/logo.png" alt="Issac Realty Inc." class="header-logo-issac" onerror="this.style.display='none'">
+    <div style="flex-shrink:0">
+      <img src="assets/The%20Team%20Logo.png" alt="Issac Real Estate Team" class="header-logo-issac"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div style="display:none;color:#fff;line-height:1.25">
+        <div style="font-size:1.05rem;font-weight:800;letter-spacing:-0.01em"><span style="color:var(--orange)">Rosh Issac</span> Real Estate Team</div>
+        <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px">Associates of Dreamhouse Realty</div>
+      </div>
+    </div>
     <div class="header-divider"></div>
     <div class="header-text">
-      <div class="brand-tag">ISSAC REALTY INC.</div>
+      <div style="margin-bottom:5px"><span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span> <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400">Realtor&#174;</span></div>
       <h1>Mortgage Pre-Assessment</h1>
-      <p>Fill in what you know — your advisor Rosh will complete the rest and share your full estimate.</p>
+      <p>Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.</p>
     </div>
   </div>
 </div>
@@ -232,7 +252,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
 <!-- Client banner -->
 <div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
-  📋 Fill in what you know below. Fields you're unsure about can be left at their default — your advisor will adjust them. Click <strong>"Send My Information to Rosh"</strong> when done.
+  📋 Fill in what you know below. Fields you're unsure about can be left at their default — your Realtor&#174; will adjust them. Click <strong>"Send My Information to Rosh"</strong> when done.
 </div>
 
 <div class="container">
@@ -656,12 +676,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
 <!-- ══ BROKERAGE BADGE (fixed bottom-right, always visible) ═══════════ -->
 <div class="brokerage-badge">
-  <div class="brokerage-badge-label">Brokerage</div>
   <div class="brokerage-badge-box">
     <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
       onerror="this.parentElement.style.display='none';document.getElementById('brokerageTextFallback').style.display='block'">
   </div>
-  <div class="brokerage-badge-text" id="brokerageTextFallback">Dreamhouse<br>Realty Ltd.</div>
+  <div class="brokerage-badge-text" id="brokerageTextFallback" style="font-size:0.7rem;font-weight:800;color:#333;text-align:right;line-height:1.3">Rosh Issac<br>Real Estate Team<br><span style="font-size:0.62rem;font-weight:600;color:#666">Associates of Dreamhouse Realty</span></div>
 </div>
 
 <script>
