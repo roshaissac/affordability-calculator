@@ -1005,16 +1005,49 @@ function sendAdvisoryEmail() {
   btn.textContent = 'Sending…';
   status.textContent = '';
 
+  const r = window._calcResult;
+  if (!r) { alert('Please run the calculation first.'); btn.disabled = false; btn.textContent = 'Send Advisory to Client'; return; }
   const payload = JSON.stringify({
-    action    : 'sendAdvisory',
+    action        : 'sendAdvisory',
     clientEmail,
-    price     : document.getElementById('rPrice')?.textContent        || '',
-    mortgage  : document.getElementById('rMortgage')?.textContent     || '',
-    pi        : document.getElementById('rMonthlyPI')?.textContent    || '',
-    monthly   : document.getElementById('rMonthlyTotal')?.textContent || '',
-    gds       : document.getElementById('rGDSVal')?.textContent       || '',
-    tds       : document.getElementById('rTDSVal')?.textContent       || '',
-    qualRate  : document.getElementById('rQualRate')?.textContent     || '',
+    // Summary
+    price         : fmt(r.maxPrice),
+    mortgage      : fmt(r.totalMortg),
+    pi            : fmt(r.monthlyPI_act),
+    monthly       : fmt(r.actualMonthly),
+    gds           : fmtPct(r.gdsActual),
+    tds           : fmtPct(r.tdsActual),
+    qualRate      : fmtPct(r.qualRateAnn),
+    binding       : r.binding,
+    // Mortgage detail
+    downPayment   : fmt(r.dpAmt) + ' (' + fmtPct(r.dpPct * 100) + ')',
+    baseMortgage  : fmt(r.baseMortg),
+    cmhcPrem      : r.cm > 0 ? fmt(r.cmhcPrem) + ' (' + fmtPct(r.cm * 100) + ')' : 'None',
+    contractRate  : fmtPct(r.contractRatePct),
+    amortization  : r.amortYears + ' years',
+    // Monthly costs
+    propTax       : fmt(r.monthlyPropTax) + '/mo',
+    heating       : fmt(r.heating) + '/mo',
+    condoFees     : r.condoFees > 0 ? fmt(r.condoFees) + '/mo' : null,
+    hoaFees       : r.hoaMonthly > 0 ? fmt(r.hoaMonthly) + '/mo' : null,
+    piQual        : fmt(r.monthlyPI_qual) + '/mo',
+    // Ratios
+    gdsLimit      : r.gdsLimitPct + '%',
+    tdsLimit      : r.tdsLimitPct + '%',
+    gdsComp       : fmt(r.gdsComp) + '/mo',
+    tdsComp       : fmt(r.tdsComp) + '/mo',
+    totalDebts    : fmt(r.totalDebts) + '/mo',
+    // Cash to close
+    closingCosts  : fmt(r.closingVar),
+    closingPct    : fmtPct(r.closingPct),
+    totalCash     : fmt(r.dpAmt + r.closingVar),
+    ccTotal       : r.ccTotal > 0 ? fmt(r.ccTotal) : null,
+    grandTotal    : r.ccTotal > 0 ? fmt(r.dpAmt + r.closingVar + r.ccTotal) : null,
+    // Income
+    monthlyGross  : fmt(r.monthlyGross) + '/mo',
+    income1       : r.income1 > 0 ? fmt(r.income1) : null,
+    income2       : r.income2 > 0 ? fmt(r.income2) : null,
+    otherIncome   : r.otherIncome > 0 ? fmt(r.otherIncome) + '/mo' : null,
   });
 
   navigator.sendBeacon(WEB_APP_URL, payload);
@@ -1182,6 +1215,16 @@ function calculate() {
   const closingVar     = maxPrice * closingPct;
 
   window._lastDpAmt     = dpAmt;
+  window._calcResult    = {
+    maxPrice, dpAmt, dpPct, baseMortg, cmhcPrem, cm, totalMortg,
+    contractRatePct, qualRateAnn: qualRateAnn * 100, amortYears,
+    monthlyPI_act, monthlyPI_qual, monthlyPropTax, heating, condoFees, hoaMonthly,
+    actualMonthly, gdsComp, gdsActual: gdsActual * 100, gdsLimitPct,
+    tdsComp, tdsActual: tdsActual * 100, tdsLimitPct, totalDebts, monthlyGross,
+    binding, closingPct: closingPct * 100, closingVar,
+    income1: inc1, income2: inc2, otherIncome: incOth,
+    ccTotal: getCCTotal(),
+  };
   window._lastClosingVar = closingVar;
   updateCCTotal();
 
