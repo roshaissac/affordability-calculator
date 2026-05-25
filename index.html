@@ -33,6 +33,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
 /* ── Headers ── */
 .header-advisor,.header-client{background:var(--black);color:var(--white);padding:0}
+.header-client{position:sticky;top:0;z-index:100;}
 .header-inner{max-width:1200px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;gap:18px}
 .header-logo-issac{height:64px;width:auto;display:block;flex-shrink:0}
 .header-divider{width:1.5px;height:48px;background:rgba(255,255,255,0.15);flex-shrink:0}
@@ -227,21 +228,13 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
 <!-- ══ CLIENT HEADER ═══════════════════════════════════════════════════ -->
 <div class="header-client" id="headerClient" style="display:none">
-  <div class="header-inner">
-    <div style="flex-shrink:0">
-      <img src="assets/The%20Team%20Logo.png" alt="Issac Real Estate Team" class="header-logo-issac"
-           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div style="display:none;color:#fff;line-height:1.25">
-        <div style="font-size:1.05rem;font-weight:800;letter-spacing:-0.01em"><span style="color:var(--orange)">Rosh Issac</span> Real Estate Team</div>
-        <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px">Associates of Dreamhouse Realty</div>
-      </div>
+  <div style="padding:16px 20px;text-align:center">
+    <div style="margin-bottom:4px">
+      <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
+      <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400"> Realtor&#174;</span>
     </div>
-    <div class="header-divider"></div>
-    <div class="header-text">
-      <div style="margin-bottom:5px"><span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span> <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400">Realtor&#174;</span></div>
-      <h1>Mortgage Pre-Assessment</h1>
-      <p>Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.</p>
-    </div>
+    <h1 style="font-size:1.15rem;font-weight:700;letter-spacing:-0.02em;color:var(--white);margin-bottom:4px">Mortgage Pre-Assessment</h1>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.79rem;line-height:1.45">Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.</p>
   </div>
 </div>
 
@@ -668,7 +661,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 </div><!-- /container -->
 
 <div class="page-footer">
-  Issac Realty Inc. &nbsp;·&nbsp; Dreamhouse Realty Ltd. &nbsp;·&nbsp; For advisory use only — not a lender commitment.
+  Issac Realty Team &mdash; Associates of Dreamhouse Realty Ltd. &nbsp;·&nbsp; For advisory use only — not a lender commitment.
   <span id="advisorModeLink" style="display:none">&nbsp;·&nbsp;
     <a href="javascript:void(0)" onclick="switchToAdvisorMode()" style="color:var(--orange);text-decoration:none;font-weight:600">Advisor Mode →</a>
   </span>
