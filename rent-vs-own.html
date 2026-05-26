@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rent vs Own Calculator — Issac Real Estate Team</title>
+<meta property="og:title" content="Rent vs Own Calculator — Issac Real Estate Team">
+<meta property="og:description" content="See exactly what renting is costing you — and what owning could build. Free, instant, personalised.">
+<meta property="og:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<!-- jsPDF + AutoTable for client-side PDF generation -->
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+/* ── Reset & Base ── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#111111;line-height:1.5}
+
+/* ── Brand tokens (exact match to index.html) ── */
+:root{
+  --black:#000000;
+  --orange:#F7934C;
+  --grey:#D9D9D9;
+  --grey-light:#f5f5f5;
+  --grey-mid:#e8e8e8;
+  --white:#ffffff;
+  --text:#111111;
+  --text-muted:#666666;
+  --text-subtle:#999999;
+  --border:#D9D9D9;
+  --shadow:0 1px 4px rgba(0,0,0,0.08);
+  --radius:10px;
+}
+
+/* ── Header ── */
+.header-advisor,.header-client{background:var(--black);color:var(--white);padding:0}
+.header-client{position:sticky;top:0;z-index:100}
+.header-inner{max-width:1100px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;gap:18px}
+.header-logo-issac{height:64px;width:auto;display:block;flex-shrink:0}
+.header-divider{width:1.5px;height:48px;background:rgba(255,255,255,0.15);flex-shrink:0}
+.header-text{flex:1;min-width:0}
+.header-text h1{font-size:1.35rem;font-weight:700;letter-spacing:-0.02em;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.header-text p{color:rgba(255,255,255,0.5);font-size:0.82rem;margin-top:3px}
+@media(max-width:820px){
+  .header-inner{padding:14px 16px;gap:12px}
+  .header-logo-issac{height:50px}
+  .header-text h1{font-size:1.05rem}
+}
+
+/* ── Brokerage badge (fixed bottom-right) ── */
+.brokerage-badge{position:fixed;bottom:18px;right:18px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:3px;pointer-events:none}
+.brokerage-badge-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:5px 10px;box-shadow:0 2px 10px rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center}
+.brokerage-badge-box img{height:38px;width:auto;display:block}
+@media(max-width:500px){.brokerage-badge{bottom:12px;right:12px}.brokerage-badge-box img{height:30px}}
+
+/* ── Banners ── */
+.banner{padding:11px 24px;font-size:0.84rem;font-weight:500;display:flex;align-items:center;gap:10px}
+.banner-client-mode{background:#fffbf7;color:#7a3b10;border-bottom:2px solid var(--orange);font-size:0.81rem;padding:10px 24px}
+
+/* ── Layout ── */
+.container{max-width:1100px;margin:0 auto;padding:24px 20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.span-2{grid-column:1/-1}
+@media(max-width:820px){.grid-2{grid-template-columns:1fr}.span-2{grid-column:auto}}
+.card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.card-title{font-size:0.72rem;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:18px;display:flex;align-items:center;gap:7px;border-bottom:2px solid var(--orange);padding-bottom:10px}
+.field{margin-bottom:14px}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:0.81rem;font-weight:600;color:#333;margin-bottom:5px}
+.hint{font-size:0.73rem;color:var(--text-muted);margin-top:3px;line-height:1.45}
+
+/* ── Inputs ── */
+.input-wrap{position:relative}
+.input-wrap .pre{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.88rem;pointer-events:none;z-index:1}
+.input-wrap .suf{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.88rem;pointer-events:none}
+.input-wrap input,.input-wrap select,input[type=number],select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem;color:var(--text);background:var(--white);transition:border-color 0.15s;-webkit-appearance:none;appearance:none}
+.input-wrap input{padding-left:26px}
+.input-wrap input.suf-pad{padding-right:36px}
+.input-wrap input:focus,.input-wrap select:focus,input[type=number]:focus,select:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(247,147,76,0.15)}
+input[type=number]::-webkit-inner-spin-button{opacity:0.5}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+
+/* ── Toggle buttons ── */
+.toggle-group{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
+.toggle-btn{flex:1;padding:9px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--white);cursor:pointer;font-size:0.82rem;font-weight:600;color:#555;text-align:center;transition:all 0.15s;min-width:70px}
+.toggle-btn.active{background:var(--black);border-color:var(--black);color:var(--white)}
+
+/* ── Step indicator ── */
+.step-bar{display:flex;align-items:center;gap:0;margin-bottom:22px;overflow-x:auto;padding-bottom:4px}
+.step-item{display:flex;align-items:center;gap:0;white-space:nowrap}
+.step-dot{width:28px;height:28px;border-radius:50%;background:var(--grey-mid);color:#888;font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.step-dot.done{background:var(--orange);color:var(--white)}
+.step-dot.active{background:var(--black);color:var(--white)}
+.step-label{font-size:0.73rem;font-weight:600;color:#999;margin-left:6px;margin-right:10px}
+.step-label.active{color:var(--text)}
+.step-label.done{color:var(--orange)}
+.step-connector{width:24px;height:1.5px;background:var(--grey-mid);margin:0 2px;flex-shrink:0}
+.step-connector.done{background:var(--orange)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em;text-decoration:none}
+.btn-block{display:flex;width:100%;justify-content:center;margin-top:10px;padding:14px}
+.btn-black{background:var(--black);color:var(--white)}.btn-black:hover{background:#222}
+.btn-orange{background:var(--orange);color:var(--white)}.btn-orange:hover{background:#e8813c}
+.btn-outline{background:var(--white);color:var(--black);border:1.5px solid var(--black)}.btn-outline:hover{background:var(--grey-light)}
+.btn-sm{padding:7px 13px;font-size:0.78rem;font-weight:700;border-radius:6px}
+
+/* ── Result hero ── */
+.result-hero{background:var(--black);color:var(--white);border-radius:12px;padding:26px 28px;margin-bottom:18px}
+.result-hero h2{font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
+.price-big{font-size:2.6rem;font-weight:800;color:var(--orange);letter-spacing:-0.03em;line-height:1}
+.price-note{font-size:0.81rem;color:rgba(255,255,255,0.45);margin-top:6px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px}
+.stat-box{background:rgba(255,255,255,0.06);border-radius:8px;padding:13px 15px;border:1px solid rgba(255,255,255,0.08)}
+.stat-box-label{font-size:0.68rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em}
+.stat-box-value{font-size:1.2rem;font-weight:700;margin-top:3px}
+.stat-box-sub{font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:2px}
+.col-green{color:#68d391}.col-orange{color:var(--orange)}.col-red{color:#fc8181}.col-blue{color:var(--orange)}
+
+/* ── Breakdown rows ── */
+.bk-title{font-size:0.7rem;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:0.09em;padding-bottom:8px;border-bottom:2px solid var(--orange);margin-bottom:10px}
+.bk-row{display:flex;justify-content:space-between;padding:6px 0;font-size:0.86rem;border-bottom:1px solid var(--grey-mid)}
+.bk-row:last-child{border-bottom:none}
+.bk-label{color:#555}
+.bk-val{font-weight:600;color:var(--text);text-align:right}
+.bk-val.blue{color:var(--orange)}.bk-val.green{color:#276749}.bk-val.orange{color:var(--orange)}.bk-val.red{color:#c53030}
+.bk-row.total{font-weight:700;border-top:2px solid var(--grey);border-bottom:none;margin-top:4px;padding-top:9px}
+.bk-row.total .bk-label{color:var(--black)}
+.bk-row.total .bk-val{font-size:0.97rem;color:var(--black)}
+
+/* ── Alerts ── */
+.info-box{background:#fffbf7;border:1.5px solid #fbd38d;border-radius:7px;padding:10px 14px;font-size:0.79rem;color:#7a3b10;line-height:1.55}
+.info-box strong{display:block;margin-bottom:2px}
+.warning-box{background:#fff8f3;border:1.5px solid var(--orange);border-radius:7px;padding:10px 14px;font-size:0.8rem;color:#7a3b10;margin-bottom:14px}
+
+/* ── Chart container ── */
+.chart-wrap{position:relative;height:220px;margin-top:12px}
+
+/* ── Comparison table ── */
+.comp-table{width:100%;border-collapse:collapse;font-size:0.84rem;margin-top:12px}
+.comp-table th{padding:8px 14px;text-align:right;font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:#333;background:var(--grey-light);border-bottom:2px solid var(--grey)}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:8px 14px;border-bottom:1px solid var(--grey-mid);text-align:right}
+.comp-table td:first-child{text-align:left;color:#555;font-weight:500}
+.comp-table tr.total td{font-weight:700;border-top:2px solid var(--grey);border-bottom:none;padding-top:11px}
+.comp-table tr.total td:first-child{color:var(--black)}
+.comp-table .rent-col{color:#c53030}
+.comp-table .own-col{color:#276749}
+
+/* ── CTA card ── */
+.cta-card{background:var(--white);border:2px solid var(--orange);border-radius:12px;padding:24px;text-align:center;margin-top:4px}
+.cta-card h3{font-size:1rem;font-weight:800;color:var(--black);margin-bottom:6px}
+.cta-card p{font-size:0.83rem;color:var(--text-muted);margin-bottom:18px;line-height:1.55}
+
+/* ── Advanced toggle ── */
+.adv-toggle{font-size:0.78rem;font-weight:600;color:var(--orange);cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:none;padding:0}
+.adv-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--grey-mid)}
+.adv-body.open{display:block}
+
+/* ── Progress pulse on submit ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 1.2s infinite}
+
+/* ── Responsive ── */
+@media(max-width:600px){
+  .price-big{font-size:2rem}
+  .container{padding:14px 12px}
+  .result-hero{padding:18px 16px}
+  .comp-table th,.comp-table td{padding:7px 8px;font-size:0.78rem}
+}
+
+/* ── Footer ── */
+.page-footer{text-align:center;padding:20px;font-size:0.72rem;color:var(--text-subtle);border-top:1px solid var(--grey);background:var(--white);margin-top:16px}
+.page-footer a{color:var(--orange);text-decoration:none;font-weight:600}
+
+/* ── Contact modal ── */
+#contactModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center}
+.modal-inner{background:#fff;border-radius:14px;padding:32px 28px;max-width:420px;width:90%;box-shadow:0 12px 48px rgba(0,0,0,0.22);position:relative;max-height:90vh;overflow-y:auto}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888}
+.modal-eyebrow{margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:700}
+.modal-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.modal-field{margin-bottom:12px}
+.modal-field label{font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px}
+.modal-field input{width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem}
+.modal-field input:focus{outline:none;border-color:var(--orange)}
+.consent-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;font-size:0.78rem;color:#555;line-height:1.45}
+.consent-row input[type=checkbox]{width:16px;height:16px;margin-top:2px;cursor:pointer;accent-color:var(--orange);flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- ══ ADVISOR HEADER ══════════════════════════════════════════════════ -->
+<div class="header-advisor" id="headerAdvisor">
+  <div class="header-inner">
+    <div style="flex-shrink:0">
+      <img src="assets/The%20Team%20Logo.png" alt="Issac Real Estate Team" class="header-logo-issac"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div style="display:none;align-items:center;gap:10px">
+        <div style="color:#fff;line-height:1.25">
+          <div style="font-size:1.05rem;font-weight:800;letter-spacing:-0.01em"><span style="color:var(--orange)">Rosh Issac</span> Real Estate Team</div>
+          <div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px">Associates of Dreamhouse Realty</div>
+        </div>
+      </div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-text">
+      <div style="margin-bottom:5px"><span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span> <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400">Realtor&#174;</span></div>
+      <h1>Rent vs Own Calculator</h1>
+      <p>What renting costs · What owning builds · 5 &amp; 10-year wealth comparison</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CLIENT HEADER ═══════════════════════════════════════════════════ -->
+<div class="header-client" id="headerClient" style="display:none">
+  <div style="padding:16px 20px;text-align:center">
+    <div style="margin-bottom:4px">
+      <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
+      <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400"> Realtor&#174;</span>
+    </div>
+    <h1 style="font-size:1.15rem;font-weight:700;letter-spacing:-0.02em;color:var(--white);margin-bottom:4px">Rent vs Own — Your Numbers</h1>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.79rem;line-height:1.45">Fill in what you know. See what renting is costing you versus what owning could build.</p>
+  </div>
+</div>
+
+<!-- Client mode banner -->
+<div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
+  📋 Fill in what you know — mortgage assumptions default to Calgary averages. Click <strong>"Show My Comparison"</strong> when ready.
+</div>
+
+<div class="container">
+
+  <!-- ── STEP INDICATOR ─────────────────────────────────────────────── -->
+  <div class="step-bar" id="stepBar">
+    <div class="step-item">
+      <div class="step-dot active" id="dot1">1</div>
+      <span class="step-label active" id="lbl1">Your situation</span>
+    </div>
+    <div class="step-connector" id="conn1"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot2">2</div>
+      <span class="step-label" id="lbl2">Comparison</span>
+    </div>
+    <div class="step-connector" id="conn2"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot3">3</div>
+      <span class="step-label" id="lbl3">Get the report</span>
+    </div>
+  </div>
+
+  <!-- ══ STEP 1 — INPUTS ════════════════════════════════════════════ -->
+  <div id="step1">
+    <div class="grid-2" style="margin-bottom:18px">
+
+      <!-- Card: Rental Situation -->
+      <div class="card">
+        <div class="card-title">🏠 Your Current Rental Situation</div>
+
+        <div class="field">
+          <label>Current Monthly Rent</label>
+          <div class="input-wrap"><span class="pre">$</span>
+            <input type="number" id="monthlyRent" value="2200" min="500" max="10000" step="50">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Neighbourhood / Area</label>
+          <select id="neighbourhoodSelect" onchange="onNeighbourhoodChange()">
+            <option value="">— Select a neighbourhood —</option>
+            <option value="Bridgeland">Bridgeland</option>
+            <option value="Beltline">Beltline</option>
+            <option value="Killarney">Killarney</option>
+            <option value="Inglewood">Inglewood</option>
+            <option value="Hillhurst">Hillhurst</option>
+            <option value="Sunnyside">Sunnyside</option>
+            <option value="Mission">Mission</option>
+            <option value="Kensington">Kensington</option>
+            <option value="manual">Other / Enter manually →</option>
+          </select>
+        </div>
+
+        <div class="field" id="postalField">
+          <label>Postal Code <span style="font-weight:400;color:#888">(optional)</span></label>
+          <input type="text" id="postalCode" placeholder="T2E 3A9" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+        </div>
+
+        <div class="field" id="manualPriceField" style="display:none">
+          <label>Comparable Home Price in Your Area</label>
+          <div class="input-wrap"><span class="pre">$</span>
+            <input type="number" id="homePriceOverride" value="500000" min="100000" max="5000000" step="25000">
+          </div>
+          <div class="hint">Use a typical listing price for your area and bedroom count.</div>
+        </div>
+
+        <div class="field">
+          <label>Bedrooms</label>
+          <div class="toggle-group" id="bedroomToggle">
+            <button class="toggle-btn" onclick="setBeds(1)">1</button>
+            <button class="toggle-btn active" onclick="setBeds(2)">2</button>
+            <button class="toggle-btn" onclick="setBeds(3)">3</button>
+            <button class="toggle-btn" onclick="setBeds(4)">4+</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Property Type</label>
+          <div class="toggle-group" id="propTypeToggle">
+            <button class="toggle-btn active" onclick="setPropType('apartment')">Apartment</button>
+            <button class="toggle-btn" onclick="setPropType('townhouse')">Townhouse</button>
+            <button class="toggle-btn" onclick="setPropType('detached')">Detached</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>How long have you been renting?</label>
+          <div class="input-wrap"><input type="number" id="monthsRenting" value="36" min="0" max="600" step="6" class="suf-pad"><span class="suf">mo</span></div>
+        </div>
+      </div>
+
+      <!-- Card: Finances -->
+      <div class="card">
+        <div class="card-title">💰 Your Finances</div>
+
+        <div class="field">
+          <label>Combined Household Gross Annual Income</label>
+          <div class="input-wrap"><span class="pre">$</span>
+            <input type="number" id="householdIncome" value="120000" min="30000" max="1000000" step="5000">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Savings Available for Down Payment</label>
+          <div class="input-wrap"><span class="pre">$</span>
+            <input type="number" id="savings" value="60000" min="0" max="2000000" step="5000">
+          </div>
+          <div class="hint" id="savingsHint"></div>
+        </div>
+
+        <div class="field">
+          <label>Monthly Debt Payments <span style="font-weight:400;color:#888">(loans, cards, etc.)</span></label>
+          <div class="input-wrap"><span class="pre">$</span>
+            <input type="number" id="monthlyDebt" value="0" min="0" max="10000" step="50">
+          </div>
+          <div class="hint">Do not include your current rent.</div>
+        </div>
+
+        <!-- Advanced assumptions (advisor mode) -->
+        <div id="advancedSection">
+          <button class="adv-toggle" onclick="toggleAdv()" id="advBtn">⚙️ Mortgage assumptions <span id="advArrow">▼</span></button>
+          <div class="adv-body" id="advBody">
+            <div class="field">
+              <label>Contract Interest Rate</label>
+              <div class="input-wrap"><input type="number" id="contractRate" value="5.5" min="0.5" max="15" step="0.05" class="suf-pad"><span class="suf">%</span></div>
+            </div>
+            <div class="field">
+              <label>Amortisation Period</label>
+              <select id="amortYears" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+                <option value="30">30 years</option>
+                <option value="25" selected>25 years</option>
+                <option value="20">20 years</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Expected Home Appreciation / yr</label>
+              <div class="input-wrap"><input type="number" id="appreciation" value="3.5" min="0" max="15" step="0.5" class="suf-pad"><span class="suf">%</span></div>
+            </div>
+            <div class="field">
+              <label>Expected Annual Rent Increase</label>
+              <div class="input-wrap"><input type="number" id="rentInflation" value="4.0" min="0" max="15" step="0.5" class="suf-pad"><span class="suf">%</span></div>
+            </div>
+            <div class="field">
+              <label>Renter's HISA Return (savings alternative)</label>
+              <div class="input-wrap"><input type="number" id="hisaReturn" value="4.0" min="0" max="10" step="0.5" class="suf-pad"><span class="suf">%</span></div>
+              <div class="hint">What the down payment money would earn if kept in savings.</div>
+            </div>
+            <div class="field">
+              <label>Monthly Condo Fees <span style="font-weight:400;color:#888">(leave 0 to auto-estimate)</span></label>
+              <div class="input-wrap"><span class="pre">$</span><input type="number" id="condoFees" value="0" min="0" max="2000" step="25"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Client mode: collapsed assumptions note -->
+        <div id="clientAssumptionsNote" class="info-box" style="display:none;margin-top:14px">
+          <strong>⚙️ Assumptions (Calgary defaults)</strong>
+          5.5% rate · 25-yr amort · 3.5% home appreciation · 4% rent increase · 0.65% property tax
+        </div>
+
+        <div class="warning-box" id="qualifyWarn" style="display:none;margin-top:14px"></div>
+
+        <button class="btn btn-black btn-block" style="font-size:1rem;padding:15px" onclick="showComparison()">
+          📊 Show My Comparison →
+        </button>
+      </div>
+
+    </div><!-- /grid-2 step1 -->
+  </div><!-- /step1 -->
+
+  <!-- ══ STEP 2 — RESULTS ══════════════════════════════════════════ -->
+  <div id="step2" style="display:none">
+
+    <!-- Result hero -->
+    <div class="result-hero" id="resultHero">
+      <h2 id="heroLabel">Net cost of renting over 5 years</h2>
+      <div class="price-big" id="heroValue">—</div>
+      <div class="price-note" id="heroNote"></div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-box-label">5-yr equity if you bought</div>
+          <div class="stat-box-value col-green" id="stat5yrEquity">—</div>
+          <div class="stat-box-sub">Net appreciation − mortgage balance</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">5-yr wealth gap</div>
+          <div class="stat-box-value col-orange" id="stat5yrGap">—</div>
+          <div class="stat-box-sub">Owner net position − renter net position</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">10-yr wealth gap</div>
+          <div class="stat-box-value col-orange" id="stat10yrGap">—</div>
+          <div class="stat-box-sub">Compounding advantage of ownership</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Monthly: Rent vs Own</div>
+          <div class="stat-box-value" id="statMonthlyDiff">—</div>
+          <div class="stat-box-sub" id="statMonthlyDiffNote"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monthly cost comparison -->
+    <div class="card span-2" style="margin-bottom:18px">
+      <div class="card-title">📋 Monthly Cost Comparison</div>
+      <div style="overflow-x:auto">
+        <table class="comp-table" id="monthlyTable">
+          <thead>
+            <tr>
+              <th style="text-align:left">Item</th>
+              <th class="rent-col">Renting</th>
+              <th class="own-col">Owning</th>
+            </tr>
+          </thead>
+          <tbody id="monthlyTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="grid-2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-title">📊 5-Year Wealth Position</div>
+        <div class="chart-wrap"><canvas id="chart5yr"></canvas></div>
+        <div id="chart5Legend" style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);text-align:center"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📊 10-Year Wealth Position</div>
+        <div class="chart-wrap"><canvas id="chart10yr"></canvas></div>
+        <div id="chart10Legend" style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);text-align:center"></div>
+      </div>
+    </div>
+
+    <!-- Detailed breakdown -->
+    <div class="card span-2" style="margin-bottom:18px">
+      <div class="card-title">🔢 5 &amp; 10-Year Detailed Breakdown</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" id="breakdownGrid"></div>
+    </div>
+
+    <!-- Ownership cost breakdown -->
+    <div class="card span-2" style="margin-bottom:18px">
+      <div class="card-title">🏡 Ownership Assumptions Used</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px" id="assumptionsGrid"></div>
+    </div>
+
+    <!-- Back button -->
+    <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="goBack()">← Edit inputs</button>
+      <button class="btn btn-black" onclick="window.scrollTo({top:document.getElementById('ctaCard').offsetTop-20,behavior:'smooth'})">Get the full report ↓</button>
+    </div>
+
+    <!-- ── STEP 3 — CTA ── -->
+    <div class="cta-card" id="ctaCard">
+      <h3>📄 Send the personalised PDF report to the renter</h3>
+      <p>A full 4-page comparison report — their numbers, the 5 &amp; 10-year wealth charts, and what to do next. Lands in their inbox in seconds.</p>
+      <div style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto">
+        <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="openModal('email')">
+          <span style="font-size:1.3rem">📧</span>
+          <span><strong>Email me the report</strong><br><span style="font-size:0.78rem;opacity:0.85">PDF arrives in minutes — it's the clearest way to see the numbers</span></span>
+        </button>
+        <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="openModal('whatsapp')">
+          <span style="font-size:1.3rem">💬</span>
+          <span><strong>Chat with Rosh on WhatsApp</strong><br><span style="font-size:0.78rem;opacity:0.85">Quick questions? Message Rosh directly</span></span>
+        </button>
+        <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="openModal('booking')">
+          <span style="font-size:1.3rem">📅</span>
+          <span><strong>Book a free consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time — 15-min call, no obligation</span></span>
+        </button>
+      </div>
+      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">Contact details are collected before sending. Your financial numbers stay private.</p>
+    </div>
+
+  </div><!-- /step2 -->
+
+</div><!-- /container -->
+
+<div class="page-footer">
+  Issac Realty Team &mdash; Associates of Dreamhouse Realty Ltd. &nbsp;·&nbsp; For information only — not a lender commitment.
+  <span id="advisorModeLink" style="display:none">&nbsp;·&nbsp;
+    <a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a>
+  </span>
+</div>
+
+<!-- ══ BROKERAGE BADGE ═══════════════════════════════════════════════ -->
+<div class="brokerage-badge">
+  <div class="brokerage-badge-box">
+    <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
+      onerror="this.style.display='none'">
+  </div>
+</div>
+
+<!-- ══ CONTACT MODAL ═════════════════════════════════════════════════ -->
+<div id="contactModal">
+  <div class="modal-inner">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <p class="modal-eyebrow">Almost done</p>
+    <h3 id="cm-heading" style="margin:0 0 6px;font-size:1.2rem;font-weight:800">Where should we send your report?</h3>
+    <p id="cm-subhead" style="margin:0 0 20px;font-size:0.85rem;color:var(--text-muted)">Your financial numbers stay private. We just need a way to reach you.</p>
+    <div class="modal-grid-2">
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px">First Name *</label>
+        <input id="cm-first" type="text" placeholder="Jane" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem">
+      </div>
+      <div>
+        <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px">Last Name</label>
+        <input id="cm-last" type="text" placeholder="Smith" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem">
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Email *</label>
+      <input id="cm-email" type="email" placeholder="jane@email.com">
+    </div>
+    <div class="modal-field">
+      <label>Cell Phone</label>
+      <input id="cm-phone" type="tel" placeholder="+1 403 555 0123">
+    </div>
+    <div class="consent-row">
+      <input type="checkbox" id="cm-consent" checked>
+      <span>I agree to be contacted by Rosh Issac, Realtor&#174; (Issac Realty Team, Associates of Dreamhouse Realty Ltd.) about my real estate inquiry. I can unsubscribe at any time.</span>
+    </div>
+    <button id="cm-submit" onclick="submitLead()"
+      style="width:100%;padding:13px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer">
+      Send my report →
+    </button>
+    <div id="cm-status" style="margin-top:12px;font-size:0.82rem;text-align:center;color:#666"></div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ─── CONFIG ────────────────────────────────────────────────────────────────
+const CONFIG = {
+  SUPABASE_URL:     'https://urorursttvzrkkdroxur.supabase.co',
+  SUPABASE_ANON_KEY:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVyb3J1cnN0dHZ6cmtrZHJveHVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTMwOTEsImV4cCI6MjA5NTM4OTA5MX0.eb2IAP7d_gXDAqU3N8gUWc9A6NpxzO_px7IrZwO7S84',
+  WEB_APP_URL:      'https://script.google.com/macros/s/AKfycbxD9oiWqxnv9ry-5ejlc3h1MlGrVYST6789OuhBYA7cJZVvV-la1cN9bk1MYd_3NMQDew/exec',
+  ROSH_WHATSAPP:    '18254495083',
+  ROSH_BOOKING:     'https://calendar.app.google/88aQwcD1kWahi27Z9',
+  // mortgage defaults
+  DEFAULT_RATE:         5.5,
+  DEFAULT_AMORT:        25,
+  DEFAULT_APPRECIATION: 3.5,
+  DEFAULT_RENT_INF:     4.0,
+  HISA_RETURN:          4.0,
+  // property tax — Calgary residential
+  PROP_TAX_PCT:         0.0065,
+  // home insurance
+  HOME_INS_MONTHLY:     150,
+  // maintenance reserve (% of home value / yr)
+  MAINT_PCT:            0.01,
+  // estimated sqft by bedrooms (for condo fee auto-estimate)
+  SQFT_BY_BEDS:         { 1: 650, 2: 900, 3: 1150, 4: 1400 },
+  // condo fee $/sqft/month
+  CONDO_FEE_SQFT:       0.65,
+  // closing costs % (purchase)
+  CLOSING_PCT:          0.025,
+  // cost to sell (% of sale price at exit)
+  SALE_COST_PCT:        0.06,
+  // seeded neighbourhood medians — flagged as defaults
+  NEIGHBOURHOOD_PRICES: {
+    'Bridgeland':  { 1: 320000, 2: 480000, 3: 620000, 4: 850000 },
+    'Beltline':    { 1: 295000, 2: 425000, 3: 580000, 4: 0       },
+    'Killarney':   { 1: 310000, 2: 465000, 3: 600000, 4: 820000  },
+    'Inglewood':   { 1: 305000, 2: 455000, 3: 590000, 4: 810000  },
+    'Hillhurst':   { 1: 330000, 2: 510000, 3: 650000, 4: 900000  },
+    'Sunnyside':   { 1: 315000, 2: 485000, 3: 630000, 4: 870000  },
+    'Mission':     { 1: 325000, 2: 495000, 3: 640000, 4: 880000  },
+    'Kensington':  { 1: 318000, 2: 490000, 3: 635000, 4: 860000  },
+  }
+};
+
+// ─── State ────────────────────────────────────────────────────────────────
+let STATE = {
+  mode:            'advisor',
+  neighbourhood:   '',
+  bedrooms:        2,
+  propertyType:    'apartment',
+  // computed by computeAll():
+  homePrice:       0,
+  downPayment:     0,
+  downPct:         0,
+  monthlyRentCost: 0,
+  monthlyOwnCost:  0,
+  fiveYr:          null,
+  tenYr:           null,
+  maxQualPrice:    0,
+};
+
+let _cmDest       = 'email';
+let _chartInst5   = null;
+let _chartInst10  = null;
+
+// ─── Mode detection ───────────────────────────────────────────────────────
+const URL_PARAMS  = new URLSearchParams(window.location.search);
+const CLIENT_MODE = URL_PARAMS.get('mode') === 'client';
+
+// ─── Helpers ──────────────────────────────────────────────────────────────
+function el(id)  { return document.getElementById(id); }
+function fmt(n)  { return '$' + Math.round(n).toLocaleString('en-CA'); }
+function fmtK(n) { return '$' + (Math.round(n/1000)).toLocaleString('en-CA') + 'K'; }
+function fmtPct(n, d=1) { return (+n).toFixed(d) + '%'; }
+function gv(id, def=0) { const v = parseFloat(el(id)?.value); return isNaN(v) ? def : v; }
+
+// Canadian semi-annual compounding: monthly rate = (1 + r/2)^(1/6) − 1
+function monthlyRate(annualRate) { return Math.pow(1 + annualRate / 2, 1/6) - 1; }
+
+// Monthly payment factor (amortising)
+function paymentFactor(mr, n) {
+  if (mr < 1e-10) return 1 / n;
+  return mr * Math.pow(1+mr,n) / (Math.pow(1+mr,n) - 1);
+}
+
+// CMHC insurance rate
+function cmhcRate(dpPct) {
+  if (dpPct >= 0.20) return 0;
+  if (dpPct >= 0.15) return 0.028;
+  if (dpPct >= 0.10) return 0.031;
+  return 0.040;
+}
+
+// Minimum down payment (Canadian rules)
+function minDown(price) {
+  if (price >= 1000000) return price * 0.20;
+  if (price <= 500000)  return price * 0.05;
+  return 25000 + (price - 500000) * 0.10;
+}
+
+// Remaining mortgage balance after k payments
+function remainingBalance(principal, mr, n, k) {
+  if (mr < 1e-10) return principal * (1 - k/n);
+  return principal * (Math.pow(1+mr,n) - Math.pow(1+mr,k)) / (Math.pow(1+mr,n) - 1);
+}
+
+// ─── Input readers ────────────────────────────────────────────────────────
+function getMonthlyRent()   { return gv('monthlyRent', 2200); }
+function getIncome()        { return gv('householdIncome', 120000); }
+function getSavings()       { return gv('savings', 60000); }
+function getMonthlyDebt()   { return gv('monthlyDebt', 0); }
+function getMonthsRenting() { return gv('monthsRenting', 36); }
+function getRate()          { return gv('contractRate', CONFIG.DEFAULT_RATE) / 100; }
+function getAmort()         { return parseInt(el('amortYears')?.value || CONFIG.DEFAULT_AMORT); }
+function getAppreciation()  { return gv('appreciation', CONFIG.DEFAULT_APPRECIATION) / 100; }
+function getRentInflation() { return gv('rentInflation', CONFIG.DEFAULT_RENT_INF) / 100; }
+function getHISA()          { return gv('hisaReturn', CONFIG.HISA_RETURN) / 100; }
+
+// ─── Home price derivation ────────────────────────────────────────────────
+function deriveHomePrice() {
+  const nh = STATE.neighbourhood;
+  const beds = STATE.bedrooms;
+  if (nh && nh !== 'manual' && CONFIG.NEIGHBOURHOOD_PRICES[nh]) {
+    const p = CONFIG.NEIGHBOURHOOD_PRICES[nh][beds] || CONFIG.NEIGHBOURHOOD_PRICES[nh][1];
+    return p > 0 ? p : null;
+  }
+  const ov = gv('homePriceOverride', 0);
+  return ov > 0 ? ov : null;
+}
+
+// ─── Auto-estimated condo fee ─────────────────────────────────────────────
+function getCondoFee() {
+  const manual = gv('condoFees', 0);
+  if (manual > 0) return manual;
+  if (STATE.propertyType === 'detached') return 0;
+  // auto-estimate for apartment/townhouse
+  const sqft = CONFIG.SQFT_BY_BEDS[Math.min(STATE.bedrooms, 4)] || 900;
+  return sqft * CONFIG.CONDO_FEE_SQFT;
+}
+
+// ─── Qualifying price from stress test ───────────────────────────────────
+function computeMaxQualifyingPrice(income, savings, monthlyDebt) {
+  const contractR = getRate();
+  const qualR     = Math.max(contractR + 0.02, 0.0525); // OSFI stress test
+  const n         = getAmort() * 12;
+  const qpf       = paymentFactor(monthlyRate(qualR), n);
+  const monthlyIncome = income / 12;
+  const gdsMax    = 0.39 * monthlyIncome;
+  const tdsMax    = 0.44 * monthlyIncome - monthlyDebt;
+  const maxHousing = Math.min(gdsMax, tdsMax);
+
+  // iterate to find price (tax is % of price, so we solve iteratively)
+  let price = 500000;
+  for (let i = 0; i < 200; i++) {
+    const dp      = Math.max(savings, minDown(price));
+    const dpPct   = dp / price;
+    const cm      = cmhcRate(Math.min(dpPct, 1));
+    const mortg   = Math.max(price - dp, 0) * (1 + cm);
+    const pi      = mortg * qpf;
+    const tax     = price * CONFIG.PROP_TAX_PCT / 12;
+    const fixed   = 150 + getCondoFee() * 0.5;  // heating + 50% condo
+    const total   = pi + tax + fixed;
+    const np      = price * (maxHousing / total);
+    if (!isFinite(np) || np <= 0) break;
+    if (Math.abs(np - price) < 1) break;
+    price = price * 0.5 + np * 0.5;
+  }
+  return price;
+}
+
+// ─── Core wealth comparison ───────────────────────────────────────────────
+function computeWealth(years) {
+  const homePrice   = STATE.homePrice;
+  const savings     = getSavings();
+  const contractR   = getRate();
+  const n           = getAmort() * 12;
+  const mr          = monthlyRate(contractR);
+  const pf          = paymentFactor(mr, n);
+  const dp          = Math.max(savings, minDown(homePrice));
+  const dpPct       = dp / homePrice;
+  const cm          = cmhcRate(dpPct);
+  const baseMortg   = homePrice - dp;
+  const totalMortg  = baseMortg * (1 + cm);
+  const closingCost = homePrice * CONFIG.CLOSING_PCT;
+
+  // Monthly ownership costs
+  const monthlyPI      = totalMortg * paymentFactor(monthlyRate(contractR), n);
+  const monthlyTax     = homePrice * CONFIG.PROP_TAX_PCT / 12;
+  const monthlyCondo   = getCondoFee();
+  const monthlyIns     = CONFIG.HOME_INS_MONTHLY;
+  const monthlyMaint   = homePrice * CONFIG.MAINT_PCT / 12;
+  const monthlyOwnTotal = monthlyPI + monthlyTax + monthlyCondo + monthlyIns + monthlyMaint;
+
+  // Cumulative cost of owning over horizon
+  let cumOwnerCash = dp + closingCost;
+  for (let m = 0; m < years*12; m++) cumOwnerCash += monthlyOwnTotal;
+
+  // Home value at exit
+  const exitHomeValue = homePrice * Math.pow(1 + getAppreciation(), years);
+  const saleProceeds  = exitHomeValue * (1 - CONFIG.SALE_COST_PCT);
+  const remainMortg   = remainingBalance(totalMortg, mr, n, Math.min(years*12, n));
+
+  // Owner net position = sale proceeds − remaining mortgage − total cash in
+  const ownerNetPosition = saleProceeds - remainMortg - cumOwnerCash;
+
+  // Renter: dp money compounds in HISA, pays escalating rent
+  const hisaR      = getHISA();
+  const rentInf    = getRentInflation();
+  const startRent  = getMonthlyRent();
+  const renterIns  = 20; // renter's insurance
+
+  let hisaBalance = dp; // down-payment alternative invested
+  let cumRentPaid = 0;
+  for (let m = 0; m < years*12; m++) {
+    const yr          = Math.floor(m / 12);
+    const monthRent   = startRent * Math.pow(1 + rentInf, yr);
+    cumRentPaid      += monthRent + renterIns;
+    hisaBalance      *= (1 + hisaR / 12);
+  }
+  const renterNetPosition = hisaBalance - cumRentPaid;
+
+  return {
+    years,
+    homePrice,
+    dp,
+    dpPct,
+    cm,
+    totalMortg,
+    closingCost,
+    monthlyPI,
+    monthlyTax,
+    monthlyCondo,
+    monthlyIns,
+    monthlyMaint,
+    monthlyOwnTotal,
+    exitHomeValue,
+    saleProceeds,
+    remainMortg,
+    cumOwnerCash,
+    ownerNetPosition,
+    hisaBalance,
+    cumRentPaid,
+    renterNetPosition,
+    wealthGap: ownerNetPosition - renterNetPosition,
+    equityBuilt: saleProceeds - remainMortg - dp - closingCost,
+  };
+}
+
+// ─── Toggle helpers ───────────────────────────────────────────────────────
+function setBeds(n) {
+  STATE.bedrooms = n;
+  el('bedroomToggle').querySelectorAll('.toggle-btn').forEach((b,i) => {
+    b.classList.toggle('active', i+1 === n);
+  });
+  updateSavingsHint();
+  updateQualifyWarn();
+}
+
+function setPropType(t) {
+  STATE.propertyType = t;
+  el('propTypeToggle').querySelectorAll('.toggle-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.toLowerCase().trim() === t);
+  });
+  updateQualifyWarn();
+}
+
+function onNeighbourhoodChange() {
+  const v = el('neighbourhoodSelect').value;
+  STATE.neighbourhood = v;
+  const manual = v === 'manual' || v === '';
+  el('manualPriceField').style.display = manual ? '' : 'none';
+  el('postalField').style.display      = '';
+  updateSavingsHint();
+  updateQualifyWarn();
+}
+
+function toggleAdv() {
+  const body = el('advBody');
+  body.classList.toggle('open');
+  el('advArrow').textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+function updateSavingsHint() {
+  const hp = deriveHomePrice();
+  if (!hp) { el('savingsHint').textContent = ''; return; }
+  const min = minDown(hp);
+  const sav = getSavings();
+  if (sav < min) {
+    el('savingsHint').textContent = `Minimum down payment for ${fmt(hp)} is ${fmt(min)} (${fmtPct(min/hp*100,0)}). You may need to adjust your target price or save more.`;
+  } else {
+    el('savingsHint').textContent = `Down payment: ${fmt(sav)} (${fmtPct(sav/hp*100)}% of ${fmt(hp)} estimated price).`;
+  }
+}
+
+function updateQualifyWarn() {
+  const hp  = deriveHomePrice();
+  const max = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
+  const box = el('qualifyWarn');
+  if (!hp) { box.style.display = 'none'; return; }
+  if (max < hp * 0.9) {
+    box.innerHTML = `⚠️ Based on your income and debts, your OSFI-qualifying max is approximately <strong>${fmt(max)}</strong>. The selected area's home price (<strong>${fmt(hp)}</strong>) exceeds that. The comparison still shows you the wealth picture — adjust assumptions as needed.`;
+    box.style.display = '';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+// ─── Show comparison (step 1 → 2) ────────────────────────────────────────
+function showComparison() {
+  const hp = deriveHomePrice();
+  if (!hp) {
+    alert('Please select a neighbourhood or enter a comparable home price to continue.');
+    return;
+  }
+  STATE.homePrice = hp;
+  STATE.fiveYr    = computeWealth(5);
+  STATE.tenYr     = computeWealth(10);
+
+  renderResults();
+  el('step1').style.display = 'none';
+  el('step2').style.display = '';
+  setStepActive(2);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  el('step2').style.display = 'none';
+  el('step1').style.display = '';
+  setStepActive(1);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setStepActive(n) {
+  for (let i = 1; i <= 3; i++) {
+    const dot = el('dot'+i), lbl = el('lbl'+i);
+    if (i < n)  { dot.className = 'step-dot done'; lbl.className = 'step-label done'; }
+    else if (i === n) { dot.className = 'step-dot active'; lbl.className = 'step-label active'; }
+    else        { dot.className = 'step-dot'; lbl.className = 'step-label'; }
+    if (i < 3) el('conn'+i).classList.toggle('done', i < n);
+  }
+}
+
+// ─── Render results ───────────────────────────────────────────────────────
+function renderResults() {
+  const f5 = STATE.fiveYr;
+  const f10= STATE.tenYr;
+
+  // Hero
+  el('heroValue').textContent = fmt(f5.cumRentPaid);
+  el('heroNote').textContent  = `vs ${fmt(f5.cumOwnerCash)} total out-of-pocket owning — but equity works for you`;
+  el('stat5yrEquity').textContent = fmt(Math.max(0, f5.equityBuilt));
+  el('stat5yrGap').textContent    = fmt(f5.wealthGap);
+  el('stat10yrGap').textContent   = fmt(f10.wealthGap);
+  const diff = f5.monthlyOwnTotal - f5.monthlyPI - 0 + 0; // for display
+  const rentDiff = f5.monthlyOwnTotal - getMonthlyRent();
+  el('statMonthlyDiff').textContent    = (rentDiff >= 0 ? '+' : '-') + fmt(Math.abs(rentDiff));
+  el('statMonthlyDiffNote').textContent = rentDiff >= 0
+    ? 'more per month to own (goes to equity/asset)'
+    : 'per month cheaper to own';
+
+  // Monthly table
+  const tb = el('monthlyTableBody');
+  tb.innerHTML = '';
+  const rows = [
+    ['Rent / Principal payment', fmt(getMonthlyRent()), fmt(f5.monthlyPI)],
+    ['Property tax',              '—',                  fmt(f5.monthlyTax)],
+    ['Condo / maintenance fees',  '—',                  fmt(f5.monthlyCondo)],
+    ['Insurance',                 fmt(20),               fmt(f5.monthlyIns)],
+    ['Maintenance reserve',       '—',                  fmt(f5.monthlyMaint)],
+  ];
+  rows.forEach(r => {
+    tb.innerHTML += `<tr><td>${r[0]}</td><td class="rent-col">${r[1]}</td><td class="own-col">${r[2]}</td></tr>`;
+  });
+  tb.innerHTML += `<tr class="total">
+    <td>Total monthly</td>
+    <td class="rent-col">${fmt(getMonthlyRent() + 20)}</td>
+    <td class="own-col">${fmt(f5.monthlyOwnTotal)}</td>
+  </tr>`;
+
+  // Charts
+  renderChart('chart5yr', _chartInst5, f5, inst => { _chartInst5 = inst; }, 'chart5Legend');
+  renderChart('chart10yr', _chartInst10, f10, inst => { _chartInst10 = inst; }, 'chart10Legend');
+
+  // Detailed breakdown
+  const bg = el('breakdownGrid');
+  bg.innerHTML = '';
+  [f5, f10].forEach(f => {
+    const col = document.createElement('div');
+    col.innerHTML = `
+      <div class="bk-title">${f.years}-Year Wealth Summary</div>
+      <div class="bk-row"><span class="bk-label">Total rent paid</span><span class="bk-val red">${fmt(f.cumRentPaid)}</span></div>
+      <div class="bk-row"><span class="bk-label">Home value at exit</span><span class="bk-val green">${fmt(f.exitHomeValue)}</span></div>
+      <div class="bk-row"><span class="bk-label">Remaining mortgage</span><span class="bk-val">${fmt(f.remainMortg)}</span></div>
+      <div class="bk-row"><span class="bk-label">Net sale proceeds</span><span class="bk-val">${fmt(f.saleProceeds)}</span></div>
+      <div class="bk-row"><span class="bk-label">Owner net position</span><span class="bk-val green">${fmt(f.ownerNetPosition)}</span></div>
+      <div class="bk-row"><span class="bk-label">HISA balance (renter)</span><span class="bk-val">${fmt(f.hisaBalance)}</span></div>
+      <div class="bk-row"><span class="bk-label">Renter net position</span><span class="bk-val ${f.renterNetPosition < 0 ? 'red' : ''}">${fmt(f.renterNetPosition)}</span></div>
+      <div class="bk-row total"><span class="bk-label">Wealth gap (owner advantage)</span><span class="bk-val ${f.wealthGap >= 0 ? 'blue' : 'red'}">${fmt(f.wealthGap)}</span></div>`;
+    bg.appendChild(col);
+  });
+
+  // Assumptions used
+  const ag = el('assumptionsGrid');
+  ag.innerHTML = '';
+  const assumptions = [
+    ['Home price', fmt(STATE.homePrice)],
+    ['Down payment', `${fmt(f5.dp)} (${fmtPct(f5.dpPct*100)})`],
+    ['CMHC premium', f5.cm > 0 ? `${fmtPct(f5.cm*100)} (${fmt(f5.totalMortg - (STATE.homePrice - f5.dp))})` : 'None (≥ 20%)'],
+    ['Contract rate', fmtPct(getRate()*100) + ' (semi-annual compounding)'],
+    ['Qualifying rate (stress test)', fmtPct(Math.max(getRate()+0.02, 0.0525)*100)],
+    ['Amortisation', getAmort() + ' years'],
+    ['Property tax', fmtPct(CONFIG.PROP_TAX_PCT*100) + ' of value / yr (Calgary default)'],
+    ['Home appreciation', fmtPct(getAppreciation()*100) + ' / yr'],
+    ['Rent inflation', fmtPct(getRentInflation()*100) + ' / yr'],
+    ['HISA return', fmtPct(getHISA()*100) + ' / yr'],
+    ['Closing costs (buy)', fmtPct(CONFIG.CLOSING_PCT*100) + ' of purchase price'],
+    ['Sale costs (exit)', fmtPct(CONFIG.SALE_COST_PCT*100) + ' of sale price'],
+  ];
+  const half = Math.ceil(assumptions.length / 2);
+  [assumptions.slice(0, half), assumptions.slice(half)].forEach(group => {
+    const col = document.createElement('div');
+    group.forEach(([lbl, val]) => {
+      col.innerHTML += `<div class="bk-row"><span class="bk-label">${lbl}</span><span class="bk-val">${val}</span></div>`;
+    });
+    ag.appendChild(col);
+  });
+}
+
+// ─── Chart rendering ──────────────────────────────────────────────────────
+function renderChart(canvasId, existing, data, setInst, legendId) {
+  if (existing) existing.destroy();
+  const ctx = el(canvasId).getContext('2d');
+  const rentColor = '#fc8181';
+  const ownColor  = '#68d391';
+  const gapColor  = '#F7934C';
+
+  const inst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Renter\nnet position', 'Owner\nnet position', 'Wealth gap\n(owner advantage)'],
+      datasets: [{
+        data: [data.renterNetPosition, data.ownerNetPosition, data.wealthGap],
+        backgroundColor: [rentColor, ownColor, gapColor],
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' ' + fmt(ctx.raw)
+          }
+        }
+      },
+      scales: {
+        y: {
+          ticks: {
+            callback: v => fmtK(v),
+            font: { size: 11 }
+          },
+          grid: { color: 'rgba(0,0,0,0.06)' }
+        },
+        x: {
+          ticks: { font: { size: 10 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+  setInst(inst);
+  el(legendId).textContent = `Renter net: ${fmt(data.renterNetPosition)} · Owner net: ${fmt(data.ownerNetPosition)} · Gap: ${fmt(data.wealthGap)}`;
+}
+
+// ─── Contact modal ────────────────────────────────────────────────────────
+function openModal(dest) {
+  _cmDest = dest || 'email';
+  const cfg = {
+    email    : { head: 'Where should we send your report?',          sub:  'Your financial numbers stay private.', btn: 'Send my report →' },
+    whatsapp : { head: 'A quick intro before we chat',                sub:  'Rosh will message you on WhatsApp with your personalised report.', btn: 'Continue to WhatsApp →' },
+    booking  : { head: 'A few details before you book',              sub:  'We\'ll save your details then open the booking calendar.', btn: 'Continue to booking →' },
+  };
+  const c = cfg[_cmDest] || cfg.email;
+  el('cm-heading').textContent = c.head;
+  el('cm-subhead').textContent = c.sub;
+  el('cm-submit').textContent  = c.btn;
+  el('contactModal').style.display = 'flex';
+  el('cm-first').focus();
+  setStepActive(3);
+}
+
+function closeModal() {
+  el('contactModal').style.display = 'none';
+  el('cm-status').textContent = '';
+}
+
+// ─── Lead submission ──────────────────────────────────────────────────────
+async function submitLead() {
+  const firstName = el('cm-first').value.trim();
+  const lastName  = el('cm-last').value.trim();
+  const email     = el('cm-email').value.trim();
+  const phone     = el('cm-phone').value.trim();
+  const consent   = el('cm-consent').checked;
+
+  if (!firstName) { alert('Please enter your first name.'); return; }
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  const btn    = el('cm-submit');
+  const status = el('cm-status');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  btn.classList.add('pulse');
+  status.textContent = '';
+
+  const f5  = STATE.fiveYr;
+  const f10 = STATE.tenYr;
+
+  // Supabase payload
+  const supabasePayload = {
+    first_name:               firstName,
+    last_name:                lastName || null,
+    email,
+    phone:                    phone || null,
+    preferred_contact:        _cmDest,
+    current_rent:             getMonthlyRent(),
+    neighbourhood:            STATE.neighbourhood || null,
+    postal_code:              el('postalCode')?.value.trim() || null,
+    bedrooms:                 STATE.bedrooms,
+    property_type:            STATE.propertyType,
+    months_renting:           getMonthsRenting(),
+    household_income:         getIncome(),
+    savings:                  getSavings(),
+    monthly_debt:             getMonthlyDebt(),
+    computed_max_price:       Math.round(STATE.maxQualPrice),
+    computed_home_price:      Math.round(STATE.homePrice),
+    computed_5yr_rent_cost:   Math.round(f5?.cumRentPaid || 0),
+    computed_5yr_equity:      Math.round(f5?.equityBuilt || 0),
+    computed_5yr_wealth_gap:  Math.round(f5?.wealthGap || 0),
+    computed_10yr_wealth_gap: Math.round(f10?.wealthGap || 0),
+    source:                   'rent_vs_own_door_knock',
+    mode:                     STATE.mode,
+    consent_given:            consent,
+  };
+
+  // Apps Script payload (dual-write — keeps existing Google Sheet workflow intact)
+  const appsPayload = JSON.stringify({
+    source:           'rent_vs_own',
+    firstName,
+    lastName,
+    email,
+    phone,
+    preferredContact: _cmDest,
+    currentRent:      fmt(getMonthlyRent()),
+    neighbourhood:    STATE.neighbourhood,
+    bedrooms:         STATE.bedrooms,
+    propertyType:     STATE.propertyType,
+    monthsRenting:    getMonthsRenting(),
+    householdIncome:  fmt(getIncome()),
+    savings:          fmt(getSavings()),
+    monthlyDebt:      fmt(getMonthlyDebt()),
+    homePrice:        fmt(STATE.homePrice),
+    wealthGap5yr:     fmt(f5?.wealthGap || 0),
+    wealthGap10yr:    fmt(f10?.wealthGap || 0),
+    rentCost5yr:      fmt(f5?.cumRentPaid || 0),
+    equity5yr:        fmt(f5?.equityBuilt || 0),
+    mode:             STATE.mode,
+    consentGiven:     consent,
+  });
+
+  // Open external URLs synchronously (iOS Safari requires this while tap gesture is active)
+  if (_cmDest === 'whatsapp') {
+    const msg = encodeURIComponent(
+      `Hi Rosh! I just ran the Rent vs Own calculator. My name is ${firstName}${lastName ? ' ' + lastName : ''}. ` +
+      `Over 5 years, owning could put me ${fmt(f5?.wealthGap || 0)} ahead. I'd love to chat about my options.`
+    );
+    window.open(`https://wa.me/${CONFIG.ROSH_WHATSAPP}?text=${msg}`, '_blank');
+  } else if (_cmDest === 'booking') {
+    window.open(CONFIG.ROSH_BOOKING, '_blank');
+  }
+
+  // Supabase REST — fire and forget (non-blocking for UX)
+  if (CONFIG.SUPABASE_ANON_KEY !== 'PASTE_ROTATED_KEY_HERE') {
+    fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rent_vs_own_leads`, {
+      method:  'POST',
+      headers: {
+        'apikey':        CONFIG.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+        'Content-Type':  'application/json',
+        'Prefer':        'return=minimal',
+      },
+      body: JSON.stringify(supabasePayload),
+    }).catch(() => {}); // silent fail — Apps Script is the backup
+  }
+
+  // Dual-write to Apps Script via sendBeacon (avoids iOS Safari auth sheet bug)
+  // sendBeacon is fire-and-forget; no await needed
+  if (typeof navigator.sendBeacon === 'function') {
+    navigator.sendBeacon(CONFIG.WEB_APP_URL, appsPayload);
+  } else {
+    fetch(CONFIG.WEB_APP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:appsPayload }).catch(()=>{});
+  }
+
+  // Generate PDF and trigger download
+  try {
+    generatePDF(firstName, lastName, email);
+  } catch(e) {
+    console.warn('PDF generation failed:', e);
+  }
+
+  // Success state
+  btn.classList.remove('pulse');
+  btn.textContent = '✅ Done!';
+  const msgs = {
+    email    : 'Your report is on its way. Check your inbox — Rosh will follow up shortly.',
+    whatsapp : 'Opening WhatsApp now…',
+    booking  : 'Opening the booking calendar…',
+  };
+  status.textContent = msgs[_cmDest] || msgs.email;
+
+  setTimeout(closeModal, 2200);
+}
+
+// ─── PDF generation (client-side jsPDF) ──────────────────────────────────
+function generatePDF(firstName, lastName, email) {
+  if (typeof window.jspdf === 'undefined') {
+    console.warn('jsPDF not loaded — skipping PDF generation');
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc  = new jsPDF({ unit: 'mm', format: 'a4' });
+  const f5   = STATE.fiveYr;
+  const f10  = STATE.tenYr;
+  const W    = 210, M = 18, cW = W - M*2;
+  const today = new Date().toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' });
+  const orange = [247, 147, 76];
+  const black  = [0, 0, 0];
+  const grey   = [102, 102, 102];
+
+  // ── PAGE 1: Cover ──────────────────────────────────────────────────────
+  doc.setFillColor(...black);
+  doc.rect(0, 0, W, 52, 'F');
+  doc.setFillColor(...orange);
+  doc.rect(0, 52, W, 3, 'F');
+
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(22);
+  doc.text('Rent vs Own', M, 22);
+
+  doc.setFontSize(13);
+  doc.setTextColor(...orange);
+  doc.text('Personalised Wealth Comparison', M, 31);
+
+  doc.setFontSize(9);
+  doc.setTextColor(180,180,180);
+  doc.text(`Prepared for: ${firstName}${lastName ? ' ' + lastName : ''}`, M, 41);
+  doc.text(`Date: ${today}`, M, 47);
+
+  // Agent info box
+  doc.setFillColor(248,248,248);
+  doc.setDrawColor(220,220,220);
+  doc.roundedRect(M, 62, cW, 38, 4, 4, 'FD');
+
+  doc.setTextColor(...black);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(12);
+  doc.text('Rosh Issac, Realtor®', M+8, 74);
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...grey);
+  doc.text('Issac Realty Inc. — Associates of Dreamhouse Realty Ltd.', M+8, 81);
+  doc.text('Calgary, Alberta  |  825 449 5083  |  rosh@issacrealty.com', M+8, 87);
+  doc.text('RECA Licence #: 00579553', M+8, 93);
+
+  // Summary numbers (cover)
+  const coverStats = [
+    ['Your current monthly rent', fmt(getMonthlyRent())],
+    ['Estimated comparable home price', fmt(STATE.homePrice)],
+    ['Your down payment', fmt(f5.dp) + ` (${fmtPct(f5.dpPct*100)})`],
+    ['5-year total rent cost', fmt(f5.cumRentPaid)],
+    ['5-year equity if you bought', fmt(Math.max(0, f5.equityBuilt))],
+    ['5-year wealth gap', fmt(f5.wealthGap)],
+  ];
+
+  let y = 112;
+  doc.setFillColor(...orange);
+  doc.rect(M, y, cW, 7, 'F');
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8);
+  doc.text('YOUR KEY NUMBERS', M+4, y+4.8);
+  y += 7;
+
+  coverStats.forEach(([lbl, val], i) => {
+    doc.setFillColor(i%2 === 0 ? 252 : 248, i%2 === 0 ? 252 : 248, i%2 === 0 ? 252 : 248);
+    doc.rect(M, y, cW, 9, 'F');
+    doc.setTextColor(...black);
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.text(lbl, M+4, y+6);
+    doc.setFont('helvetica','bold');
+    doc.text(val, W-M-4, y+6, { align:'right' });
+    y += 9;
+  });
+
+  // Disclaimer
+  doc.setFont('helvetica','italic');
+  doc.setFontSize(7);
+  doc.setTextColor(...grey);
+  const disc = 'This report is for informational purposes only and does not constitute financial, legal, or mortgage advice. All projections use assumed appreciation and interest rates which may differ from actual market conditions. Consult a licensed mortgage professional before making any real estate decisions.';
+  const discLines = doc.splitTextToSize(disc, cW);
+  doc.text(discLines, M, 270);
+
+  // Footer rule
+  doc.setDrawColor(...orange);
+  doc.setLineWidth(0.8);
+  doc.line(M, 280, W-M, 280);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(7);
+  doc.setTextColor(...grey);
+  doc.text('Issac Realty Team — Associates of Dreamhouse Realty Ltd.', W/2, 285, { align:'center' });
+
+  // ── PAGE 2: Monthly comparison + 5-year ───────────────────────────────
+  doc.addPage();
+  _pdfHeader(doc, 'Monthly Cost Comparison', W, M, orange, black);
+
+  doc.autoTable({
+    startY: 30,
+    head:   [['Cost Item', 'Renting / month', 'Owning / month']],
+    body:   [
+      ['Rent / Principal payment', fmt(getMonthlyRent()), fmt(f5.monthlyPI)],
+      ['Property tax',              '—',                  fmt(f5.monthlyTax)],
+      ['Condo / maintenance fees',  '—',                  fmt(f5.monthlyCondo)],
+      ['Insurance',                 fmt(20),               fmt(f5.monthlyIns)],
+      ['Maintenance reserve',       '—',                  fmt(f5.monthlyMaint)],
+      ['TOTAL',                     fmt(getMonthlyRent()+20), fmt(f5.monthlyOwnTotal)],
+    ],
+    styles:       { fontSize:9, cellPadding:4 },
+    headStyles:   { fillColor:black, textColor:[255,255,255], fontStyle:'bold', fontSize:8 },
+    bodyStyles:   { textColor:black },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{ fontStyle:'normal' }, 1:{ halign:'right' }, 2:{ halign:'right' } },
+    didParseCell: data => {
+      if (data.row.index === 5) { data.cell.styles.fontStyle = 'bold'; }
+    },
+    margin: { left:M, right:M },
+    theme: 'plain',
+  });
+
+  let y2 = doc.lastAutoTable.finalY + 10;
+  _pdfSectionTitle(doc, '5-Year Wealth Summary', y2, M, cW, orange);
+  y2 += 7;
+
+  doc.autoTable({
+    startY: y2,
+    head:   [['Metric', 'Renting', 'Owning']],
+    body:   [
+      ['Total out-of-pocket over 5 years', fmt(f5.cumRentPaid), fmt(f5.cumOwnerCash)],
+      ['Home value at year 5',             '—',                  fmt(f5.exitHomeValue)],
+      ['Remaining mortgage at year 5',     '—',                  fmt(f5.remainMortg)],
+      ['Net equity (after 6% sale costs)', '—',                  fmt(f5.saleProceeds - f5.remainMortg)],
+      ['HISA balance (down payment alt.)', fmt(f5.hisaBalance),  '—'],
+      ['Net wealth position',              fmt(f5.renterNetPosition), fmt(f5.ownerNetPosition)],
+      ['WEALTH GAP (owner advantage)',     '',                   fmt(f5.wealthGap)],
+    ],
+    styles:       { fontSize:9, cellPadding:4 },
+    headStyles:   { fillColor:black, textColor:[255,255,255], fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{ fontStyle:'normal' }, 1:{ halign:'right' }, 2:{ halign:'right' } },
+    didParseCell: data => {
+      if (data.row.index === 6) {
+        data.cell.styles.fontStyle  = 'bold';
+        data.cell.styles.fillColor  = [255,248,240];
+        data.cell.styles.textColor  = [...orange];
+      }
+    },
+    margin: { left:M, right:M },
+    theme: 'plain',
+  });
+
+  _pdfFooter(doc, W, M, grey, orange);
+
+  // ── PAGE 3: 10-year + Assumptions ──────────────────────────────────────
+  doc.addPage();
+  _pdfHeader(doc, '10-Year Wealth Comparison', W, M, orange, black);
+
+  doc.autoTable({
+    startY: 30,
+    head:   [['Metric', 'Renting', 'Owning']],
+    body:   [
+      ['Total out-of-pocket over 10 years', fmt(f10.cumRentPaid), fmt(f10.cumOwnerCash)],
+      ['Home value at year 10',              '—',                  fmt(f10.exitHomeValue)],
+      ['Remaining mortgage at year 10',      '—',                  fmt(f10.remainMortg)],
+      ['Net equity (after 6% sale costs)',   '—',                  fmt(f10.saleProceeds - f10.remainMortg)],
+      ['HISA balance (down payment alt.)',   fmt(f10.hisaBalance), '—'],
+      ['Net wealth position',                fmt(f10.renterNetPosition), fmt(f10.ownerNetPosition)],
+      ['WEALTH GAP (owner advantage)',       '',                   fmt(f10.wealthGap)],
+    ],
+    styles:       { fontSize:9, cellPadding:4 },
+    headStyles:   { fillColor:black, textColor:[255,255,255], fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{ fontStyle:'normal' }, 1:{ halign:'right' }, 2:{ halign:'right' } },
+    didParseCell: data => {
+      if (data.row.index === 6) {
+        data.cell.styles.fontStyle  = 'bold';
+        data.cell.styles.fillColor  = [255,248,240];
+        data.cell.styles.textColor  = [...orange];
+      }
+    },
+    margin: { left:M, right:M },
+    theme: 'plain',
+  });
+
+  let y3 = doc.lastAutoTable.finalY + 10;
+  _pdfSectionTitle(doc, 'Assumptions Used', y3, M, cW, orange);
+  y3 += 7;
+
+  doc.autoTable({
+    startY: y3,
+    head:   [['Assumption', 'Value']],
+    body:   [
+      ['Contract interest rate',      fmtPct(getRate()*100) + ' (semi-annual compounding)'],
+      ['Qualifying rate (stress test)',fmtPct(Math.max(getRate()+0.02,0.0525)*100)],
+      ['Amortisation period',         getAmort() + ' years'],
+      ['Down payment',                fmt(f5.dp) + ' (' + fmtPct(f5.dpPct*100) + ')'],
+      ['CMHC insurance',              f5.cm > 0 ? fmtPct(f5.cm*100) + ' of mortgage' : 'None (≥ 20% down)'],
+      ['Property tax',                fmtPct(CONFIG.PROP_TAX_PCT*100) + ' of value/yr (Calgary default)'],
+      ['Home insurance',              fmt(CONFIG.HOME_INS_MONTHLY) + '/month'],
+      ['Maintenance reserve',         fmtPct(CONFIG.MAINT_PCT*100) + ' of value/yr'],
+      ['Condo fees',                  fmt(getCondoFee()) + '/month'],
+      ['Home appreciation',           fmtPct(getAppreciation()*100) + '/yr'],
+      ['Rent inflation',              fmtPct(getRentInflation()*100) + '/yr'],
+      ['HISA return on savings',      fmtPct(getHISA()*100) + '/yr'],
+      ['Closing costs (purchase)',    fmtPct(CONFIG.CLOSING_PCT*100) + ' of purchase price'],
+      ['Sale costs (exit)',           fmtPct(CONFIG.SALE_COST_PCT*100) + ' of sale price'],
+    ],
+    styles:       { fontSize:9, cellPadding:4 },
+    headStyles:   { fillColor:black, textColor:[255,255,255], fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{ fontStyle:'normal', cellWidth: 90 }, 1:{ halign:'right' } },
+    margin: { left:M, right:M },
+    theme: 'plain',
+  });
+
+  _pdfFooter(doc, W, M, grey, orange);
+
+  // ── PAGE 4: What might be holding you back? ────────────────────────────
+  doc.addPage();
+  _pdfHeader(doc, 'What Might Be Holding You Back?', W, M, orange, black);
+
+  const sections = [
+    {
+      title: 'Down Payment',
+      body:  'The most common barrier is not the income to qualify — it\'s having the down payment saved. ' +
+             'With home prices in Calgary, you typically need 5% on the first $500,000 and 10% on anything above that. ' +
+             `Based on the ${fmt(STATE.homePrice)} comparison we ran today, your target down payment is ${fmt(f5.dp)}. ` +
+             'There are programs that can help — including RRSP Home Buyers\' Plan (up to $35,000 each, $70,000 combined) and the First Home Savings Account (FHSA), which gives you both a tax deduction and tax-free growth.'
+    },
+    {
+      title: 'Stress Test Qualifying',
+      body:  'Canada\'s OSFI stress test requires you to qualify at the higher of your contract rate plus 2%, or 5.25%. ' +
+             'This means your qualifying rate today is ' + fmtPct(Math.max(getRate()+0.02, 0.0525)*100) + '. ' +
+             'Based on your income of ' + fmt(getIncome()) + '/yr and debt payments of ' + fmt(getMonthlyDebt()) + '/mo, ' +
+             'you can likely qualify for a home up to approximately ' + fmt(STATE.maxQualPrice) + '. ' +
+             'A licensed mortgage broker can shop 30+ lenders simultaneously and often find more flexibility than going to your own bank directly.'
+    },
+    {
+      title: 'Market Timing',
+      body:  'Trying to time the market is one of the most expensive decisions renters make. ' +
+             'Every month you delay, you are paying rent — money that builds no equity. The wealth gap analysis ' +
+             'in this report assumes a modest ' + fmtPct(getAppreciation()*100) + '/yr home appreciation. ' +
+             'The real question is not whether the market will go up or down in the short term. ' +
+             'It is whether, over a 5- to 10-year horizon, owning the home you would otherwise rent puts you in a materially better financial position. ' +
+             'The numbers here suggest it does.'
+    },
+  ];
+
+  let y4 = 30;
+  sections.forEach(({ title, body }) => {
+    doc.setFillColor(...orange);
+    doc.setDrawColor(...orange);
+    doc.rect(M, y4, 3, 0, 'F'); // left accent
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(11);
+    doc.setTextColor(...black);
+    doc.text(title, M, y4 + 5);
+    y4 += 9;
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(9);
+    doc.setTextColor(...grey);
+    const lines = doc.splitTextToSize(body, cW);
+    doc.text(lines, M, y4);
+    y4 += lines.length * 5 + 10;
+  });
+
+  // Agent contact card
+  y4 += 4;
+  doc.setFillColor(248,248,248);
+  doc.setDrawColor(220,220,220);
+  doc.roundedRect(M, y4, cW, 38, 4, 4, 'FD');
+
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(11);
+  doc.setTextColor(...black);
+  doc.text('Ready to take the next step?', M+8, y4+10);
+
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(9);
+  doc.setTextColor(...grey);
+  doc.text('Rosh Issac, Realtor® — Issac Realty Inc., Associates of Dreamhouse Realty Ltd.', M+8, y4+18);
+  doc.text('825 449 5083  |  rosh@issacrealty.com  |  roshaissac.github.io', M+8, y4+25);
+  doc.setFont('helvetica','italic');
+  doc.text('RECA Licence #: 00579553 — Licensed to trade in real estate in Alberta', M+8, y4+32);
+
+  _pdfFooter(doc, W, M, grey, orange);
+
+  // Save
+  const filename = `Rent-vs-Own-${firstName.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`;
+  doc.save(filename);
+}
+
+// PDF helpers
+function _pdfHeader(doc, title, W, M, orange, black) {
+  doc.setFillColor(...black);
+  doc.rect(0, 0, W, 24, 'F');
+  doc.setFillColor(...orange);
+  doc.rect(0, 24, W, 2.5, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(13);
+  doc.setTextColor(255,255,255);
+  doc.text(title, M, 16);
+  doc.setFontSize(8);
+  doc.setTextColor(...orange);
+  doc.text('Rent vs Own — Issac Real Estate Team', W-M, 16, { align:'right' });
+}
+
+function _pdfSectionTitle(doc, text, y, M, cW, orange) {
+  doc.setFillColor(...orange);
+  doc.rect(M, y, cW, 7, 'F');
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(8);
+  doc.setTextColor(255,255,255);
+  doc.text(text.toUpperCase(), M+4, y+4.8);
+}
+
+function _pdfFooter(doc, W, M, grey, orange) {
+  doc.setDrawColor(...orange);
+  doc.setLineWidth(0.5);
+  doc.line(M, 282, W-M, 282);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(7);
+  doc.setTextColor(...grey);
+  doc.text('Issac Realty Team — Associates of Dreamhouse Realty Ltd.  |  For information only — not a lender commitment.', W/2, 287, { align:'center' });
+}
+
+// ─── Apply mode on load ───────────────────────────────────────────────────
+function applyMode() {
+  if (CLIENT_MODE) {
+    STATE.mode = 'client';
+    el('headerAdvisor').style.display    = 'none';
+    el('headerClient').style.display     = '';
+    el('clientModeBanner').style.display = '';
+    el('advancedSection').style.display  = 'none';
+    el('clientAssumptionsNote').style.display = '';
+    el('advisorModeLink').style.display  = '';
+  } else {
+    STATE.mode = 'advisor';
+    el('headerAdvisor').style.display = '';
+    el('headerClient').style.display  = 'none';
+  }
+}
+
+// ─── Reactive updates on any input change ─────────────────────────────────
+document.addEventListener('input', () => {
+  updateSavingsHint();
+  updateQualifyWarn();
+  // recompute max qualifying price for display
+  STATE.maxQualPrice = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
+});
+
+window.addEventListener('load', () => {
+  applyMode();
+  STATE.maxQualPrice = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
+  updateSavingsHint();
+});
+</script>
+</body>
+</html>
