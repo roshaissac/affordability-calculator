@@ -319,7 +319,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   <!-- ══ STEP 1 — INPUTS ════════════════════════════════════════════ -->
   <div id="step1">
-    <div class="grid-2" style="margin-bottom:18px">
+    <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:18px">
 
       <!-- Card: Rental Situation -->
       <div class="card">
@@ -513,12 +513,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <div style="font-size:0.67rem;color:#bbb;margin-top:4px">Car payment is deducted from your monthly budget — purchase price target adjusts accordingly (TDS impact)</div>
         </div>
 
-        <!-- Mortgage assumptions row -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+        <!-- Mortgage assumptions — row 1: rates -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
           <div class="field" style="margin:0">
-            <label style="font-size:0.71rem">Rate</label>
-            <div class="input-wrap"><input type="number" id="ownerRate" value="5.5" min="0.5" max="15" step="0.05" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
+            <label style="font-size:0.71rem">Contract Rate <span style="font-weight:400;color:#aaa">(actual)</span></label>
+            <div class="input-wrap"><input type="number" id="ownerRate" value="4.5" min="0.5" max="15" step="0.05" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
           </div>
+          <div class="field" style="margin:0">
+            <label style="font-size:0.71rem">Stress Test Rate <span style="font-weight:400;color:#aaa">(qualifying)</span></label>
+            <div id="stressRateDisplay" style="padding:9px 12px;background:#fff8f3;border-radius:7px;border:1.5px solid #fbd38d;font-weight:700;color:#D95F0A;font-size:0.88rem">6.50%</div>
+          </div>
+        </div>
+
+        <!-- Mortgage assumptions — row 2: amort + down -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
           <div class="field" style="margin:0">
             <label style="font-size:0.71rem">Amortization</label>
             <select id="ownerAmort" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:0.82rem" onchange="renderOwnershipCard()">
@@ -533,12 +541,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </div>
         </div>
 
+        <!-- Stress test explanation note -->
+        <div style="background:#fff8f3;border:1px solid #fbd38d;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.71rem;color:#7a3b10;line-height:1.5">
+          <strong>Stress test = max(contract rate + 2%, 5.25%)</strong> — banks qualify you at this higher rate to ensure you can handle future rate increases. Your actual monthly payments use the contract rate. The stress test is not an additional cost, but it reduces the maximum mortgage you qualify for, and therefore your purchase price target.
+        </div>
+
         <div style="font-size:0.7rem;color:#bbb;line-height:1.5;font-style:italic">
           Property tax auto-estimated at 0.65%/yr (Calgary avg) — edit the field above if you have the exact figure. Maintenance reserve is 1%/yr estimate. Mortgage uses Canadian semi-annual compounding.
         </div>
       </div>
 
-    </div><!-- /grid-2 step1 -->
+    </div><!-- /flex-col step1 -->
 
     <!-- Contact strip + CTA -->
     <div class="card" style="border:1.5px solid var(--orange);margin-top:4px">
@@ -788,7 +801,7 @@ const CONFIG = {
   ROSH_WHATSAPP:    '18254495083',
   ROSH_BOOKING:     'https://calendar.app.google/88aQwcD1kWahi27Z9',
   // mortgage defaults
-  DEFAULT_RATE:         5.5,
+  DEFAULT_RATE:         4.5,
   DEFAULT_AMORT:        25,
   DEFAULT_APPRECIATION: 3.5,
   DEFAULT_RENT_INF:     4.0,
@@ -894,6 +907,7 @@ function getAppreciation()          { return gv('appreciation', CONFIG.DEFAULT_A
 function getRentInflation()         { return gv('rentInflation', CONFIG.DEFAULT_RENT_INF) / 100; }
 function getMonthlyBudget()         { return gv('ownershipBudget', Math.round(getTotalRentalCommitment() * 1.5 / 50) * 50); }
 function getRate()                  { return gv('ownerRate', CONFIG.DEFAULT_RATE) / 100; }
+function getStressRate()            { return Math.max(getRate() + 0.02, 0.0525); } // OSFI: max(contract+2%, 5.25%)
 function getAmort()                 { return parseInt(el('ownerAmort')?.value || CONFIG.DEFAULT_AMORT); }
 function getDownPct()               { return gv('ownerDown', 5) / 100; }
 function getInsMonthly()            { return gv('homeInsMonthly', CONFIG.HOME_INS_MONTHLY); }
@@ -910,7 +924,7 @@ function getAutoLoanMonthly()       {
 function computeAffordablePrice() {
   const B       = getMonthlyBudget() - getAutoLoanMonthly(); // auto loan reduces housing budget (TDS)
   const downPct = getDownPct();
-  const mr      = monthlyRate(getRate());
+  const mr      = monthlyRate(getStressRate()); // OSFI stress test — bank qualifies at higher rate
   const n       = getAmort() * 12;
   const pf      = paymentFactor(mr, n);
   const ins     = getInsMonthly();
@@ -975,6 +989,9 @@ function renderOwnershipCard() {
   const price = computeAffordablePrice();
   STATE.homePrice = price;
 
+  // Stress test rate display (auto-calculates from contract rate)
+  el('stressRateDisplay').textContent = fmtPct(getStressRate() * 100, 2);
+
   // Hero
   el('affordablePrice').textContent = fmt(price);
   const down   = price * getDownPct();
@@ -1033,7 +1050,7 @@ function renderOwnershipCard() {
 function computeAffordablePriceBase() {
   const B       = getMonthlyBudget();
   const downPct = getDownPct();
-  const mr      = monthlyRate(getRate());
+  const mr      = monthlyRate(getStressRate()); // consistent with main solver
   const n       = getAmort() * 12;
   const pf      = paymentFactor(mr, n);
   const ins     = getInsMonthly();
