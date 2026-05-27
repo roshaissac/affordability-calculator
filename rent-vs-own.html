@@ -309,19 +309,58 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="card">
         <div class="card-title">🏠 Your Current Rental Situation</div>
 
+        <!-- Monthly rent + auto-annual side by side -->
         <div class="field">
-          <label>Current Monthly Rent</label>
-          <div class="input-wrap"><span class="pre">$</span>
-            <input type="number" id="monthlyRent" value="2200" min="500" max="10000" step="50" oninput="onRentChange()">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end">
+            <div>
+              <label>Monthly Rent</label>
+              <div class="input-wrap"><span class="pre">$</span>
+                <input type="number" id="monthlyRent" value="2200" min="500" max="10000" step="50" oninput="onRentChange()">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.74rem;color:#888">Annual (×12)</label>
+              <div id="annualRentDisplay" style="padding:10px 12px;background:#f5f5f5;border-radius:7px;border:1.5px solid #eee;font-weight:700;color:#555;font-size:0.88rem">$26,400</div>
+            </div>
           </div>
         </div>
 
+        <!-- Parking + Storage fees -->
+        <div class="field">
+          <label>Additional Monthly Costs <span style="font-weight:400;color:#888">(if applicable)</span></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <label style="font-size:0.73rem;color:#888;margin-bottom:4px;display:block">Parking</label>
+              <div class="input-wrap"><span class="pre">$</span>
+                <input type="number" id="parkingFee" value="0" min="0" max="500" step="25" oninput="onRentalExtrasChange()">
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.73rem;color:#888;margin-bottom:4px;display:block">Storage</label>
+              <div class="input-wrap"><span class="pre">$</span>
+                <input type="number" id="storageFee" value="0" min="0" max="200" step="10" oninput="onRentalExtrasChange()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total rental commitment -->
+        <div style="background:#fff3e8;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.78rem;font-weight:600;color:#666">Total Monthly Rental Commitment</span>
+          <div style="text-align:right">
+            <span style="font-weight:800;color:#D95F0A;font-size:1rem" id="totalRentalMonthly">$2,200</span>
+            <span style="font-size:0.73rem;color:#999;margin-left:6px" id="totalRentalAnnual">/ $26,400 yr</span>
+          </div>
+        </div>
+
+        <!-- Property type — 4 options, data-type for reliable matching -->
         <div class="field">
           <label>Property Type <span style="font-weight:400;color:#888">(what you'd buy)</span></label>
           <div class="toggle-group" id="propTypeToggle">
-            <button class="toggle-btn active" onclick="setPropType('apartment')">Apartment</button>
-            <button class="toggle-btn" onclick="setPropType('townhouse')">Townhouse</button>
-            <button class="toggle-btn" onclick="setPropType('detached')">Detached</button>
+            <button class="toggle-btn active" data-type="apartment"   onclick="setPropType('apartment')">Apartment</button>
+            <button class="toggle-btn"         data-type="townhouse"  onclick="setPropType('townhouse')">Townhouse</button>
+            <button class="toggle-btn"         data-type="semidetached" onclick="setPropType('semidetached')">Semi-Det.</button>
+            <button class="toggle-btn"         data-type="detached"   onclick="setPropType('detached')">Detached</button>
           </div>
         </div>
 
@@ -332,11 +371,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="card-title">🏡 What You Could Own</div>
 
         <div class="field">
-          <label>Monthly Ownership Budget <span style="font-weight:400;color:#888">(1.5× your rent — edit if needed)</span></label>
+          <label>Monthly Ownership Budget <span style="font-weight:400;color:#888">(1.5× total rental commitment — edit if needed)</span></label>
           <div class="input-wrap"><span class="pre">$</span>
             <input type="number" id="ownershipBudget" value="3300" min="1000" max="30000" step="100" oninput="renderOwnershipCard()">
           </div>
-          <div class="hint">Rule of thumb: owning typically costs ~1.5× rent all-in. Adjust to model different budgets.</div>
+          <div class="hint">Owning typically costs ~1.5× rent all-in. Adjust to model different scenarios.</div>
         </div>
 
         <!-- Affordable home price hero -->
@@ -346,9 +385,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <div id="affordableNote" style="font-size:0.72rem;color:#888;margin-top:3px">Adjust inputs to see your range</div>
         </div>
 
-        <!-- Monthly cost breakdown -->
-        <div style="font-size:0.77rem;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Monthly cost breakdown</div>
-        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:16px">
+        <!-- Monthly cost breakdown — interactive -->
+        <div style="font-size:0.77rem;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Monthly Cost Breakdown</div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:12px">
           <thead>
             <tr style="border-bottom:2px solid #eee">
               <th style="text-align:left;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">Item</th>
@@ -356,7 +395,74 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               <th style="text-align:right;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">/year</th>
             </tr>
           </thead>
-          <tbody id="ownerBreakdownBody"></tbody>
+          <tbody>
+            <!-- Mortgage P+I — auto -->
+            <tr style="border-bottom:1px solid #f0f0f0">
+              <td style="padding:6px 4px;color:#444">Mortgage P+I</td>
+              <td style="text-align:right;padding:6px 4px;font-weight:600" id="brPI_mo">—</td>
+              <td style="text-align:right;padding:6px 4px;color:#777" id="brPI_yr">—</td>
+            </tr>
+            <!-- Condo / HOA fee — checkbox toggle -->
+            <tr style="border-bottom:1px solid #f0f0f0">
+              <td style="padding:6px 4px">
+                <label style="display:flex;align-items:center;gap:7px;cursor:pointer;color:#444;font-size:0.8rem;margin:0">
+                  <input type="checkbox" id="condoFeeYes" onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0">
+                  Condo / HOA Fee
+                </label>
+              </td>
+              <td style="text-align:right;padding:4px 4px" id="condoMonthCell">
+                <span id="condoFeeNone" style="color:#ccc;font-size:0.75rem">—</span>
+                <div id="condoFeeInputWrap" style="display:none" class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
+                  <span class="pre" style="font-size:0.75rem">$</span>
+                  <input type="number" id="condoFeeMonthly" value="500" min="0" max="2000" step="50"
+                         style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
+                         oninput="renderOwnershipCard()">
+                </div>
+              </td>
+              <td style="text-align:right;padding:6px 4px;color:#777" id="brCondo_yr">—</td>
+            </tr>
+            <!-- Property Tax — editable (auto-filled from price) -->
+            <tr style="border-bottom:1px solid #f0f0f0">
+              <td style="padding:6px 4px">
+                <div style="color:#444">Property Tax</div>
+                <div style="font-size:0.67rem;color:#bbb">0.65%/yr Calgary avg — edit if known</div>
+              </td>
+              <td style="padding:4px 4px">
+                <div class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
+                  <span class="pre" style="font-size:0.75rem">$</span>
+                  <input type="number" id="propTaxMonthly" value="233" min="0" max="3000" step="10"
+                         style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
+                         oninput="renderOwnershipTotals()">
+                </div>
+              </td>
+              <td style="text-align:right;padding:6px 4px;color:#777" id="brTax_yr">—</td>
+            </tr>
+            <!-- Home Insurance — editable -->
+            <tr style="border-bottom:1px solid #f0f0f0">
+              <td style="padding:6px 4px">
+                <div style="color:#444">Home Insurance</div>
+                <div style="font-size:0.67rem;color:#bbb">est. — edit if known</div>
+              </td>
+              <td style="padding:4px 4px">
+                <div class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
+                  <span class="pre" style="font-size:0.75rem">$</span>
+                  <input type="number" id="homeInsMonthly" value="150" min="0" max="1000" step="10"
+                         style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
+                         oninput="renderOwnershipCard()">
+                </div>
+              </td>
+              <td style="text-align:right;padding:6px 4px;color:#777" id="brIns_yr">—</td>
+            </tr>
+            <!-- Maintenance reserve — auto -->
+            <tr style="border-bottom:1px solid #f0f0f0">
+              <td style="padding:6px 4px">
+                <div style="color:#444">Maintenance reserve</div>
+                <div style="font-size:0.67rem;color:#bbb">est. 1%/yr of home value</div>
+              </td>
+              <td style="text-align:right;padding:6px 4px;font-weight:600" id="brMaint_mo">—</td>
+              <td style="text-align:right;padding:6px 4px;color:#777" id="brMaint_yr">—</td>
+            </tr>
+          </tbody>
           <tfoot>
             <tr style="border-top:2px solid #111">
               <td style="padding:8px 4px;font-weight:700;font-size:0.82rem">Total</td>
@@ -381,13 +487,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             </select>
           </div>
           <div class="field" style="margin:0">
-            <label style="font-size:0.71rem">Down Payment</label>
+            <label style="font-size:0.71rem">Down Payment %</label>
             <div class="input-wrap"><input type="number" id="ownerDown" value="20" min="5" max="50" step="5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
           </div>
         </div>
 
         <div style="font-size:0.7rem;color:#bbb;line-height:1.5;font-style:italic">
-          Property tax: 0.65%/yr of purchase price (Calgary). Maintenance: 1%/yr. Condo fee auto-estimated by property type. Mortgage uses Canadian semi-annual compounding.
+          Property tax auto-estimated at 0.65%/yr (Calgary avg) — edit the field above if you have the exact figure. Maintenance reserve is 1%/yr estimate. Mortgage uses Canadian semi-annual compounding.
         </div>
       </div>
 
@@ -716,20 +822,21 @@ function remainingBalance(principal, mr, n, k) {
 }
 
 // ─── Input readers ────────────────────────────────────────────────────────
-function getMonthlyRent()    { return gv('monthlyRent', 2200); }
-function getMonthsRenting()  { return gv('monthsRenting', 36); }
-function getAppreciation()   { return gv('appreciation', CONFIG.DEFAULT_APPRECIATION) / 100; }
-function getRentInflation()  { return gv('rentInflation', CONFIG.DEFAULT_RENT_INF) / 100; }
-function getMonthlyBudget()  { return gv('ownershipBudget', Math.round(getMonthlyRent() * 1.5 / 50) * 50); }
-function getRate()           { return gv('ownerRate', CONFIG.DEFAULT_RATE) / 100; }
-function getAmort()          { return parseInt(el('ownerAmort')?.value || CONFIG.DEFAULT_AMORT); }
-function getDownPct()        { return gv('ownerDown', 20) / 100; }
-
-// ─── Auto-estimated condo fee by property type ────────────────────────────
-function getCondoFee() {
-  if (STATE.propertyType === 'detached')  return 0;
-  if (STATE.propertyType === 'townhouse') return 250;
-  return 450; // apartment
+function getMonthlyRent()           { return gv('monthlyRent', 2200); }
+function getParkingFee()            { return gv('parkingFee', 0); }
+function getStorageFee()            { return gv('storageFee', 0); }
+function getTotalRentalCommitment() { return getMonthlyRent() + getParkingFee() + getStorageFee(); }
+function getMonthsRenting()         { return gv('monthsRenting', 36); }
+function getAppreciation()          { return gv('appreciation', CONFIG.DEFAULT_APPRECIATION) / 100; }
+function getRentInflation()         { return gv('rentInflation', CONFIG.DEFAULT_RENT_INF) / 100; }
+function getMonthlyBudget()         { return gv('ownershipBudget', Math.round(getTotalRentalCommitment() * 1.5 / 50) * 50); }
+function getRate()                  { return gv('ownerRate', CONFIG.DEFAULT_RATE) / 100; }
+function getAmort()                 { return parseInt(el('ownerAmort')?.value || CONFIG.DEFAULT_AMORT); }
+function getDownPct()               { return gv('ownerDown', 20) / 100; }
+function getInsMonthly()            { return gv('homeInsMonthly', CONFIG.HOME_INS_MONTHLY); }
+function getCondoFee()              {
+  if (!el('condoFeeYes')?.checked) return 0;
+  return gv('condoFeeMonthly', 500);
 }
 
 // ─── Iterative: home price the monthly budget can support ─────────────────
@@ -739,7 +846,7 @@ function computeAffordablePrice() {
   const mr      = monthlyRate(getRate());
   const n       = getAmort() * 12;
   const pf      = paymentFactor(mr, n);
-  const ins     = CONFIG.HOME_INS_MONTHLY;
+  const ins     = getInsMonthly();
   const condo   = getCondoFee();
 
   let P = 500000;
@@ -747,7 +854,7 @@ function computeAffordablePrice() {
     const cm    = cmhcRate(downPct);
     const loan  = P * (1 - downPct) * (1 + cm);
     const pi    = loan * pf;
-    const tax   = P * CONFIG.PROP_TAX_PCT / 12;
+    const tax   = P * CONFIG.PROP_TAX_PCT / 12;   // percentage-based in solver
     const maint = P * CONFIG.MAINT_PCT / 12;
     const total = pi + tax + maint + ins + condo;
     const newP  = P * (B / total);
@@ -766,51 +873,91 @@ function computeOwnershipCosts(price) {
   const mr      = monthlyRate(getRate());
   const n       = getAmort() * 12;
   const pi      = loan * paymentFactor(mr, n);
-  const tax     = price * CONFIG.PROP_TAX_PCT / 12;
-  const ins     = CONFIG.HOME_INS_MONTHLY;
+  const tax     = price * CONFIG.PROP_TAX_PCT / 12;  // used to auto-fill editable field
+  const ins     = getInsMonthly();
   const maint   = price * CONFIG.MAINT_PCT / 12;
   const condo   = getCondoFee();
   const total   = pi + tax + ins + maint + condo;
   return { pi, tax, ins, maint, condo, total };
 }
 
-// ─── Update the right card display live ──────────────────────────────────
+// ─── Update rental commitment displays ───────────────────────────────────
+function updateRentalDisplays() {
+  const rent   = getMonthlyRent();
+  const total  = getTotalRentalCommitment();
+  el('annualRentDisplay').textContent  = '$' + (rent * 12).toLocaleString();
+  el('totalRentalMonthly').textContent = '$' + total.toLocaleString();
+  el('totalRentalAnnual').textContent  = '/ $' + (total * 12).toLocaleString() + ' yr';
+}
+
+// ─── Lightweight totals re-render (when user edits tax inline) ────────────
+function renderOwnershipTotals() {
+  const tax   = gv('propTaxMonthly', 0);
+  const ins   = getInsMonthly();
+  const condo = getCondoFee();
+  const pi    = parseFloat(el('brPI_mo')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
+  const maint = parseFloat(el('brMaint_mo')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
+  const total = pi + tax + ins + maint + condo;
+  el('brTax_yr').textContent         = fmt(tax * 12);
+  el('ownerTotalMonthly').textContent = fmt(total);
+  el('ownerTotalAnnual').textContent  = fmt(total * 12);
+}
+
+// ─── Full right-card render ───────────────────────────────────────────────
 function renderOwnershipCard() {
   const price = computeAffordablePrice();
   STATE.homePrice = price;
 
+  // Hero
   el('affordablePrice').textContent = fmt(price);
-  const down = price * getDownPct();
-  const cmPct = cmhcRate(getDownPct());
+  const down   = price * getDownPct();
+  const cmPct  = cmhcRate(getDownPct());
   const cmLabel = cmPct > 0 ? ` + ${fmtPct(cmPct*100)} CMHC` : ' · no CMHC';
   el('affordableNote').textContent =
     `${fmtPct(getDownPct()*100)} down = ${fmt(down)}${cmLabel} · ${getAmort()} yr amort`;
 
   const oc = computeOwnershipCosts(price);
-  const rows = [
-    ['Mortgage P+I',           oc.pi],
-    ['Property Tax (0.65%/yr)', oc.tax],
-    ['Home Insurance',          oc.ins],
-    ['Maintenance (1%/yr)',     oc.maint],
-  ];
-  if (oc.condo > 0) rows.push([`Condo/Strata (${STATE.propertyType})`, oc.condo]);
 
-  el('ownerBreakdownBody').innerHTML = rows.map(([lbl, mo]) =>
-    `<tr style="border-bottom:1px solid #f5f5f5">
-       <td style="padding:6px 4px;color:#444">${lbl}</td>
-       <td style="text-align:right;padding:6px 4px;font-weight:600">${fmt(mo)}</td>
-       <td style="text-align:right;padding:6px 4px;color:#777">${fmt(mo*12)}</td>
-     </tr>`
-  ).join('');
+  // Mortgage P+I
+  el('brPI_mo').textContent = fmt(oc.pi);
+  el('brPI_yr').textContent = fmt(oc.pi * 12);
 
-  el('ownerTotalMonthly').textContent = fmt(oc.total);
-  el('ownerTotalAnnual').textContent  = fmt(oc.total * 12);
+  // Condo fee (checkbox-driven)
+  const condoChecked = el('condoFeeYes')?.checked;
+  el('condoFeeNone').style.display      = condoChecked ? 'none' : '';
+  el('condoFeeInputWrap').style.display = condoChecked ? '' : 'none';
+  el('brCondo_yr').textContent = condoChecked ? fmt(oc.condo * 12) : '—';
+
+  // Property tax — auto-fill from price (user can override)
+  el('propTaxMonthly').value   = Math.round(oc.tax);
+  el('brTax_yr').textContent   = fmt(Math.round(oc.tax) * 12);
+
+  // Insurance annual
+  el('brIns_yr').textContent  = fmt(getInsMonthly() * 12);
+
+  // Maintenance
+  el('brMaint_mo').textContent = fmt(oc.maint);
+  el('brMaint_yr').textContent = fmt(oc.maint * 12);
+
+  // Total (use actual input values for tax/ins in case user edited them)
+  const taxActual   = gv('propTaxMonthly', Math.round(oc.tax));
+  const insActual   = getInsMonthly();
+  const condoActual = getCondoFee();
+  const totalActual = oc.pi + taxActual + insActual + oc.maint + condoActual;
+  el('ownerTotalMonthly').textContent = fmt(totalActual);
+  el('ownerTotalAnnual').textContent  = fmt(totalActual * 12);
 }
 
-// ─── Pre-fill budget when rent changes ───────────────────────────────────
+// ─── Pre-fill budget when rent or extras change ───────────────────────────
 function onRentChange() {
-  const budget = Math.round(getMonthlyRent() * 1.5 / 50) * 50;
-  el('ownershipBudget').value = budget;
+  updateRentalDisplays();
+  el('ownershipBudget').value = Math.round(getTotalRentalCommitment() * 1.5 / 50) * 50;
+  renderOwnershipCard();
+}
+
+function onRentalExtrasChange() {
+  updateRentalDisplays();
+  el('ownershipBudget').value = Math.round(getTotalRentalCommitment() * 1.5 / 50) * 50;
   renderOwnershipCard();
 }
 
@@ -895,7 +1042,7 @@ function computeWealth(years) {
 function setPropType(t) {
   STATE.propertyType = t;
   el('propTypeToggle').querySelectorAll('.toggle-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.toLowerCase().trim() === t);
+    b.classList.toggle('active', b.dataset.type === t);
   });
   renderOwnershipCard();
 }
@@ -1656,8 +1803,9 @@ function applyMode() {
 
 window.addEventListener('load', () => {
   applyMode();
-  // Pre-fill budget from default rent and render the right card
-  el('ownershipBudget').value = Math.round(getMonthlyRent() * 1.5 / 50) * 50;
+  // Pre-fill budget from default rent and render
+  updateRentalDisplays();
+  el('ownershipBudget').value = Math.round(getTotalRentalCommitment() * 1.5 / 50) * 50;
   renderOwnershipCard();
 
   // Register service worker for PWA / offline support
