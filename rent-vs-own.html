@@ -725,7 +725,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- Back button -->
     <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
       <button class="btn btn-outline" onclick="goBack()">← Edit inputs</button>
-      <button class="btn btn-black" onclick="window.scrollTo({top:document.getElementById('ctaCard').offsetTop-20,behavior:'smooth'})">Get the full report ↓</button>
+      <button class="btn btn-black" onclick="downloadReport(); window.scrollTo({top:document.getElementById('ctaCard').offsetTop-20,behavior:'smooth'})">📥 Get the full report</button>
     </div>
 
     <!-- ── STEP 3 — CTA ── -->
@@ -1757,14 +1757,427 @@ function generatePDF(firstName, lastName, email) {
     return;
   }
   const { jsPDF } = window.jspdf;
-  const doc  = new jsPDF({ unit: 'mm', format: 'a4' });
-  const f5   = STATE.fiveYr;
-  const f10  = STATE.tenYr;
-  const W    = 210, M = 18, cW = W - M*2;
+  const doc   = new jsPDF({ unit: 'mm', format: 'a4' });
+  const f5    = STATE.fiveYr;
+  const f10   = STATE.tenYr;
+  const fLng  = STATE.longYr;
+  const amort = getAmort();
+  const W = 210, M = 18, cW = W - M * 2;
   const today = new Date().toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' });
-  const orange = [247, 147, 76];
-  const black  = [0, 0, 0];
-  const grey   = [102, 102, 102];
+
+  // Colour palette
+  const C = {
+    black:   [0,   0,   0],
+    orange:  [247, 147, 76],
+    dkOrng:  [217, 95,  10],
+    grey:    [100, 100, 100],
+    ltGrey:  [248, 248, 248],
+    mdGrey:  [220, 220, 220],
+    white:   [255, 255, 255],
+    green:   [39,  103, 73],
+    red:     [197, 48,  48],
+  };
+
+  // jsPDF built-in fonts only cover Latin-1; sanitise anything outside that range
+  const S = str => String(str)
+    .replace(/[–—]/g, '-')
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, '"')
+    .replace(/→/g, '->')
+    .replace(/®/g,  '(R)')
+    .replace(/•/g,  '*')
+    .replace(/…/g,  '...')
+    .replace(/ /g,  ' ')
+    .replace(/≥/g,  '>=')
+    .replace(/×/g,  'x');
+
+  const clientName = S(`${firstName}${lastName ? ' ' + lastName : ''}`).trim() || 'Valued Client';
+
+  // ── Shared helpers ────────────────────────────────────────────────────────
+  function pHead(title) {
+    doc.setFillColor(...C.black);  doc.rect(0, 0, W, 24, 'F');
+    doc.setFillColor(...C.orange); doc.rect(0, 24, W, 2.5, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.setTextColor(...C.white);
+    doc.text(S(title), M, 16);
+    doc.setFontSize(8); doc.setTextColor(...C.orange);
+    doc.text('Rent vs Own - Issac Real Estate Team', W - M, 16, { align:'right' });
+  }
+
+  function pFoot(n) {
+    doc.setDrawColor(...C.orange); doc.setLineWidth(0.5);
+    doc.line(M, 282, W - M, 282);
+    doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...C.grey);
+    doc.text('Issac Realty Team - Associates of Dreamhouse Realty Ltd.  |  For information only - not a lender commitment.', W/2, 287, { align:'center' });
+    if (n) doc.text(String(n), W - M, 287, { align:'right' });
+  }
+
+  function secBar(y, text) {
+    doc.setFillColor(...C.orange); doc.rect(M, y, cW, 7, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...C.white);
+    doc.text(S(text.toUpperCase()), M + 4, y + 4.8);
+    return y + 7;
+  }
+
+  function infoBox(y, text, bg) {
+    const lines = doc.splitTextToSize(S(text), cW - 10);
+    const h = lines.length * 4.6 + 9;
+    doc.setFillColor(...(bg || [255, 251, 245])); doc.setDrawColor(...C.mdGrey);
+    doc.roundedRect(M, y, cW, h, 2, 2, 'FD');
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...C.grey);
+    doc.text(lines, M + 5, y + 6);
+    return y + h + 4;
+  }
+
+  // ── PAGE 1: Cover + Key Numbers ──────────────────────────────────────────
+  doc.setFillColor(...C.black); doc.rect(0, 0, W, 52, 'F');
+  doc.setFillColor(...C.orange); doc.rect(0, 52, W, 4, 'F');
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(24);
+  doc.setTextColor(...C.white); doc.text('Rent vs Own', M, 24);
+  doc.setFontSize(13); doc.setTextColor(...C.orange);
+  doc.text('Personalised Wealth Comparison Report', M, 34);
+  doc.setFontSize(9); doc.setTextColor(180, 180, 180);
+  doc.text(S('Prepared for: ' + clientName), M, 44);
+  doc.text(S('Date: ' + today), M, 49);
+
+  // Agent card
+  doc.setFillColor(...C.ltGrey); doc.setDrawColor(...C.mdGrey);
+  doc.roundedRect(M, 62, cW, 28, 3, 3, 'FD');
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...C.black);
+  doc.text('Rosh Issac, Realtor(R)', M + 6, 72);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...C.grey);
+  doc.text('Issac Realty Team - Associates of Dreamhouse Realty Ltd., Calgary, Alberta', M + 6, 79);
+  doc.text('825 449 5083  |  rosh@issacrealty.com  |  roshaissac.github.io', M + 6, 85);
+
+  // Key numbers
+  let y1 = 98;
+  y1 = secBar(y1, 'Your Key Numbers at a Glance');
+  y1 += 2;
+
+  doc.autoTable({
+    startY: y1,
+    body: [
+      [S('Current monthly rent'), fmt(getMonthlyRent()), S('Your baseline payment today')],
+      [S('Total rental commitment'), fmt(getTotalRentalCommitment()), S('Incl. parking / storage fees')],
+      [S('Purchase price target'), fmt(STATE.homePrice), S('Stress-tested at ' + fmtPct(Math.max(getRate()+0.02, 0.0525)*100))],
+      [S('Down payment required'), S(fmt(f5.dp) + ' (' + fmtPct(f5.dpPct*100) + ')'), f5.cm > 0 ? S('CMHC premium: ' + fmtPct(f5.cm*100)) : 'No CMHC (20%+ down)'],
+      [S('Monthly mortgage P+I'), fmt(f5.monthlyPI), S('At ' + fmtPct(getRate()*100) + ' contract rate, ' + amort + '-yr amort')],
+      [S('All-in monthly cost of owning'), fmt(f5.monthlyOwnTotal), S('Mortgage + tax + insurance + maintenance')],
+    ],
+    styles: { fontSize: 9, cellPadding: [3,4,3,4] },
+    bodyStyles: { textColor: C.black },
+    alternateRowStyles: { fillColor: [252,252,252] },
+    columnStyles: {
+      0: { fontStyle:'bold', cellWidth: 68 },
+      1: { halign:'right', fontStyle:'bold', textColor: C.dkOrng, cellWidth: 28 },
+      2: { fontSize: 7.5, textColor: C.grey },
+    },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  y1 = doc.lastAutoTable.finalY + 7;
+
+  const rentDiff = f5.monthlyOwnTotal - getTotalRentalCommitment();
+  const diffWord = rentDiff > 0
+    ? S('Owning costs ' + fmt(rentDiff) + ' more per month all-in than renting.')
+    : S('Owning costs ' + fmt(Math.abs(rentDiff)) + ' less per month than renting.');
+  y1 = infoBox(y1,
+    S(diffWord + ' Unlike rent, a significant portion of your mortgage payment builds equity in an asset you own. ' +
+      'Over ' + amort + ' years this analysis projects an owner wealth advantage of ' + fmt(fLng.wealthGap) + ' - ' +
+      'the difference between building lasting wealth and paying someone else\'s mortgage.'));
+
+  doc.setFont('helvetica','italic'); doc.setFontSize(7); doc.setTextColor(...C.grey);
+  const disc = S('This report is for informational purposes only and does not constitute financial, legal, or mortgage advice. ' +
+    'All projections use assumed appreciation and interest rates which may differ from actual market conditions. ' +
+    'Consult a licensed mortgage professional before making any real estate decisions.');
+  doc.text(doc.splitTextToSize(disc, cW), M, 268);
+  pFoot(1);
+
+  // ── PAGE 2: Monthly Costs + 5-Year Wealth ────────────────────────────────
+  doc.addPage(); pHead('Monthly Cost Comparison');
+  let y2 = 32;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...C.grey);
+  doc.text(S('Side-by-side monthly costs: current rental vs. owning the comparable ' + fmt(STATE.homePrice) + ' property.'), M, y2);
+  y2 += 9;
+
+  const hasCondo = getCondoFee() > 0;
+  doc.autoTable({
+    startY: y2,
+    head: [['Cost Item', 'Renting / mo', 'Owning / mo', 'Notes']],
+    body: [
+      [S('Housing payment (rent / mortgage P+I)'), fmt(getMonthlyRent()), fmt(f5.monthlyPI), S('Rent: sunk cost. Own: builds equity')],
+      [S('Condo / HOA fees'), '-', hasCondo ? fmt(f5.monthlyCondo) : '-', hasCondo ? 'Applicable' : S('N/A for this property type')],
+      [S('Property tax'), '-', fmt(f5.monthlyTax), S('0.65%/yr Calgary avg')],
+      [S('Insurance'), S('$20 (renter)'), fmt(f5.monthlyIns), S('Renter $20 vs. home ins. $150/mo')],
+      [S('Maintenance reserve'), '-', fmt(f5.monthlyMaint), S('1% of home value/yr')],
+      ['TOTAL', S(fmt(getTotalRentalCommitment() + 20)), fmt(f5.monthlyOwnTotal), S('All monthly costs combined')],
+    ],
+    styles: { fontSize: 8.5, cellPadding: [3,4,3,4] },
+    headStyles: { fillColor: C.black, textColor: C.white, fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: {
+      0: { cellWidth:54 },
+      1: { halign:'right', cellWidth:24, textColor: C.red },
+      2: { halign:'right', cellWidth:24, textColor: C.green },
+      3: { fontSize:7.5, textColor: C.grey },
+    },
+    didParseCell: d => {
+      if (d.row.index === 5) {
+        d.cell.styles.fontStyle = 'bold';
+        if (d.column.index===1) d.cell.styles.textColor = C.red;
+        if (d.column.index===2) d.cell.styles.textColor = C.green;
+      }
+    },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  y2 = doc.lastAutoTable.finalY + 6;
+
+  const mNote = rentDiff > 0
+    ? S('Owning costs ' + fmt(rentDiff) + '/mo more than renting. Of your ' + fmt(f5.monthlyPI) + ' mortgage payment, the principal portion grows each year as your mortgage amortises. That share is equity you own - not a cost.')
+    : S('Owning is actually ' + fmt(Math.abs(rentDiff)) + '/mo cheaper all-in than renting, while simultaneously building equity. A strong case for buying.');
+  y2 = infoBox(y2, mNote);
+  y2 += 2;
+
+  y2 = secBar(y2, '5-Year Wealth Summary');
+  y2 += 2;
+  doc.autoTable({
+    startY: y2,
+    head: [['Metric', 'Renting', 'Owning']],
+    body: [
+      [S('Total cash out of pocket'), fmt(f5.cumRentPaid), fmt(f5.cumOwnerCash)],
+      [S('Home value at year 5'), '-', fmt(f5.exitHomeValue)],
+      [S('Remaining mortgage'), '-', fmt(f5.remainMortg)],
+      [S('Net equity (after 6% sale costs)'), '-', fmt(f5.saleProceeds - f5.remainMortg)],
+      [S('HISA balance (invested down payment @ ' + fmtPct(CONFIG.HISA_RETURN) + '%)'), fmt(f5.hisaBalance), '-'],
+      [S('Net wealth position'), fmt(f5.renterNetPosition), fmt(f5.ownerNetPosition)],
+      [S('WEALTH GAP - owner advantage'), '', fmt(f5.wealthGap)],
+    ],
+    styles: { fontSize:9, cellPadding:[3,4,3,4] },
+    headStyles: { fillColor:C.black, textColor:C.white, fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{cellWidth:100}, 1:{halign:'right',textColor:C.red}, 2:{halign:'right',textColor:C.green} },
+    didParseCell: d => {
+      if (d.row.index===6) {
+        d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[255,248,240];
+        if (d.column.index>0) d.cell.styles.textColor=C.dkOrng;
+      }
+    },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  y2 = doc.lastAutoTable.finalY + 6;
+  y2 = infoBox(y2, S('After 5 years the owner\'s net wealth position is ' + fmt(f5.ownerNetPosition) + ' vs the renter\'s ' +
+    fmt(f5.renterNetPosition) + ' - a gap of ' + fmt(f5.wealthGap) + '. The renter\'s only asset is the invested down payment. ' +
+    'The owner has equity from both principal repayment (' + fmt(f5.cumPrincipalRepaid) + ') and home appreciation.'));
+  pFoot(2);
+
+  // ── PAGE 3: 10-Year + Long-Term ───────────────────────────────────────────
+  doc.addPage(); pHead(S('10-Year & ' + amort + '-Year Wealth Comparison'));
+  let y3 = 32;
+  y3 = secBar(y3, '10-Year Wealth Summary'); y3 += 2;
+
+  doc.autoTable({
+    startY: y3,
+    head: [['Metric', 'Renting', 'Owning']],
+    body: [
+      [S('Total cash out of pocket'), fmt(f10.cumRentPaid), fmt(f10.cumOwnerCash)],
+      [S('Home value at year 10'), '-', fmt(f10.exitHomeValue)],
+      [S('Remaining mortgage'), '-', fmt(f10.remainMortg)],
+      [S('Net equity (after 6% sale costs)'), '-', fmt(f10.saleProceeds - f10.remainMortg)],
+      [S('HISA balance (invested down payment @ ' + fmtPct(CONFIG.HISA_RETURN) + '%)'), fmt(f10.hisaBalance), '-'],
+      [S('Net wealth position'), fmt(f10.renterNetPosition), fmt(f10.ownerNetPosition)],
+      [S('WEALTH GAP - owner advantage'), '', fmt(f10.wealthGap)],
+    ],
+    styles: { fontSize:9, cellPadding:[3,4,3,4] },
+    headStyles: { fillColor:C.black, textColor:C.white, fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{cellWidth:100}, 1:{halign:'right',textColor:C.red}, 2:{halign:'right',textColor:C.green} },
+    didParseCell: d => {
+      if (d.row.index===6) {
+        d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[255,248,240];
+        if (d.column.index>0) d.cell.styles.textColor=C.dkOrng;
+      }
+    },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  y3 = doc.lastAutoTable.finalY + 6;
+  const gapGrowth = f5.wealthGap > 0 ? Math.round((f10.wealthGap / f5.wealthGap - 1) * 100) : 0;
+  y3 = infoBox(y3, S('The 10-year picture strengthens considerably. Compounding appreciation accelerates and an increasing share ' +
+    'of each mortgage payment goes to principal. The wealth gap grows from ' + fmt(f5.wealthGap) + ' at 5 years to ' +
+    fmt(f10.wealthGap) + ' at 10 years' + (gapGrowth > 0 ? ' - a ' + gapGrowth + '% increase in owner advantage' : '') + '.'));
+  y3 += 4;
+
+  y3 = secBar(y3, S(amort + '-Year Summary - At Mortgage Payoff')); y3 += 2;
+  doc.autoTable({
+    startY: y3,
+    head: [['Metric', 'Renting', 'Owning']],
+    body: [
+      [S('Total cash out over ' + amort + ' years'), fmt(fLng.cumRentPaid), fmt(fLng.cumOwnerCash)],
+      [S('Home value at year ' + amort), '-', fmt(fLng.exitHomeValue)],
+      [S('Remaining mortgage (fully paid off)'), '-', fmt(fLng.remainMortg)],
+      [S('Net equity (after 6% sale costs)'), '-', fmt(fLng.saleProceeds - fLng.remainMortg)],
+      [S('HISA balance (invested down payment @ ' + fmtPct(CONFIG.HISA_RETURN) + '%)'), fmt(fLng.hisaBalance), '-'],
+      [S('Net wealth position'), fmt(fLng.renterNetPosition), fmt(fLng.ownerNetPosition)],
+      [S('WEALTH GAP - owner advantage'), '', fmt(fLng.wealthGap)],
+    ],
+    styles: { fontSize:9, cellPadding:[3,4,3,4] },
+    headStyles: { fillColor:C.black, textColor:C.white, fontStyle:'bold', fontSize:8 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{cellWidth:100}, 1:{halign:'right',textColor:C.red}, 2:{halign:'right',textColor:C.green} },
+    didParseCell: d => {
+      if (d.row.index===6) {
+        d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[255,248,240];
+        if (d.column.index>0) d.cell.styles.textColor=C.dkOrng;
+      }
+    },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  y3 = doc.lastAutoTable.finalY + 6;
+  y3 = infoBox(y3, S('At mortgage payoff (year ' + amort + ') the home is owned outright and valued at ' +
+    fmt(fLng.exitHomeValue) + '. After sale costs the owner walks away with ' + fmt(fLng.saleProceeds) + '. ' +
+    'The renter, having paid ' + fmt(fLng.cumRentPaid) + ' in rent over the same period, holds only their HISA of ' +
+    fmt(fLng.hisaBalance) + '. Total owner advantage over ' + amort + ' years: ' + fmt(fLng.wealthGap) + '.'));
+  pFoot(3);
+
+  // ── PAGE 4: Detailed Wealth Breakdown ────────────────────────────────────
+  doc.addPage(); pHead('Detailed Wealth Breakdown');
+  let y4 = 32;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...C.grey);
+  doc.text(S('Full line-item breakdown - every dollar in and out for renter vs. owner at 5, 10, and ' + amort + ' years.'), M, y4);
+  y4 += 9;
+
+  // Build typed row list for styling
+  const rows4 = [];
+  const R = (type, lbl, v5, v10, vL) => rows4.push([type, lbl, v5, v10, vL]);
+  R('sec',  'RENTING', '','','');
+  R('norm', S('Rent paid (escalating ' + fmtPct(getRentInflation()*100) + '/yr)'), fmt(f5.cumRentOnly), fmt(f10.cumRentOnly), fmt(fLng.cumRentOnly));
+  R('ind',  S("Renter's insurance ($20/mo)"), fmt(f5.cumRenterIns), fmt(f10.cumRenterIns), fmt(fLng.cumRenterIns));
+  R('sub',  'Total cash out - renting', fmt(f5.cumRentPaid), fmt(f10.cumRentPaid), fmt(fLng.cumRentPaid));
+  R('norm', S('HISA balance (down payment invested @ ' + fmtPct(CONFIG.HISA_RETURN) + '%)'), fmt(f5.hisaBalance), fmt(f10.hisaBalance), fmt(fLng.hisaBalance));
+  R('net',  S('Renter Net Position (HISA minus total cash out)'), fmt(f5.renterNetPosition), fmt(f10.renterNetPosition), fmt(fLng.renterNetPosition));
+  R('sec',  'OWNING', '','','');
+  R('ind',  S('Down payment + closing costs (one-time)'), fmt(f5.dp+f5.closingCost), fmt(f10.dp+f10.closingCost), fmt(fLng.dp+fLng.closingCost));
+  R('norm', S('Total mortgage payments (P+I)'), fmt(f5.cumMortgPayments), fmt(f10.cumMortgPayments), fmt(fLng.cumMortgPayments));
+  R('ind',  S('  Principal repaid - equity gained'), fmt(f5.cumPrincipalRepaid), fmt(f10.cumPrincipalRepaid), fmt(fLng.cumPrincipalRepaid));
+  R('ind',  S('  Interest paid - cost of borrowing'), fmt(f5.cumInterestPaid), fmt(f10.cumInterestPaid), fmt(fLng.cumInterestPaid));
+  R('ind',  S('Property tax paid (' + fmtPct(CONFIG.PROP_TAX_PCT*100) + '/yr Calgary)'), fmt(f5.cumTaxPaid), fmt(f10.cumTaxPaid), fmt(fLng.cumTaxPaid));
+  R('ind',  'Home insurance paid', fmt(f5.cumInsPaid), fmt(f10.cumInsPaid), fmt(fLng.cumInsPaid));
+  R('ind',  'Maintenance reserve (est. 1%/yr)', fmt(f5.cumMaintPaid), fmt(f10.cumMaintPaid), fmt(fLng.cumMaintPaid));
+  if (fLng.cumCondoPaid > 0) R('ind', 'Condo / HOA fees paid', fmt(f5.cumCondoPaid), fmt(f10.cumCondoPaid), fmt(fLng.cumCondoPaid));
+  R('sub',  'Total cash out - owning', fmt(f5.cumOwnerCash), fmt(f10.cumOwnerCash), fmt(fLng.cumOwnerCash));
+  R('norm', S('Home value at exit (' + fmtPct(getAppreciation()*100) + '/yr appreciation)'), fmt(f5.exitHomeValue), fmt(f10.exitHomeValue), fmt(fLng.exitHomeValue));
+  R('ind',  S('Less: sale costs (6%)'), fmt(f5.exitHomeValue-f5.saleProceeds), fmt(f10.exitHomeValue-f10.saleProceeds), fmt(fLng.exitHomeValue-fLng.saleProceeds));
+  R('ind',  'Remaining mortgage balance', fmt(f5.remainMortg), fmt(f10.remainMortg), fmt(fLng.remainMortg));
+  R('net',  S('Owner Net Position (proceeds minus balance minus cash out)'), fmt(f5.ownerNetPosition), fmt(f10.ownerNetPosition), fmt(fLng.ownerNetPosition));
+  R('gap',  'WEALTH GAP - Owner Advantage', fmt(f5.wealthGap), fmt(f10.wealthGap), fmt(fLng.wealthGap));
+
+  doc.autoTable({
+    startY: y4,
+    head: [[S('Item'), '5 Yrs', '10 Yrs', S(amort + ' Yrs')]],
+    body: rows4.map(r => [r[1], r[2], r[3], r[4]]),
+    styles: { fontSize:7.8, cellPadding:[2.5,4,2.5,4] },
+    headStyles: { fillColor:C.black, textColor:C.white, fontStyle:'bold', fontSize:8 },
+    columnStyles: { 0:{cellWidth:88}, 1:{halign:'right'}, 2:{halign:'right'}, 3:{halign:'right'} },
+    didParseCell: d => {
+      const t = rows4[d.row.index]?.[0];
+      if (!t) return;
+      if (t==='sec') { d.cell.styles.fillColor=[238,238,238]; d.cell.styles.fontStyle='bold'; d.cell.styles.fontSize=7.5; d.cell.styles.textColor=[50,50,50]; }
+      else if (t==='ind') { d.cell.styles.textColor=[150,150,150]; d.cell.styles.fontSize=7.5; if(d.column.index===0) d.cell.styles.cellPadding=[2.5,4,2.5,12]; }
+      else if (t==='sub') { d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[250,250,250]; if(d.column.index>0) d.cell.styles.textColor=C.red; }
+      else if (t==='net') { d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[249,253,249]; if(d.column.index>0) d.cell.styles.textColor=C.green; }
+      else if (t==='gap') { d.cell.styles.fontStyle='bold'; d.cell.styles.fillColor=[255,248,240]; d.cell.styles.fontSize=9; if(d.column.index>0) d.cell.styles.textColor=C.dkOrng; }
+    },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  pFoot(4);
+
+  // ── PAGE 5: Assumptions + What to Do Next ────────────────────────────────
+  doc.addPage(); pHead('Assumptions, Methodology & Your Path Forward');
+  let y5 = 32;
+  y5 = secBar(y5, 'Assumptions Used in This Report'); y5 += 2;
+
+  doc.autoTable({
+    startY: y5,
+    head: [['Assumption', 'Value', 'Notes']],
+    body: [
+      [S('Contract interest rate'), fmtPct(getRate()*100), S('Semi-annual compounding - Canadian standard')],
+      [S('Qualifying rate (OSFI stress test)'), fmtPct(Math.max(getRate()+0.02,0.0525)*100), S('Max of (contract + 2%) or 5.25%')],
+      [S('Amortisation period'), S(amort + ' years'), S('Full mortgage payoff term')],
+      [S('Down payment'), S(fmtPct(getDownPct()*100) + ' = ' + fmt(f5.dp)), f5.cm>0 ? S('CMHC premium: '+fmtPct(f5.cm*100)+' of mortgage') : S('No CMHC (20%+ down)')],
+      [S('Property tax'), S(fmtPct(CONFIG.PROP_TAX_PCT*100)+'/yr'), S('Calgary residential average - edit if known')],
+      [S('Home insurance'), S(fmt(CONFIG.HOME_INS_MONTHLY)+'/mo'), S('Estimate - varies by property type')],
+      [S('Maintenance reserve'), S('1%/yr of home value'), S('Industry standard estimate')],
+      [S('Home appreciation'), S(fmtPct(getAppreciation()*100)+'/yr'), S('Calgary 10-yr avg ~4% (CREA/CMHC)')],
+      [S('Annual rent increase'), S(fmtPct(getRentInflation()*100)+'/yr'), S('Calgary avg ~4%/yr (CMHC 2024)')],
+      [S('HISA return (renter savings)'), S(fmtPct(CONFIG.HISA_RETURN)+'/yr'), S('High-Interest Savings Account rate')],
+      [S('Closing costs (purchase)'), S(fmtPct(CONFIG.CLOSING_PCT*100)+' of price'), S('Legal, title insurance, misc.')],
+      [S('Sale costs (exit)'), S(fmtPct(CONFIG.SALE_COST_PCT*100)+' of price'), S('Realtor fees, legal, misc.')],
+    ],
+    styles: { fontSize:8, cellPadding:[2.5,4,2.5,4] },
+    headStyles: { fillColor:C.black, textColor:C.white, fontStyle:'bold', fontSize:7.5 },
+    alternateRowStyles: { fillColor:[248,248,248] },
+    columnStyles: { 0:{cellWidth:58}, 1:{halign:'right',cellWidth:26,fontStyle:'bold'}, 2:{fontSize:7.5,textColor:C.grey} },
+    margin: { left:M, right:M }, theme:'plain',
+  });
+  y5 = doc.lastAutoTable.finalY + 8;
+
+  const sections5 = [
+    {
+      title: S('Your Down Payment: ' + fmt(f5.dp) + ' (' + fmtPct(f5.dpPct*100) + ')'),
+      body:  S('The most common barrier is not income - it is saving the down payment. Two programs help significantly: ' +
+               'the RRSP Home Buyers\' Plan (up to $35,000 each, $70,000 combined for couples, repaid over 15 years) and the ' +
+               'First Home Savings Account (FHSA), which gives a tax deduction on contributions, tax-free growth, and tax-free ' +
+               'withdrawal for a first home purchase. A mortgage broker can map out the most efficient savings path for your situation.'),
+    },
+    {
+      title: S('Mortgage Qualifying: Stress Test at ' + fmtPct(Math.max(getRate()+0.02,0.0525)*100)),
+      body:  S('Canada\'s OSFI stress test requires qualifying at the higher of your contract rate plus 2% or 5.25%. ' +
+               'At your contract rate of ' + fmtPct(getRate()*100) + ', this means qualifying at ' +
+               fmtPct(Math.max(getRate()+0.02,0.0525)*100) + '. This determines your borrowing limit - it is not a cost ' +
+               'and your actual payments use the lower contract rate. The purchase price target in this report (' + fmt(STATE.homePrice) + ') ' +
+               'already accounts for this stress test. A mortgage broker can shop 30+ lenders for the most favourable terms.'),
+    },
+    {
+      title: 'Market Timing: Every Month of Renting Has a Cost',
+      body:  S('Waiting for the "perfect moment" is historically one of the most expensive decisions renters make. ' +
+               'Every month of rent is money that builds no equity. This report assumes a modest ' + fmtPct(getAppreciation()*100) +
+               '/yr appreciation - Calgary\'s 10-year average is closer to 4%. ' +
+               'The question is not whether prices will move short-term. It is whether, over a ' + amort + '-year horizon, ' +
+               'owning the home you would otherwise rent puts you materially ahead. At ' + fmt(fLng.wealthGap) + ' in projected owner advantage, these numbers strongly suggest it does.'),
+    },
+  ];
+
+  sections5.forEach(({ title, body }) => {
+    if (y5 > 238) { doc.addPage(); pHead('Your Path Forward (continued)'); y5 = 32; }
+    doc.setFillColor(...C.orange); doc.rect(M, y5, 3, 13, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...C.black);
+    doc.text(S(title), M + 6, y5 + 6.5);
+    y5 += 15;
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...C.grey);
+    const lines = doc.splitTextToSize(S(body), cW - 4);
+    doc.text(lines, M, y5);
+    y5 += lines.length * 4.7 + 9;
+  });
+
+  // Contact card
+  if (y5 > 232) { doc.addPage(); pHead(''); y5 = 32; }
+  y5 += 3;
+  doc.setFillColor(...C.ltGrey); doc.setDrawColor(...C.mdGrey);
+  doc.roundedRect(M, y5, cW, 44, 4, 4, 'FD');
+  doc.setFillColor(...C.orange);
+  doc.roundedRect(M, y5, cW, 7, 4, 4, 'F');
+  doc.rect(M, y5+4, cW, 3, 'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...C.black);
+  doc.text('Ready to take the next step?', M + 8, y5 + 18);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...C.grey);
+  doc.text('Rosh Issac, Realtor(R) - Issac Realty Team - Associates of Dreamhouse Realty Ltd.', M + 8, y5 + 27);
+  doc.text('825 449 5083  |  rosh@issacrealty.com  |  roshaissac.github.io', M + 8, y5 + 34);
+  doc.setFont('helvetica','italic'); doc.setFontSize(8);
+  doc.text('RECA Licence #: 00579553 - Licensed to trade in real estate in Alberta', M + 8, y5 + 40);
+  pFoot(5);
+
+  // Save
+  const safeName = S(clientName).replace(/[^a-zA-Z0-9\s]/g,'').replace(/\s+/g,'-') || 'Report';
+  doc.save('Rent-vs-Own-' + safeName + '-' + new Date().toISOString().slice(0,10) + '.pdf');
 
   // ── PAGE 1: Cover ──────────────────────────────────────────────────────
   doc.setFillColor(...black);
@@ -2046,43 +2459,14 @@ function generatePDF(firstName, lastName, email) {
 
   _pdfFooter(doc, W, M, grey, orange);
 
-  // Save
-  const filename = `Rent-vs-Own-${firstName.replace(/\s+/g,'-')}-${new Date().toISOString().slice(0,10)}.pdf`;
-  doc.save(filename);
 }
 
-// PDF helpers
-function _pdfHeader(doc, title, W, M, orange, black) {
-  doc.setFillColor(...black);
-  doc.rect(0, 0, W, 24, 'F');
-  doc.setFillColor(...orange);
-  doc.rect(0, 24, W, 2.5, 'F');
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(13);
-  doc.setTextColor(255,255,255);
-  doc.text(title, M, 16);
-  doc.setFontSize(8);
-  doc.setTextColor(...orange);
-  doc.text('Rent vs Own — Issac Real Estate Team', W-M, 16, { align:'right' });
-}
-
-function _pdfSectionTitle(doc, text, y, M, cW, orange) {
-  doc.setFillColor(...orange);
-  doc.rect(M, y, cW, 7, 'F');
-  doc.setFont('helvetica','bold');
-  doc.setFontSize(8);
-  doc.setTextColor(255,255,255);
-  doc.text(text.toUpperCase(), M+4, y+4.8);
-}
-
-function _pdfFooter(doc, W, M, grey, orange) {
-  doc.setDrawColor(...orange);
-  doc.setLineWidth(0.5);
-  doc.line(M, 282, W-M, 282);
-  doc.setFont('helvetica','normal');
-  doc.setFontSize(7);
-  doc.setTextColor(...grey);
-  doc.text('Issac Realty Team — Associates of Dreamhouse Realty Ltd.  |  For information only — not a lender commitment.', W/2, 287, { align:'center' });
+// ─── Download report directly (Get the full report button) ───────────────
+function downloadReport() {
+  if (!STATE.homePrice) { alert('Run the comparison first (click Show My Comparison).'); return; }
+  const lead = STATE.lead || {};
+  try { generatePDF(lead.firstName || '', lead.lastName || '', lead.email || ''); }
+  catch(e) { console.warn('PDF generation failed:', e); alert('PDF generation failed. Please try the email option.'); }
 }
 
 // ─── Apply mode on load ───────────────────────────────────────────────────
