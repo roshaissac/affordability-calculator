@@ -2,12 +2,13 @@
    Caches the app shell + CDN scripts so it loads offline/on spotty LTE.
    Version bump CACHE_NAME to force refresh after major updates. */
 
-const CACHE_NAME = 'rvo-v9';
+const CACHE_NAME = 'rvo-v10';
 const SHELL = [
   './rent-vs-own.html',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
-  'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js'
+  'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
 ];
 
 // Install: pre-cache the app shell
