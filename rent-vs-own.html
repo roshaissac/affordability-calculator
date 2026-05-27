@@ -16,6 +16,8 @@
 <meta name="twitter:title" content="Rent vs Own Calculator — Rosh Issac, Realtor®">
 <meta name="twitter:description" content="See exactly what renting is costing you — and what owning could build. Free &amp; instant.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
+<!-- Prevent iOS from auto-detecting phone numbers as blue links -->
+<meta name="format-detection" content="telephone=no">
 
 <!-- PWA -->
 <link rel="manifest" href="manifest-rvo.json">
@@ -64,7 +66,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header-agent .agent-role{font-size:0.75rem;color:rgba(255,255,255,0.65);font-weight:400}
 .header-agent .agent-phone{font-size:0.8rem;color:rgba(255,255,255,0.85);margin-top:3px;letter-spacing:0.01em}
 .header-agent .agent-email{font-size:0.71rem;color:rgba(255,255,255,0.5);margin-top:1px}
+/* Prevent iOS from auto-styling phone numbers as blue links */
+a[href^="tel"]{color:inherit!important;text-decoration:none!important}
 .header-agent-right{text-align:right}
+/* QR boxes in header — hide on very small phones to prevent overflow */
+.header-qr-box{display:flex;align-items:center}
+@media(max-width:520px){.header-qr-box{display:none}}
 /* Centre title */
 .header-text{text-align:center;min-width:0}
 .header-text h1{font-size:1.2rem;font-weight:700;letter-spacing:-0.02em;color:var(--white)}
@@ -92,17 +99,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .float-foot-logo-wrap{background:var(--white);border-radius:6px;padding:4px 7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .float-foot-logo{height:36px;width:auto;display:block}
 /* ── Footer calculator QR widget ── */
-.float-foot-calc-qr{flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;border:2px solid #000000;border-radius:7px;padding:4px 8px;margin-left:6px}
+.float-foot-calc-qr{flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;border-radius:7px;padding:4px 8px;margin-left:4px}
 .float-foot-calc-qr span{font-size:0.62rem;color:rgba(255,255,255,0.85);line-height:1.3;white-space:nowrap}
 @media(max-width:600px){
   .floating-footer{padding:5px 12px;gap:8px}
-  .float-foot-disclaimer{display:none}
+  .float-foot-disclaimer{font-size:0.6rem;-webkit-line-clamp:2;padding:0 6px}
   .float-foot-calc-qr{display:none}
   .float-foot-logo{height:30px}
   .float-foot-brand-text .name{font-size:0.8rem}
   .float-foot-brand-text .brokerage{font-size:0.65rem}
 }
-body{padding-bottom:58px}
+body{padding-bottom:64px}
 
 /* ── Banners ── */
 .banner{padding:11px 24px;font-size:0.84rem;font-weight:500;display:flex;align-items:center;gap:10px}
@@ -252,7 +259,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .consent-row input[type=checkbox]{width:16px;height:16px;margin-top:2px;cursor:pointer;accent-color:var(--orange);flex-shrink:0}
 
 /* ── Floating "Show My Comparison" CTA ── */
-.floating-cta-btn{position:fixed;bottom:68px;right:16px;z-index:997;background:rgba(0,0,0,0.72);color:var(--white);border:2px solid var(--orange);border-radius:30px;padding:9px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.28);display:flex;align-items:center;gap:6px;letter-spacing:0.01em;transition:background 0.15s}
+.floating-cta-btn{position:fixed;bottom:68px;right:16px;z-index:999;background:rgba(0,0,0,0.72);color:var(--white);border:2px solid var(--orange);border-radius:30px;padding:9px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.28);display:flex;align-items:center;gap:6px;letter-spacing:0.01em;transition:background 0.15s}
 .floating-cta-btn:hover{background:rgba(247,147,76,0.9)}
 </style>
 </head>
@@ -263,10 +270,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="header-inner">
     <!-- LHS — QR card + Rosh -->
     <div style="display:flex;align-items:center;gap:10px">
-      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
         <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
            style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
-          <div id="qrBizCard" style="background:#fff;flex-shrink:0;padding:2px;line-height:0"></div>
+          <div id="qrBizCard" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
           <span style="font-size:0.52rem;color:rgba(255,255,255,0.75);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
         </a>
       </div>
@@ -288,7 +295,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="agent-phone">825 440-4583</div>
         <div class="agent-email">sheena@issacrealty.com</div>
       </div>
-      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
           <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
@@ -305,10 +312,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="header-inner">
     <!-- LHS — QR card + Rosh (client header) -->
     <div style="display:flex;align-items:center;gap:10px">
-      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
         <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
            style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
-          <div id="qrBizCardClient" style="background:#fff;flex-shrink:0;padding:2px;line-height:0"></div>
+          <div id="qrBizCardClient" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
           <span style="font-size:0.52rem;color:rgba(255,255,255,0.75);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
         </a>
       </div>
@@ -328,7 +335,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="agent-phone">825 440-4583</div>
         <div class="agent-email">sheena@issacrealty.com</div>
       </div>
-      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
           <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
             <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
@@ -827,7 +834,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <!-- Affordability Calculator QR + link -->
   <a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client"
      target="_blank" rel="noopener noreferrer" class="float-foot-calc-qr">
-    <div id="qrCalc" style="background:#fff;flex-shrink:0;padding:2px;line-height:0"></div>
+    <div id="qrCalc" style="width:30px;height:30px;background:#fff;flex-shrink:0;border:1px solid rgba(0,0,0,0.15)"></div>
     <span>Affordability<br>Calculator</span>
   </a>
   <!-- RHS logo -->
@@ -1360,13 +1367,14 @@ function showComparison() {
     el('leadCaptureStatus').textContent = '✅ Details saved — your comparison is ready';
   }
 
-  // 5. Show results
-  renderResults();
+  // 5. Show step2 FIRST so Chart.js canvas has real dimensions (iOS fix —
+  //    chart.js fails silently on zero-size canvas inside display:none)
   el('step1').style.display = 'none';
   el('step2').style.display = '';
   if (el('floatingShowCTA')) el('floatingShowCTA').style.display = 'none';
   setStepActive(2);
   window.scrollTo({ top: 0, behavior: 'smooth' });
+  try { renderResults(); } catch(e) { console.warn('renderResults error:', e); }
 }
 
 // ─── Refresh comparison when Step 2 assumptions are edited ───────────────
@@ -2595,6 +2603,28 @@ window.addEventListener('load', () => {
     if (calcNode) new QRCode(calcNode, { ...qrOpts,
       text:'https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client',
       width:30, height:30 });
+  } else {
+    // QR library unavailable — show fallback text links
+    ['qrBizCard', 'qrBizCardClient'].forEach(id => {
+      const node = el(id);
+      if (node) { node.style.cssText = 'width:48px;height:48px;display:flex;align-items:center;justify-content:center'; node.innerHTML = '<a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener" style="font-size:0.58rem;color:#F7934C;text-decoration:underline;line-height:1.3;text-align:center">View<br>card ↗</a>'; }
+    });
+    const calcNode = el('qrCalc');
+    if (calcNode) { calcNode.style.cssText = 'width:30px;height:30px;display:flex;align-items:center;justify-content:center'; calcNode.innerHTML = '<a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client" target="_blank" rel="noopener" style="font-size:0.52rem;color:#F7934C;text-decoration:underline;text-align:center;line-height:1.3">Open ↗</a>'; }
+  }
+
+  // ── Hide floating CTA when the inline "Show My Comparison" button is visible ──
+  // This prevents the double-button situation when user hasn't scrolled down.
+  const inlineCTA = document.querySelector('#step1 button.btn-block');
+  if (inlineCTA && 'IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(entries => {
+      const floatBtn = el('floatingShowCTA');
+      if (!floatBtn) return;
+      // Don't interfere when step1 is hidden (we're on step2)
+      if (el('step1')?.style.display === 'none') return;
+      floatBtn.style.display = entries[0].isIntersecting ? 'none' : '';
+    }, { threshold: 0.5 });
+    obs.observe(inlineCTA);
   }
 
   // Register service worker for PWA / offline support
