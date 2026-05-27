@@ -312,51 +312,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="field">
           <label>Current Monthly Rent</label>
           <div class="input-wrap"><span class="pre">$</span>
-            <input type="number" id="monthlyRent" value="2200" min="500" max="10000" step="50">
+            <input type="number" id="monthlyRent" value="2200" min="500" max="10000" step="50" oninput="onRentChange()">
           </div>
         </div>
 
         <div class="field">
-          <label>Neighbourhood / Area</label>
-          <select id="neighbourhoodSelect" onchange="onNeighbourhoodChange()">
-            <option value="">— Select a neighbourhood —</option>
-            <option value="Bridgeland">Bridgeland</option>
-            <option value="Beltline">Beltline</option>
-            <option value="Killarney">Killarney</option>
-            <option value="Inglewood">Inglewood</option>
-            <option value="Hillhurst">Hillhurst</option>
-            <option value="Sunnyside">Sunnyside</option>
-            <option value="Mission">Mission</option>
-            <option value="Kensington">Kensington</option>
-            <option value="manual">Other / Enter manually →</option>
-          </select>
-        </div>
-
-        <div class="field" id="postalField">
-          <label>Postal Code <span style="font-weight:400;color:#888">(optional)</span></label>
-          <input type="text" id="postalCode" placeholder="T2E 3A9" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
-        </div>
-
-        <div class="field" id="manualPriceField" style="display:none">
-          <label>Comparable Home Price in Your Area</label>
-          <div class="input-wrap"><span class="pre">$</span>
-            <input type="number" id="homePriceOverride" value="500000" min="100000" max="5000000" step="25000">
-          </div>
-          <div class="hint">Use a typical listing price for your area and bedroom count.</div>
-        </div>
-
-        <div class="field">
-          <label>Bedrooms</label>
-          <div class="toggle-group" id="bedroomToggle">
-            <button class="toggle-btn" onclick="setBeds(1)">1</button>
-            <button class="toggle-btn active" onclick="setBeds(2)">2</button>
-            <button class="toggle-btn" onclick="setBeds(3)">3</button>
-            <button class="toggle-btn" onclick="setBeds(4)">4+</button>
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Property Type</label>
+          <label>Property Type <span style="font-weight:400;color:#888">(what you'd buy)</span></label>
           <div class="toggle-group" id="propTypeToggle">
             <button class="toggle-btn active" onclick="setPropType('apartment')">Apartment</button>
             <button class="toggle-btn" onclick="setPropType('townhouse')">Townhouse</button>
@@ -368,85 +329,111 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <label>How long have you been renting?</label>
           <div class="input-wrap"><input type="number" id="monthsRenting" value="36" min="0" max="600" step="6" class="suf-pad"><span class="suf">mo</span></div>
         </div>
+
+        <div class="field">
+          <label>Expected Annual Rent Increase</label>
+          <div class="input-wrap"><input type="number" id="rentInflation" value="4.0" min="0" max="15" step="0.5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
+        </div>
+
+        <div class="field">
+          <label>Expected Home Appreciation / yr</label>
+          <div class="input-wrap"><input type="number" id="appreciation" value="3.5" min="0" max="15" step="0.5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
+        </div>
       </div>
 
-      <!-- Card: Finances -->
+      <!-- Card: What You Could Own -->
       <div class="card">
-        <div class="card-title">💰 Your Finances</div>
+        <div class="card-title">🏡 What You Could Own</div>
 
         <div class="field">
-          <label>Combined Household Gross Annual Income</label>
+          <label>Monthly Ownership Budget <span style="font-weight:400;color:#888">(1.5× your rent — edit if needed)</span></label>
           <div class="input-wrap"><span class="pre">$</span>
-            <input type="number" id="householdIncome" value="120000" min="30000" max="1000000" step="5000">
+            <input type="number" id="ownershipBudget" value="3300" min="1000" max="30000" step="100" oninput="renderOwnershipCard()">
+          </div>
+          <div class="hint">Rule of thumb: owning typically costs ~1.5× rent all-in. Adjust to model different budgets.</div>
+        </div>
+
+        <!-- Affordable home price hero -->
+        <div style="background:#f9f5f0;border-radius:8px;padding:13px 16px;margin-bottom:16px">
+          <div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:4px">Home you could afford</div>
+          <div id="affordablePrice" style="font-size:1.75rem;font-weight:800;color:#111;letter-spacing:-0.02em">—</div>
+          <div id="affordableNote" style="font-size:0.72rem;color:#888;margin-top:3px">Adjust inputs to see your range</div>
+        </div>
+
+        <!-- Monthly cost breakdown -->
+        <div style="font-size:0.77rem;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Monthly cost breakdown</div>
+        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:16px">
+          <thead>
+            <tr style="border-bottom:2px solid #eee">
+              <th style="text-align:left;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">Item</th>
+              <th style="text-align:right;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">/month</th>
+              <th style="text-align:right;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">/year</th>
+            </tr>
+          </thead>
+          <tbody id="ownerBreakdownBody"></tbody>
+          <tfoot>
+            <tr style="border-top:2px solid #111">
+              <td style="padding:8px 4px;font-weight:700;font-size:0.82rem">Total</td>
+              <td id="ownerTotalMonthly" style="text-align:right;padding:8px 4px;font-weight:700;color:var(--orange)">—</td>
+              <td id="ownerTotalAnnual" style="text-align:right;padding:8px 4px;font-weight:700;color:var(--orange)">—</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Mortgage assumptions row -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="field" style="margin:0">
+            <label style="font-size:0.71rem">Rate</label>
+            <div class="input-wrap"><input type="number" id="ownerRate" value="5.5" min="0.5" max="15" step="0.05" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
+          </div>
+          <div class="field" style="margin:0">
+            <label style="font-size:0.71rem">Amortization</label>
+            <select id="ownerAmort" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:0.82rem" onchange="renderOwnershipCard()">
+              <option value="30">30 yr</option>
+              <option value="25" selected>25 yr</option>
+              <option value="20">20 yr</option>
+            </select>
+          </div>
+          <div class="field" style="margin:0">
+            <label style="font-size:0.71rem">Down Payment</label>
+            <div class="input-wrap"><input type="number" id="ownerDown" value="20" min="5" max="50" step="5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
           </div>
         </div>
 
-        <div class="field">
-          <label>Savings Available for Down Payment</label>
-          <div class="input-wrap"><span class="pre">$</span>
-            <input type="number" id="savings" value="60000" min="0" max="2000000" step="5000">
-          </div>
-          <div class="hint" id="savingsHint"></div>
+        <div style="font-size:0.7rem;color:#bbb;line-height:1.5;font-style:italic">
+          Property tax: 0.65%/yr of purchase price (Calgary). Maintenance: 1%/yr. Condo fee auto-estimated by property type. Mortgage uses Canadian semi-annual compounding.
         </div>
-
-        <div class="field">
-          <label>Monthly Debt Payments <span style="font-weight:400;color:#888">(loans, cards, etc.)</span></label>
-          <div class="input-wrap"><span class="pre">$</span>
-            <input type="number" id="monthlyDebt" value="0" min="0" max="10000" step="50">
-          </div>
-          <div class="hint">Do not include your current rent.</div>
-        </div>
-
-        <!-- Advanced assumptions (advisor mode) -->
-        <div id="advancedSection">
-          <button class="adv-toggle" onclick="toggleAdv()" id="advBtn">⚙️ Mortgage assumptions <span id="advArrow">▼</span></button>
-          <div class="adv-body" id="advBody">
-            <div class="field">
-              <label>Contract Interest Rate</label>
-              <div class="input-wrap"><input type="number" id="contractRate" value="5.5" min="0.5" max="15" step="0.05" class="suf-pad"><span class="suf">%</span></div>
-            </div>
-            <div class="field">
-              <label>Amortisation Period</label>
-              <select id="amortYears" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
-                <option value="30">30 years</option>
-                <option value="25" selected>25 years</option>
-                <option value="20">20 years</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Expected Home Appreciation / yr</label>
-              <div class="input-wrap"><input type="number" id="appreciation" value="3.5" min="0" max="15" step="0.5" class="suf-pad"><span class="suf">%</span></div>
-            </div>
-            <div class="field">
-              <label>Expected Annual Rent Increase</label>
-              <div class="input-wrap"><input type="number" id="rentInflation" value="4.0" min="0" max="15" step="0.5" class="suf-pad"><span class="suf">%</span></div>
-            </div>
-            <div class="field">
-              <label>Renter's HISA Return (savings alternative)</label>
-              <div class="input-wrap"><input type="number" id="hisaReturn" value="4.0" min="0" max="10" step="0.5" class="suf-pad"><span class="suf">%</span></div>
-              <div class="hint">What the down payment money would earn if kept in savings.</div>
-            </div>
-            <div class="field">
-              <label>Monthly Condo Fees <span style="font-weight:400;color:#888">(leave 0 to auto-estimate)</span></label>
-              <div class="input-wrap"><span class="pre">$</span><input type="number" id="condoFees" value="0" min="0" max="2000" step="25"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Client mode: collapsed assumptions note -->
-        <div id="clientAssumptionsNote" class="info-box" style="display:none;margin-top:14px">
-          <strong>⚙️ Assumptions (Calgary defaults)</strong>
-          5.5% rate · 25-yr amort · 3.5% home appreciation · 4% rent increase · 0.65% property tax
-        </div>
-
-        <div class="warning-box" id="qualifyWarn" style="display:none;margin-top:14px"></div>
-
-        <button class="btn btn-black btn-block" style="font-size:1rem;padding:15px" onclick="showComparison()">
-          📊 Show My Comparison →
-        </button>
       </div>
 
     </div><!-- /grid-2 step1 -->
+
+    <!-- Contact strip + CTA -->
+    <div class="card" style="border:1.5px solid var(--orange);margin-top:4px">
+      <div class="card-title">👤 A few details to personalise your comparison</div>
+      <div class="grid-2" style="margin-bottom:14px">
+        <div class="field" style="margin:0">
+          <label>First Name</label>
+          <input type="text" id="leadFirstName" placeholder="Jane" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Last Name</label>
+          <input type="text" id="leadLastName" placeholder="Smith" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Cell Phone</label>
+          <input type="tel" id="leadPhone" placeholder="825 555 0100" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+        </div>
+        <div class="field" style="margin:0">
+          <label>Email</label>
+          <input type="email" id="leadEmail" placeholder="jane@email.com" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+        </div>
+      </div>
+      <button class="btn btn-black btn-block" style="font-size:1rem;padding:15px" onclick="showComparison()">
+        📊 Show My Comparison →
+      </button>
+      <div id="leadCaptureStatus" style="margin-top:8px;font-size:0.78rem;color:var(--text-muted);text-align:center;min-height:1.2em"></div>
+    </div>
+
   </div><!-- /step1 -->
 
   <!-- ══ STEP 2 — RESULTS ══════════════════════════════════════════ -->
@@ -669,7 +656,7 @@ let STATE = {
   monthlyOwnCost:  0,
   fiveYr:          null,
   tenYr:           null,
-  maxQualPrice:    0,
+  lead:            null,
 };
 
 let _cmDest       = 'email';
@@ -718,80 +705,114 @@ function remainingBalance(principal, mr, n, k) {
 }
 
 // ─── Input readers ────────────────────────────────────────────────────────
-function getMonthlyRent()   { return gv('monthlyRent', 2200); }
-function getIncome()        { return gv('householdIncome', 120000); }
-function getSavings()       { return gv('savings', 60000); }
-function getMonthlyDebt()   { return gv('monthlyDebt', 0); }
-function getMonthsRenting() { return gv('monthsRenting', 36); }
-function getRate()          { return gv('contractRate', CONFIG.DEFAULT_RATE) / 100; }
-function getAmort()         { return parseInt(el('amortYears')?.value || CONFIG.DEFAULT_AMORT); }
-function getAppreciation()  { return gv('appreciation', CONFIG.DEFAULT_APPRECIATION) / 100; }
-function getRentInflation() { return gv('rentInflation', CONFIG.DEFAULT_RENT_INF) / 100; }
-function getHISA()          { return gv('hisaReturn', CONFIG.HISA_RETURN) / 100; }
+function getMonthlyRent()    { return gv('monthlyRent', 2200); }
+function getMonthsRenting()  { return gv('monthsRenting', 36); }
+function getAppreciation()   { return gv('appreciation', CONFIG.DEFAULT_APPRECIATION) / 100; }
+function getRentInflation()  { return gv('rentInflation', CONFIG.DEFAULT_RENT_INF) / 100; }
+function getMonthlyBudget()  { return gv('ownershipBudget', Math.round(getMonthlyRent() * 1.5 / 50) * 50); }
+function getRate()           { return gv('ownerRate', CONFIG.DEFAULT_RATE) / 100; }
+function getAmort()          { return parseInt(el('ownerAmort')?.value || CONFIG.DEFAULT_AMORT); }
+function getDownPct()        { return gv('ownerDown', 20) / 100; }
 
-// ─── Home price derivation ────────────────────────────────────────────────
-function deriveHomePrice() {
-  const nh = STATE.neighbourhood;
-  const beds = STATE.bedrooms;
-  if (nh && nh !== 'manual' && CONFIG.NEIGHBOURHOOD_PRICES[nh]) {
-    const p = CONFIG.NEIGHBOURHOOD_PRICES[nh][beds] || CONFIG.NEIGHBOURHOOD_PRICES[nh][1];
-    return p > 0 ? p : null;
-  }
-  const ov = gv('homePriceOverride', 0);
-  return ov > 0 ? ov : null;
-}
-
-// ─── Auto-estimated condo fee ─────────────────────────────────────────────
+// ─── Auto-estimated condo fee by property type ────────────────────────────
 function getCondoFee() {
-  const manual = gv('condoFees', 0);
-  if (manual > 0) return manual;
-  if (STATE.propertyType === 'detached') return 0;
-  // auto-estimate for apartment/townhouse
-  const sqft = CONFIG.SQFT_BY_BEDS[Math.min(STATE.bedrooms, 4)] || 900;
-  return sqft * CONFIG.CONDO_FEE_SQFT;
+  if (STATE.propertyType === 'detached')  return 0;
+  if (STATE.propertyType === 'townhouse') return 250;
+  return 450; // apartment
 }
 
-// ─── Qualifying price from stress test ───────────────────────────────────
-function computeMaxQualifyingPrice(income, savings, monthlyDebt) {
-  const contractR = getRate();
-  const qualR     = Math.max(contractR + 0.02, 0.0525); // OSFI stress test
-  const n         = getAmort() * 12;
-  const qpf       = paymentFactor(monthlyRate(qualR), n);
-  const monthlyIncome = income / 12;
-  const gdsMax    = 0.39 * monthlyIncome;
-  const tdsMax    = 0.44 * monthlyIncome - monthlyDebt;
-  const maxHousing = Math.min(gdsMax, tdsMax);
+// ─── Iterative: home price the monthly budget can support ─────────────────
+function computeAffordablePrice() {
+  const B       = getMonthlyBudget();
+  const downPct = getDownPct();
+  const mr      = monthlyRate(getRate());
+  const n       = getAmort() * 12;
+  const pf      = paymentFactor(mr, n);
+  const ins     = CONFIG.HOME_INS_MONTHLY;
+  const condo   = getCondoFee();
 
-  // iterate to find price (tax is % of price, so we solve iteratively)
-  let price = 500000;
-  for (let i = 0; i < 200; i++) {
-    const dp      = Math.max(savings, minDown(price));
-    const dpPct   = dp / price;
-    const cm      = cmhcRate(Math.min(dpPct, 1));
-    const mortg   = Math.max(price - dp, 0) * (1 + cm);
-    const pi      = mortg * qpf;
-    const tax     = price * CONFIG.PROP_TAX_PCT / 12;
-    const fixed   = 150 + getCondoFee() * 0.5;  // heating + 50% condo
-    const total   = pi + tax + fixed;
-    const np      = price * (maxHousing / total);
-    if (!isFinite(np) || np <= 0) break;
-    if (Math.abs(np - price) < 1) break;
-    price = price * 0.5 + np * 0.5;
+  let P = 500000;
+  for (let i = 0; i < 120; i++) {
+    const cm    = cmhcRate(downPct);
+    const loan  = P * (1 - downPct) * (1 + cm);
+    const pi    = loan * pf;
+    const tax   = P * CONFIG.PROP_TAX_PCT / 12;
+    const maint = P * CONFIG.MAINT_PCT / 12;
+    const total = pi + tax + maint + ins + condo;
+    const newP  = P * (B / total);
+    if (!isFinite(newP) || newP <= 0) break;
+    if (Math.abs(newP - P) < 200) { P = newP; break; }
+    P = P * 0.45 + newP * 0.55;
   }
-  return price;
+  return Math.max(50000, Math.round(P / 1000) * 1000);
+}
+
+// ─── Ownership cost breakdown for a given price ───────────────────────────
+function computeOwnershipCosts(price) {
+  const downPct = getDownPct();
+  const cm      = cmhcRate(downPct);
+  const loan    = price * (1 - downPct) * (1 + cm);
+  const mr      = monthlyRate(getRate());
+  const n       = getAmort() * 12;
+  const pi      = loan * paymentFactor(mr, n);
+  const tax     = price * CONFIG.PROP_TAX_PCT / 12;
+  const ins     = CONFIG.HOME_INS_MONTHLY;
+  const maint   = price * CONFIG.MAINT_PCT / 12;
+  const condo   = getCondoFee();
+  const total   = pi + tax + ins + maint + condo;
+  return { pi, tax, ins, maint, condo, total };
+}
+
+// ─── Update the right card display live ──────────────────────────────────
+function renderOwnershipCard() {
+  const price = computeAffordablePrice();
+  STATE.homePrice = price;
+
+  el('affordablePrice').textContent = fmt(price);
+  const down = price * getDownPct();
+  const cmPct = cmhcRate(getDownPct());
+  const cmLabel = cmPct > 0 ? ` + ${fmtPct(cmPct*100)} CMHC` : ' · no CMHC';
+  el('affordableNote').textContent =
+    `${fmtPct(getDownPct()*100)} down = ${fmt(down)}${cmLabel} · ${getAmort()} yr amort`;
+
+  const oc = computeOwnershipCosts(price);
+  const rows = [
+    ['Mortgage P+I',           oc.pi],
+    ['Property Tax (0.65%/yr)', oc.tax],
+    ['Home Insurance',          oc.ins],
+    ['Maintenance (1%/yr)',     oc.maint],
+  ];
+  if (oc.condo > 0) rows.push([`Condo/Strata (${STATE.propertyType})`, oc.condo]);
+
+  el('ownerBreakdownBody').innerHTML = rows.map(([lbl, mo]) =>
+    `<tr style="border-bottom:1px solid #f5f5f5">
+       <td style="padding:6px 4px;color:#444">${lbl}</td>
+       <td style="text-align:right;padding:6px 4px;font-weight:600">${fmt(mo)}</td>
+       <td style="text-align:right;padding:6px 4px;color:#777">${fmt(mo*12)}</td>
+     </tr>`
+  ).join('');
+
+  el('ownerTotalMonthly').textContent = fmt(oc.total);
+  el('ownerTotalAnnual').textContent  = fmt(oc.total * 12);
+}
+
+// ─── Pre-fill budget when rent changes ───────────────────────────────────
+function onRentChange() {
+  const budget = Math.round(getMonthlyRent() * 1.5 / 50) * 50;
+  el('ownershipBudget').value = budget;
+  renderOwnershipCard();
 }
 
 // ─── Core wealth comparison ───────────────────────────────────────────────
 function computeWealth(years) {
   const homePrice   = STATE.homePrice;
-  const savings     = getSavings();
+  const downPct     = getDownPct();
   const contractR   = getRate();
   const n           = getAmort() * 12;
   const mr          = monthlyRate(contractR);
   const pf          = paymentFactor(mr, n);
-  const dp          = Math.max(savings, minDown(homePrice));
-  const dpPct       = dp / homePrice;
-  const cm          = cmhcRate(dpPct);
+  const dp          = homePrice * downPct;
+  const cm          = cmhcRate(downPct);
   const baseMortg   = homePrice - dp;
   const totalMortg  = baseMortg * (1 + cm);
   const closingCost = homePrice * CONFIG.CLOSING_PCT;
@@ -817,7 +838,7 @@ function computeWealth(years) {
   const ownerNetPosition = saleProceeds - remainMortg - cumOwnerCash;
 
   // Renter: dp money compounds in HISA, pays escalating rent
-  const hisaR      = getHISA();
+  const hisaR      = CONFIG.HISA_RETURN / 100;
   const rentInf    = getRentInflation();
   const startRent  = getMonthlyRent();
   const renterIns  = 20; // renter's insurance
@@ -836,7 +857,7 @@ function computeWealth(years) {
     years,
     homePrice,
     dp,
-    dpPct,
+    dpPct: downPct,
     cm,
     totalMortg,
     closingCost,
@@ -860,80 +881,110 @@ function computeWealth(years) {
 }
 
 // ─── Toggle helpers ───────────────────────────────────────────────────────
-function setBeds(n) {
-  STATE.bedrooms = n;
-  el('bedroomToggle').querySelectorAll('.toggle-btn').forEach((b,i) => {
-    b.classList.toggle('active', i+1 === n);
-  });
-  updateSavingsHint();
-  updateQualifyWarn();
-}
-
 function setPropType(t) {
   STATE.propertyType = t;
   el('propTypeToggle').querySelectorAll('.toggle-btn').forEach(b => {
     b.classList.toggle('active', b.textContent.toLowerCase().trim() === t);
   });
-  updateQualifyWarn();
-}
-
-function onNeighbourhoodChange() {
-  const v = el('neighbourhoodSelect').value;
-  STATE.neighbourhood = v;
-  const manual = v === 'manual' || v === '';
-  el('manualPriceField').style.display = manual ? '' : 'none';
-  el('postalField').style.display      = '';
-  updateSavingsHint();
-  updateQualifyWarn();
-}
-
-function toggleAdv() {
-  const body = el('advBody');
-  body.classList.toggle('open');
-  el('advArrow').textContent = body.classList.contains('open') ? '▲' : '▼';
-}
-
-function updateSavingsHint() {
-  const hp = deriveHomePrice();
-  if (!hp) { el('savingsHint').textContent = ''; return; }
-  const min = minDown(hp);
-  const sav = getSavings();
-  if (sav < min) {
-    el('savingsHint').textContent = `Minimum down payment for ${fmt(hp)} is ${fmt(min)} (${fmtPct(min/hp*100,0)}). You may need to adjust your target price or save more.`;
-  } else {
-    el('savingsHint').textContent = `Down payment: ${fmt(sav)} (${fmtPct(sav/hp*100)}% of ${fmt(hp)} estimated price).`;
-  }
-}
-
-function updateQualifyWarn() {
-  const hp  = deriveHomePrice();
-  const max = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
-  const box = el('qualifyWarn');
-  if (!hp) { box.style.display = 'none'; return; }
-  if (max < hp * 0.9) {
-    box.innerHTML = `⚠️ Based on your income and debts, your OSFI-qualifying max is approximately <strong>${fmt(max)}</strong>. The selected area's home price (<strong>${fmt(hp)}</strong>) exceeds that. The comparison still shows you the wealth picture — adjust assumptions as needed.`;
-    box.style.display = '';
-  } else {
-    box.style.display = 'none';
-  }
+  renderOwnershipCard();
 }
 
 // ─── Show comparison (step 1 → 2) ────────────────────────────────────────
 function showComparison() {
-  const hp = deriveHomePrice();
-  if (!hp) {
-    alert('Please select a neighbourhood or enter a comparable home price to continue.');
-    return;
-  }
-  STATE.homePrice = hp;
-  STATE.fiveYr    = computeWealth(5);
-  STATE.tenYr     = computeWealth(10);
+  // 1. Capture inline lead fields
+  const firstName = el('leadFirstName')?.value?.trim() || '';
+  const lastName  = el('leadLastName')?.value?.trim()  || '';
+  const phone     = el('leadPhone')?.value?.trim()     || '';
+  const email     = el('leadEmail')?.value?.trim()     || '';
+  STATE.lead = { firstName, lastName, phone, email };
 
+  // 2. Compute affordable home price from budget
+  const hp = computeAffordablePrice();
+  STATE.homePrice = hp;
+
+  // 3. Compute wealth scenarios
+  STATE.fiveYr = computeWealth(5);
+  STATE.tenYr  = computeWealth(10);
+
+  // 4. Fire lead to backend (non-blocking — before showing results so it
+  //    always reaches CRM even if user closes the tab immediately)
+  if (firstName || email || phone) {
+    _fireLeadToBackend({ firstName, lastName, phone, email, preferredContact: 'comparison_view' });
+    el('leadCaptureStatus').textContent = '✅ Details saved — your comparison is ready';
+  }
+
+  // 5. Show results
   renderResults();
   el('step1').style.display = 'none';
   el('step2').style.display = '';
   setStepActive(2);
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Backend lead fire (non-blocking) ────────────────────────────────────
+function _fireLeadToBackend(lead) {
+  const f5  = STATE.fiveYr;
+  const f10 = STATE.tenYr;
+
+  const supaPayload = {
+    first_name:               lead.firstName  || null,
+    last_name:                lead.lastName   || null,
+    email:                    lead.email      || null,
+    phone:                    lead.phone      || null,
+    preferred_contact:        lead.preferredContact || null,
+    current_rent:             getMonthlyRent(),
+    property_type:            STATE.propertyType,
+    months_renting:           getMonthsRenting(),
+    computed_home_price:      Math.round(STATE.homePrice),
+    computed_5yr_rent_cost:   Math.round(f5?.cumRentPaid   || 0),
+    computed_5yr_equity:      Math.round(f5?.equityBuilt   || 0),
+    computed_5yr_wealth_gap:  Math.round(f5?.wealthGap     || 0),
+    computed_10yr_wealth_gap: Math.round(f10?.wealthGap    || 0),
+    source:  'rent_vs_own_door_knock',
+    mode:    STATE.mode,
+    consent_given: true,
+  };
+
+  const appsPayload = JSON.stringify({
+    source:           'rent_vs_own',
+    firstName:        lead.firstName,
+    lastName:         lead.lastName,
+    email:            lead.email,
+    phone:            lead.phone,
+    preferredContact: lead.preferredContact,
+    currentRent:      fmt(getMonthlyRent()),
+    propertyType:     STATE.propertyType,
+    monthsRenting:    getMonthsRenting(),
+    homePrice:        fmt(STATE.homePrice),
+    wealthGap5yr:     fmt(f5?.wealthGap    || 0),
+    wealthGap10yr:    fmt(f10?.wealthGap   || 0),
+    rentCost5yr:      fmt(f5?.cumRentPaid  || 0),
+    equity5yr:        fmt(f5?.equityBuilt  || 0),
+    mode:             STATE.mode,
+    consentGiven:     true,
+  });
+
+  // Supabase REST (fire-and-forget)
+  if (CONFIG.SUPABASE_ANON_KEY !== 'PASTE_ROTATED_KEY_HERE') {
+    fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rent_vs_own_leads`, {
+      method:  'POST',
+      headers: {
+        'apikey':        CONFIG.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+        'Content-Type':  'application/json',
+        'Prefer':        'return=minimal',
+      },
+      body: JSON.stringify(supaPayload),
+    }).catch(() => {});
+  }
+
+  // Dual-write to Apps Script (sendBeacon is fire-and-forget, works on iOS Safari)
+  if (typeof navigator.sendBeacon === 'function') {
+    navigator.sendBeacon(CONFIG.WEB_APP_URL, appsPayload);
+  } else {
+    fetch(CONFIG.WEB_APP_URL, { method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'text/plain'}, body:appsPayload }).catch(()=>{});
+  }
 }
 
 function goBack() {
@@ -1016,18 +1067,17 @@ function renderResults() {
   const ag = el('assumptionsGrid');
   ag.innerHTML = '';
   const assumptions = [
-    ['Home price', fmt(STATE.homePrice)],
-    ['Down payment', `${fmt(f5.dp)} (${fmtPct(f5.dpPct*100)})`],
-    ['CMHC premium', f5.cm > 0 ? `${fmtPct(f5.cm*100)} (${fmt(f5.totalMortg - (STATE.homePrice - f5.dp))})` : 'None (≥ 20%)'],
-    ['Contract rate', fmtPct(getRate()*100) + ' (semi-annual compounding)'],
-    ['Qualifying rate (stress test)', fmtPct(Math.max(getRate()+0.02, 0.0525)*100)],
-    ['Amortisation', getAmort() + ' years'],
-    ['Property tax', fmtPct(CONFIG.PROP_TAX_PCT*100) + ' of value / yr (Calgary default)'],
-    ['Home appreciation', fmtPct(getAppreciation()*100) + ' / yr'],
-    ['Rent inflation', fmtPct(getRentInflation()*100) + ' / yr'],
-    ['HISA return', fmtPct(getHISA()*100) + ' / yr'],
-    ['Closing costs (buy)', fmtPct(CONFIG.CLOSING_PCT*100) + ' of purchase price'],
-    ['Sale costs (exit)', fmtPct(CONFIG.SALE_COST_PCT*100) + ' of sale price'],
+    ['Home price',            fmt(STATE.homePrice)],
+    ['Down payment',          `${fmtPct(getDownPct()*100)} = ${fmt(f5.dp)}`],
+    ['CMHC premium',          f5.cm > 0 ? `${fmtPct(f5.cm*100)} (${fmt(f5.totalMortg - (STATE.homePrice - f5.dp))})` : 'None (≥ 20%)'],
+    ['Contract rate',         fmtPct(getRate()*100) + ' (semi-annual compounding)'],
+    ['Amortisation',          getAmort() + ' years'],
+    ['Property tax',          fmtPct(CONFIG.PROP_TAX_PCT*100) + ' of value / yr (Calgary)'],
+    ['Home appreciation',     fmtPct(getAppreciation()*100) + ' / yr'],
+    ['Rent inflation',        fmtPct(getRentInflation()*100) + ' / yr'],
+    ['HISA return (renter)',  fmtPct(CONFIG.HISA_RETURN) + ' / yr'],
+    ['Closing costs (buy)',   fmtPct(CONFIG.CLOSING_PCT*100) + ' of purchase price'],
+    ['Sale costs (exit)',     fmtPct(CONFIG.SALE_COST_PCT*100) + ' of sale price'],
   ];
   const half = Math.ceil(assumptions.length / 2);
   [assumptions.slice(0, half), assumptions.slice(half)].forEach(group => {
@@ -1100,6 +1150,13 @@ function openModal(dest) {
   el('cm-heading').textContent = c.head;
   el('cm-subhead').textContent = c.sub;
   el('cm-submit').textContent  = c.btn;
+  // Pre-fill from inline lead form if captured
+  if (STATE.lead) {
+    if (!el('cm-first').value) el('cm-first').value = STATE.lead.firstName || '';
+    if (!el('cm-last').value)  el('cm-last').value  = STATE.lead.lastName  || '';
+    if (!el('cm-email').value) el('cm-email').value = STATE.lead.email     || '';
+    if (!el('cm-phone').value) el('cm-phone').value = STATE.lead.phone     || '';
+  }
   el('contactModal').style.display = 'flex';
   el('cm-first').focus();
   setStepActive(3);
@@ -1139,15 +1196,8 @@ async function submitLead() {
     phone:                    phone || null,
     preferred_contact:        _cmDest,
     current_rent:             getMonthlyRent(),
-    neighbourhood:            STATE.neighbourhood || null,
-    postal_code:              el('postalCode')?.value.trim() || null,
-    bedrooms:                 STATE.bedrooms,
     property_type:            STATE.propertyType,
     months_renting:           getMonthsRenting(),
-    household_income:         getIncome(),
-    savings:                  getSavings(),
-    monthly_debt:             getMonthlyDebt(),
-    computed_max_price:       Math.round(STATE.maxQualPrice),
     computed_home_price:      Math.round(STATE.homePrice),
     computed_5yr_rent_cost:   Math.round(f5?.cumRentPaid || 0),
     computed_5yr_equity:      Math.round(f5?.equityBuilt || 0),
@@ -1158,7 +1208,7 @@ async function submitLead() {
     consent_given:            consent,
   };
 
-  // Apps Script payload (dual-write — keeps existing Google Sheet workflow intact)
+  // Apps Script payload (dual-write)
   const appsPayload = JSON.stringify({
     source:           'rent_vs_own',
     firstName,
@@ -1167,13 +1217,8 @@ async function submitLead() {
     phone,
     preferredContact: _cmDest,
     currentRent:      fmt(getMonthlyRent()),
-    neighbourhood:    STATE.neighbourhood,
-    bedrooms:         STATE.bedrooms,
     propertyType:     STATE.propertyType,
     monthsRenting:    getMonthsRenting(),
-    householdIncome:  fmt(getIncome()),
-    savings:          fmt(getSavings()),
-    monthlyDebt:      fmt(getMonthlyDebt()),
     homePrice:        fmt(STATE.homePrice),
     wealthGap5yr:     fmt(f5?.wealthGap || 0),
     wealthGap10yr:    fmt(f10?.wealthGap || 0),
@@ -1447,7 +1492,7 @@ function generatePDF(firstName, lastName, email) {
       ['Condo fees',                  fmt(getCondoFee()) + '/month'],
       ['Home appreciation',           fmtPct(getAppreciation()*100) + '/yr'],
       ['Rent inflation',              fmtPct(getRentInflation()*100) + '/yr'],
-      ['HISA return on savings',      fmtPct(getHISA()*100) + '/yr'],
+      ['HISA return on savings',      fmtPct(CONFIG.HISA_RETURN) + '/yr'],
       ['Closing costs (purchase)',    fmtPct(CONFIG.CLOSING_PCT*100) + ' of purchase price'],
       ['Sale costs (exit)',           fmtPct(CONFIG.SALE_COST_PCT*100) + ' of sale price'],
     ],
@@ -1474,12 +1519,12 @@ function generatePDF(firstName, lastName, email) {
              'There are programs that can help — including RRSP Home Buyers\' Plan (up to $35,000 each, $70,000 combined) and the First Home Savings Account (FHSA), which gives you both a tax deduction and tax-free growth.'
     },
     {
-      title: 'Stress Test Qualifying',
+      title: 'Mortgage Qualifying',
       body:  'Canada\'s OSFI stress test requires you to qualify at the higher of your contract rate plus 2%, or 5.25%. ' +
-             'This means your qualifying rate today is ' + fmtPct(Math.max(getRate()+0.02, 0.0525)*100) + '. ' +
-             'Based on your income of ' + fmt(getIncome()) + '/yr and debt payments of ' + fmt(getMonthlyDebt()) + '/mo, ' +
-             'you can likely qualify for a home up to approximately ' + fmt(STATE.maxQualPrice) + '. ' +
-             'A licensed mortgage broker can shop 30+ lenders simultaneously and often find more flexibility than going to your own bank directly.'
+             'Based on this calculator\'s assumptions (' + fmtPct(getRate()*100) + ' contract rate, ' + getAmort() + '-yr amort, ' +
+             fmtPct(getDownPct()*100) + ' down), the home you could afford is approximately ' + fmt(STATE.homePrice) + '. ' +
+             'A licensed mortgage broker can shop 30+ lenders simultaneously and often find more flexibility than going to your own bank directly. ' +
+             'Lender referrals available upon request.'
     },
     {
       title: 'Market Timing',
@@ -1588,18 +1633,13 @@ function applyMode() {
   }
 }
 
-// ─── Reactive updates on any input change ─────────────────────────────────
-document.addEventListener('input', () => {
-  updateSavingsHint();
-  updateQualifyWarn();
-  // recompute max qualifying price for display
-  STATE.maxQualPrice = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
-});
+// ─── (reactive updates handled by individual oninput handlers) ───────────
 
 window.addEventListener('load', () => {
   applyMode();
-  STATE.maxQualPrice = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
-  updateSavingsHint();
+  // Pre-fill budget from default rent and render the right card
+  el('ownershipBudget').value = Math.round(getMonthlyRent() * 1.5 / 50) * 50;
+  renderOwnershipCard();
 
   // Register service worker for PWA / offline support
   if ('serviceWorker' in navigator) {
