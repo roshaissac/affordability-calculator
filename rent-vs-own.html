@@ -165,6 +165,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 /* ── Result hero ── */
 .result-hero{background:var(--black);color:var(--white);border-radius:12px;padding:26px 28px;margin-bottom:18px}
+/* Period tab pills inside hero */
+.hero-tabs{display:flex;gap:6px;margin-bottom:14px}
+.hero-tab{padding:5px 15px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.55);font-size:0.77rem;font-weight:600;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em}
+.hero-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
+.hero-tab:hover:not(.active){border-color:rgba(255,255,255,0.55);color:rgba(255,255,255,0.85)}
 .result-hero h2{font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
 .price-big{font-size:2.6rem;font-weight:800;color:var(--orange);letter-spacing:-0.03em;line-height:1}
 .price-note{font-size:0.81rem;color:rgba(255,255,255,0.45);margin-top:6px}
@@ -683,7 +688,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
     <!-- Result hero -->
     <div class="result-hero" id="resultHero">
-      <h2 id="heroLabel">Net cost of renting over 5 years</h2>
+      <div class="hero-tabs">
+        <button class="hero-tab" id="heroTab5" onclick="setHeroTab('5')">5 yr</button>
+        <button class="hero-tab" id="heroTab10" onclick="setHeroTab('10')">10 yr</button>
+        <button class="hero-tab active" id="heroTabLng" onclick="setHeroTab('long')">30 yr</button>
+      </div>
+      <h2 id="heroLabel">Net cost of renting over 30 years</h2>
       <div class="price-big" id="heroValue">—</div>
       <div class="price-note" id="heroNote"></div>
       <div class="stats-grid">
@@ -780,6 +790,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="card span-2" style="margin-bottom:18px">
       <div class="card-title" id="breakdownTitle">🔢 Wealth Breakdown -5, 10 &amp; Long-Term</div>
       <div style="overflow-x:auto" id="breakdownGrid"></div>
+      <div style="margin-top:16px;padding:14px 16px;background:#fffbf5;border-left:3px solid var(--orange);border-radius:6px;font-size:0.82rem;line-height:1.6;color:var(--text)">
+        <strong style="color:var(--orange);font-size:0.85rem">💡 What is the Wealth Gap - Owner Advantage?</strong><br>
+        This is the most important number in this comparison. It measures the total financial difference between owning and renting over the same period - taking everything into account: the equity built through mortgage payments and home appreciation, the opportunity cost of the down payment (modelled as a HISA investment if renting), and all cash spent in each scenario.<br><br>
+        <strong>A positive number means the owner ends up ahead</strong> - even after accounting for higher monthly costs of ownership. This is common over 10+ years because mortgage payments build equity while rent is entirely spent. Over a full amortisation period, the gap compounds significantly as appreciation works on the full home value while the mortgage shrinks.<br><br>
+        <em style="color:var(--text-muted)">Note: Projections use fixed assumptions for appreciation, rent growth, and investment returns. Actual results will vary. This is illustrative, not financial advice.</em>
+      </div>
     </div>
 
     <!-- Ownership cost breakdown -->
@@ -812,7 +828,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <span><strong>Book a free consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time -15-min call, no obligation</span></span>
         </button>
       </div>
-      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">Contact details are collected before sending. Your financial numbers stay private.</p>
     </div>
 
   </div><!-- /step2 -->
@@ -1476,6 +1491,27 @@ function setStepActive(n) {
   }
 }
 
+// ─── Hero tab switcher ────────────────────────────────────────────────────
+function setHeroTab(period) {
+  if (!STATE.fiveYr) return;
+  const f5   = STATE.fiveYr;
+  const f10  = STATE.tenYr;
+  const fLng = STATE.longYr;
+
+  // Update active pill
+  ['heroTab5','heroTab10','heroTabLng'].forEach(id => {
+    const btn = el(id);
+    if (btn) btn.classList.remove('active');
+  });
+  const activeId = period === '5' ? 'heroTab5' : period === '10' ? 'heroTab10' : 'heroTabLng';
+  if (el(activeId)) el(activeId).classList.add('active');
+
+  const data = period === '5' ? f5 : period === '10' ? f10 : fLng;
+  el('heroLabel').textContent = `Net cost of renting over ${data.years} years`;
+  el('heroValue').textContent = fmt(data.cumRentPaid);
+  el('heroNote').textContent  = `vs ${fmt(data.cumOwnerCash)} total out-of-pocket owning - equity works for you`;
+}
+
 // ─── Render results ───────────────────────────────────────────────────────
 function renderResults() {
   const f5   = STATE.fiveYr;
@@ -1483,9 +1519,10 @@ function renderResults() {
   const fLng = STATE.longYr;
   const amort = getAmort();
 
-  // Hero
-  el('heroValue').textContent = fmt(f5.cumRentPaid);
-  el('heroNote').textContent  = `vs ${fmt(f5.cumOwnerCash)} total out-of-pocket owning - but equity works for you`;
+  // Hero tabs - set long-term tab label then default to it
+  if (el('heroTabLng')) el('heroTabLng').textContent = `${amort} yr`;
+  setHeroTab('long');
+
   el('stat5yrEquity').textContent = fmt(Math.max(0, f5.equityBuilt));
   el('stat5yrGap').textContent    = fmt(f5.wealthGap);
   el('stat10yrGap').textContent   = fmt(f10.wealthGap);
