@@ -325,20 +325,6 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </div>
         </div>
 
-        <div class="field">
-          <label>How long have you been renting?</label>
-          <div class="input-wrap"><input type="number" id="monthsRenting" value="36" min="0" max="600" step="6" class="suf-pad"><span class="suf">mo</span></div>
-        </div>
-
-        <div class="field">
-          <label>Expected Annual Rent Increase</label>
-          <div class="input-wrap"><input type="number" id="rentInflation" value="4.0" min="0" max="15" step="0.5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
-        </div>
-
-        <div class="field">
-          <label>Expected Home Appreciation / yr</label>
-          <div class="input-wrap"><input type="number" id="appreciation" value="3.5" min="0" max="15" step="0.5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
-        </div>
       </div>
 
       <!-- Card: What You Could Own -->
@@ -464,6 +450,31 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <div class="stat-box-label">Monthly: Rent vs Own</div>
           <div class="stat-box-value" id="statMonthlyDiff">—</div>
           <div class="stat-box-sub" id="statMonthlyDiffNote"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projection Assumptions — moved from Step 1, editable in context -->
+    <div class="card span-2" style="margin-bottom:14px;background:#fafafa;padding:14px 20px">
+      <div style="font-size:0.71rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#999;margin-bottom:10px">
+        ⚙ Projection Assumptions
+        <span style="font-weight:400;font-style:italic;color:#bbb;text-transform:none;letter-spacing:0"> — pre-filled with Calgary averages, edit to adjust</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+        <div class="field" style="margin:0">
+          <label style="font-size:0.73rem">Time renting so far</label>
+          <div class="input-wrap"><input type="number" id="monthsRenting" value="36" min="0" max="600" step="6" class="suf-pad" oninput="refreshComparison()"><span class="suf">mo</span></div>
+          <div class="hint" style="font-size:0.67rem;margin-top:3px">Calculates sunk rent cost in comparison</div>
+        </div>
+        <div class="field" style="margin:0">
+          <label style="font-size:0.73rem">Annual Rent Increase</label>
+          <div class="input-wrap"><input type="number" id="rentInflation" value="4.0" min="0" max="15" step="0.5" class="suf-pad" oninput="refreshComparison()"><span class="suf">%</span></div>
+          <div class="hint" style="font-size:0.67rem;margin-top:3px">Calgary avg ~4%/yr (CMHC 2024)</div>
+        </div>
+        <div class="field" style="margin:0">
+          <label style="font-size:0.73rem">Home Appreciation / yr</label>
+          <div class="input-wrap"><input type="number" id="appreciation" value="3.5" min="0" max="15" step="0.5" class="suf-pad" oninput="refreshComparison()"><span class="suf">%</span></div>
+          <div class="hint" style="font-size:0.67rem;margin-top:3px">Calgary 10-yr avg ~4% (CREA/CMHC)</div>
         </div>
       </div>
     </div>
@@ -919,6 +930,14 @@ function showComparison() {
   el('step2').style.display = '';
   setStepActive(2);
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Refresh comparison when Step 2 assumptions are edited ───────────────
+function refreshComparison() {
+  if (!STATE.homePrice) return; // not yet computed
+  STATE.fiveYr = computeWealth(5);
+  STATE.tenYr  = computeWealth(10);
+  renderResults();
 }
 
 // ─── Backend lead fire (non-blocking) ────────────────────────────────────
