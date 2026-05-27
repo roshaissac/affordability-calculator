@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rent vs Own Calculator — Issac Real Estate Team</title>
-<meta property="og:title" content="Rent vs Own Calculator — Rosh Issac, Realtor®">
-<meta property="og:description" content="See exactly what renting is costing you — and what owning could build. Free, instant, personalised. By Rosh Issac · Issac Real Estate Team · Dreamhouse Realty Ltd.">
+<title>Rent vs Own Calculator - Issac Real Estate Team</title>
+<meta property="og:title" content="Rent vs Own Calculator - Rosh Issac, Realtor®">
+<meta property="og:description" content="See exactly what renting is costing you - and what owning could build. Free, instant, personalised. By Rosh Issac · Issac Real Estate Team · Dreamhouse Realty Ltd.">
 <meta property="og:url" content="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html">
 <meta property="og:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
 <meta property="og:image:width" content="1200">
@@ -13,8 +13,8 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Issac Real Estate Team">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Rent vs Own Calculator — Rosh Issac, Realtor®">
-<meta name="twitter:description" content="See exactly what renting is costing you — and what owning could build. Free &amp; instant.">
+<meta name="twitter:title" content="Rent vs Own Calculator - Rosh Issac, Realtor®">
+<meta name="twitter:description" content="See exactly what renting is costing you - and what owning could build. Free &amp; instant.">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
 <!-- Prevent iOS from auto-detecting phone numbers as blue links -->
 <meta name="format-detection" content="telephone=no">
@@ -63,14 +63,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 /* Agent contact blocks */
 .header-agent{line-height:1.45}
 .header-agent .agent-name{font-weight:800;color:var(--orange);font-size:0.95rem;letter-spacing:-0.01em}
-.header-agent .agent-role{font-size:0.75rem;color:rgba(255,255,255,0.65);font-weight:400}
+.header-agent .agent-role{font-size:0.75rem;color:rgba(255,255,255,0.65);font-weight:400;display:block}
 .header-agent .agent-phone{font-size:0.8rem;color:rgba(255,255,255,0.85);margin-top:3px;letter-spacing:0.01em}
 .header-agent .agent-email{font-size:0.71rem;color:rgba(255,255,255,0.5);margin-top:1px}
 /* Prevent iOS from auto-styling phone numbers as blue links */
 a[href^="tel"]{color:inherit!important;text-decoration:none!important}
 .header-agent-right{text-align:right}
-/* QR boxes in header — hide on very small phones to prevent overflow */
-.header-qr-box{display:flex;align-items:center}
+/* QR boxes in header - column layout (image + label below), hide on very small phones */
+.header-qr-box{display:flex;flex-direction:column;align-items:center;gap:3px}
 @media(max-width:520px){.header-qr-box{display:none}}
 /* Centre title */
 .header-text{text-align:center;min-width:0}
@@ -208,7 +208,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .warning-box{background:#fff8f3;border:1.5px solid var(--orange);border-radius:7px;padding:10px 14px;font-size:0.8rem;color:#7a3b10;margin-bottom:14px}
 
 /* ── Chart container ── */
-.chart-wrap{position:relative;height:220px;margin-top:12px}
+.chart-wrap{position:relative;height:200px;margin-top:12px}
+/* ── 3-column chart row ── */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.grid-3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid-3{grid-template-columns:1fr}}
 
 /* ── Comparison table ── */
 .comp-table{width:100%;border-collapse:collapse;font-size:0.84rem;margin-top:12px}
@@ -268,14 +272,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <!-- ══ ADVISOR HEADER ══════════════════════════════════════════════════ -->
 <div class="header-advisor" id="headerAdvisor">
   <div class="header-inner">
-    <!-- LHS — QR card + Rosh -->
+    <!-- LHS - QR card + Rosh -->
     <div style="display:flex;align-items:center;gap:10px">
-      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
-        <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
-           style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
-          <div id="qrBizCard" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
-          <span style="font-size:0.52rem;color:rgba(255,255,255,0.75);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
-        </a>
+      <div class="header-qr-box">
+        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
+          <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
+             style="text-decoration:none;display:block">
+            <div id="qrBizCard" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
+          </a>
+        </div>
+        <span style="font-size:0.5rem;color:rgba(255,255,255,0.65);white-space:nowrap">Scan for business card</span>
       </div>
       <div class="header-agent">
         <div><span class="agent-name">Rosh Issac</span> <span class="agent-role">Realtor&#174;</span></div>
@@ -283,25 +289,25 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="agent-email">rosh@issacrealty.com</div>
       </div>
     </div>
-    <!-- Centre — Calculator title -->
+    <!-- Centre - Calculator title -->
     <div class="header-text">
       <h1>Rent vs Own Calculator</h1>
       <p>What renting costs · What owning builds · 5 &amp; 10-year wealth comparison</p>
     </div>
-    <!-- RHS — Sheena + QR placeholder -->
+    <!-- RHS - Sheena + QR placeholder -->
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end">
       <div class="header-agent header-agent-right">
         <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
         <div class="agent-phone">825 440-4583</div>
         <div class="agent-email">sheena@issacrealty.com</div>
       </div>
-      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <div class="header-qr-box">
+        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center">
             <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
           </div>
-          <span style="font-size:0.52rem;color:rgba(255,255,255,0.48);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
         </div>
+        <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);white-space:nowrap">Scan for business card</span>
       </div>
     </div>
   </div>
@@ -310,14 +316,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 <!-- ══ CLIENT HEADER ═══════════════════════════════════════════════════ -->
 <div class="header-client" id="headerClient" style="display:none">
   <div class="header-inner">
-    <!-- LHS — QR card + Rosh (client header) -->
+    <!-- LHS - QR card + Rosh (client header) -->
     <div style="display:flex;align-items:center;gap:10px">
-      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
-        <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
-           style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
-          <div id="qrBizCardClient" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
-          <span style="font-size:0.52rem;color:rgba(255,255,255,0.75);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
-        </a>
+      <div class="header-qr-box">
+        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
+          <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
+             style="text-decoration:none;display:block">
+            <div id="qrBizCardClient" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
+          </a>
+        </div>
+        <span style="font-size:0.5rem;color:rgba(255,255,255,0.65);white-space:nowrap">Scan for business card</span>
       </div>
       <div class="header-agent">
         <div><span class="agent-name">Rosh Issac</span> <span class="agent-role">Realtor&#174;</span></div>
@@ -326,7 +334,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
     <div class="header-text">
-      <h1>Rent vs Own — Your Numbers</h1>
+      <h1>Rent vs Own - Your Numbers</h1>
       <p>Fill in what you know. See what renting costs versus what owning builds.</p>
     </div>
     <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end">
@@ -335,13 +343,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="agent-phone">825 440-4583</div>
         <div class="agent-email">sheena@issacrealty.com</div>
       </div>
-      <div class="header-qr-box" style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
-          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <div class="header-qr-box">
+        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center">
             <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
           </div>
-          <span style="font-size:0.52rem;color:rgba(255,255,255,0.48);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
         </div>
+        <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);white-space:nowrap">Scan for business card</span>
       </div>
     </div>
   </div>
@@ -349,7 +357,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <!-- Client mode banner -->
 <div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
-  📋 Fill in what you know — mortgage assumptions default to Calgary averages. Click <strong>"Show My Comparison"</strong> when ready.
+  📋 Fill in what you know - mortgage assumptions default to Calgary averages. Click <strong>"Show My Comparison"</strong> when ready.
 </div>
 
 <div class="container">
@@ -372,7 +380,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     </div>
   </div>
 
-  <!-- ══ STEP 1 — INPUTS ════════════════════════════════════════════ -->
+  <!-- ══ STEP 1 - INPUTS ════════════════════════════════════════════ -->
   <div id="step1">
     <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:18px">
 
@@ -424,7 +432,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </div>
         </div>
 
-        <!-- Property type — 4 options, data-type for reliable matching -->
+        <!-- Property type -4 options, data-type for reliable matching -->
         <div class="field">
           <label>Property Type <span style="font-weight:400;color:#888">(what you'd buy)</span></label>
           <div class="toggle-group" id="propTypeToggle">
@@ -442,7 +450,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         <div class="card-title">🏡 What You Could Own</div>
 
         <div class="field">
-          <label>Monthly Ownership Budget <span style="font-weight:400;color:#888">(1.5× total rental commitment — edit if needed)</span></label>
+          <label>Monthly Ownership Budget <span style="font-weight:400;color:#888">(1.5× total rental commitment - edit if needed)</span></label>
           <div class="input-wrap"><span class="pre">$</span>
             <input type="number" id="ownershipBudget" value="3300" min="1000" max="30000" step="100" oninput="renderOwnershipCard()">
           </div>
@@ -456,7 +464,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <div id="affordableNote" style="font-size:0.72rem;color:#888;margin-top:3px">Adjust inputs to see your range</div>
         </div>
 
-        <!-- Monthly cost breakdown — interactive -->
+        <!-- Monthly cost breakdown - interactive -->
         <div style="font-size:0.77rem;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Monthly Cost Breakdown</div>
         <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:12px">
           <thead>
@@ -467,13 +475,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             </tr>
           </thead>
           <tbody>
-            <!-- Mortgage P+I — auto -->
+            <!-- Mortgage P+I - auto -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px;color:#444">Mortgage P+I</td>
               <td style="text-align:right;padding:6px 4px;font-weight:600" id="brPI_mo">—</td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brPI_yr">—</td>
             </tr>
-            <!-- Condo / HOA fee — checkbox toggle -->
+            <!-- Condo / HOA fee - checkbox toggle -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
                 <label style="display:flex;align-items:center;gap:7px;cursor:pointer;color:#444;font-size:0.8rem;margin:0">
@@ -483,7 +491,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:4px 4px" id="condoMonthCell">
                 <span id="condoFeeNone" style="color:#ccc;font-size:0.75rem">—</span>
-                <div id="condoFeeInputWrap" style="display:none" class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
+                <div id="condoFeeInputWrap" style="display:none;margin:0;max-width:88px;margin-left:auto" class="input-wrap">
                   <span class="pre" style="font-size:0.75rem">$</span>
                   <input type="number" id="condoFeeMonthly" value="500" min="0" max="2000" step="50"
                          style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
@@ -492,14 +500,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brCondo_yr">—</td>
             </tr>
-            <!-- Property Tax — checkbox (pre-ticked) + editable (auto-filled from price) -->
+            <!-- Property Tax - checkbox (pre-ticked) + editable (auto-filled from price) -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
                 <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
                   <input type="checkbox" id="propTaxYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
                   <div>
                     <div style="color:#444;font-size:0.8rem">Property Tax</div>
-                    <div style="font-size:0.67rem;color:#bbb">0.65%/yr Calgary avg — edit if known</div>
+                    <div style="font-size:0.67rem;color:#bbb">0.65%/yr Calgary avg - edit if known</div>
                   </div>
                 </label>
               </td>
@@ -514,14 +522,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brTax_yr">—</td>
             </tr>
-            <!-- Home Insurance — checkbox (pre-ticked) + editable -->
+            <!-- Home Insurance - checkbox (pre-ticked) + editable -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
                 <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
                   <input type="checkbox" id="homeInsYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
                   <div>
                     <div style="color:#444;font-size:0.8rem">Home Insurance</div>
-                    <div style="font-size:0.67rem;color:#bbb">est. — edit if known</div>
+                    <div style="font-size:0.67rem;color:#bbb">est. - edit if known</div>
                   </div>
                 </label>
               </td>
@@ -536,7 +544,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brIns_yr">—</td>
             </tr>
-            <!-- Maintenance reserve — checkbox (pre-ticked) + range slider -->
+            <!-- Maintenance reserve - checkbox (pre-ticked) + range slider -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
                 <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
@@ -568,7 +576,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </tfoot>
         </table>
 
-        <!-- Auto / Vehicle Loan — TDS adjustment -->
+        <!-- Auto / Vehicle Loan - TDS adjustment -->
         <div style="border:1px dashed #e0e0e0;border-radius:7px;padding:8px 12px;margin-bottom:10px;background:#fafafa">
           <label style="display:flex;align-items:center;gap:7px;cursor:pointer;margin:0;font-size:0.82rem;font-weight:600;color:#444">
             <input type="checkbox" id="autoLoanYes" onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0">
@@ -590,10 +598,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
             </div>
             <div id="autoLoanImpact" style="margin-top:6px;font-size:0.72rem;color:#D95F0A;font-style:italic"></div>
           </div>
-          <div style="font-size:0.67rem;color:#bbb;margin-top:4px">Car payment is deducted from your monthly budget — purchase price target adjusts accordingly (TDS impact)</div>
+          <div style="font-size:0.67rem;color:#bbb;margin-top:4px">Car payment is deducted from your monthly budget - purchase price target adjusts accordingly (TDS impact)</div>
         </div>
 
-        <!-- Mortgage assumptions — row 1: rates -->
+        <!-- Mortgage assumptions - row 1: rates -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
           <div class="field" style="margin:0">
             <label style="font-size:0.71rem">Contract Rate <span style="font-weight:400;color:#aaa">(actual)</span></label>
@@ -605,7 +613,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </div>
         </div>
 
-        <!-- Mortgage assumptions — row 2: amort + down -->
+        <!-- Mortgage assumptions - row 2: amort + down -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
           <div class="field" style="margin:0">
             <label style="font-size:0.71rem">Amortization</label>
@@ -623,11 +631,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
         <!-- Stress test explanation note -->
         <div style="background:#fff8f3;border:1px solid #fbd38d;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.71rem;color:#7a3b10;line-height:1.5">
-          <strong>Stress test = max(contract rate + 2%, 5.25%)</strong> — banks qualify you at this higher rate to ensure you can handle future rate increases. Your actual monthly payments use the contract rate. The stress test is not an additional cost, but it reduces the maximum mortgage you qualify for, and therefore your purchase price target.
+          <strong>Stress test = contract rate + 2%</strong> - banks qualify you at this higher rate to ensure you can handle future rate increases. Your actual monthly payments use the contract rate. The stress test is not an additional cost, but it reduces the maximum mortgage you qualify for, and therefore your purchase price target.
         </div>
 
         <div style="font-size:0.7rem;color:#bbb;line-height:1.5;font-style:italic">
-          Property tax auto-estimated at 0.65%/yr (Calgary avg) — edit above if known. Maintenance reserve adjustable via slider (0.5–2.5%/yr). Untick any line to exclude it and see the impact instantly. Mortgage uses Canadian semi-annual compounding.
+          Property tax auto-estimated at 0.65%/yr (Calgary avg) - edit above if known. Maintenance reserve adjustable via slider (0.5–2.5%/yr). Untick any line to exclude it and see the impact instantly. Mortgage uses Canadian semi-annual compounding.
         </div>
       </div>
 
@@ -670,7 +678,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   </div><!-- /step1 -->
 
-  <!-- ══ STEP 2 — RESULTS ══════════════════════════════════════════ -->
+  <!-- ══ STEP 2 - RESULTS ══════════════════════════════════════════ -->
   <div id="step2" style="display:none">
 
     <!-- Result hero -->
@@ -707,11 +715,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- Projection Assumptions — moved from Step 1, editable in context -->
+    <!-- Projection Assumptions - moved from Step 1, editable in context -->
     <div class="card span-2" style="margin-bottom:14px;background:#fafafa;padding:14px 20px">
       <div style="font-size:0.71rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#999;margin-bottom:10px">
         ⚙ Projection Assumptions
-        <span style="font-weight:400;font-style:italic;color:#bbb;text-transform:none;letter-spacing:0"> — pre-filled with Calgary averages, edit to adjust</span>
+        <span style="font-weight:400;font-style:italic;color:#bbb;text-transform:none;letter-spacing:0"> - pre-filled with Calgary averages, edit to adjust</span>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
         <div class="field" style="margin:0">
@@ -749,30 +757,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- Charts — 5yr & 10yr side by side -->
-    <div class="grid-2" style="margin-bottom:14px">
+    <!-- Charts — all 3 in one row -->
+    <div class="grid-3" style="margin-bottom:18px">
       <div class="card">
         <div class="card-title">📊 5-Year Wealth Position</div>
         <div class="chart-wrap"><canvas id="chart5yr"></canvas></div>
-        <div id="chart5Legend" style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);text-align:center"></div>
+        <div id="chart5Legend" style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);text-align:center"></div>
       </div>
       <div class="card">
         <div class="card-title">📊 10-Year Wealth Position</div>
         <div class="chart-wrap"><canvas id="chart10yr"></canvas></div>
-        <div id="chart10Legend" style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);text-align:center"></div>
+        <div id="chart10Legend" style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);text-align:center"></div>
+      </div>
+      <div class="card">
+        <div class="card-title" id="chartLongTitle">📊 Long-Term Wealth Position</div>
+        <div class="chart-wrap"><canvas id="chartLong"></canvas></div>
+        <div id="chartLongLegend" style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);text-align:center"></div>
       </div>
     </div>
 
-    <!-- Chart — long-term (amortization payoff) full width -->
+    <!-- Detailed breakdown -3 columns -->
     <div class="card span-2" style="margin-bottom:18px">
-      <div class="card-title" id="chartLongTitle">📊 30-Year Wealth Position — At Mortgage Payoff</div>
-      <div class="chart-wrap" style="max-height:260px"><canvas id="chartLong"></canvas></div>
-      <div id="chartLongLegend" style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);text-align:center"></div>
-    </div>
-
-    <!-- Detailed breakdown — 3 columns -->
-    <div class="card span-2" style="margin-bottom:18px">
-      <div class="card-title" id="breakdownTitle">🔢 Wealth Breakdown — 5, 10 &amp; Long-Term</div>
+      <div class="card-title" id="breakdownTitle">🔢 Wealth Breakdown -5, 10 &amp; Long-Term</div>
       <div style="overflow-x:auto" id="breakdownGrid"></div>
     </div>
 
@@ -788,14 +794,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <button class="btn btn-black" onclick="downloadReport(); window.scrollTo({top:document.getElementById('ctaCard').offsetTop-20,behavior:'smooth'})">📥 Get the full report</button>
     </div>
 
-    <!-- ── STEP 3 — CTA ── -->
+    <!-- ── STEP 3 - CTA ── -->
     <div class="cta-card" id="ctaCard">
       <h3>📄 Send the personalised PDF report to the renter</h3>
-      <p>A full 4-page comparison report — their numbers, the 5 &amp; 10-year wealth charts, and what to do next. Lands in their inbox in seconds.</p>
+      <p>A full 4-page comparison report - their numbers, the 5 &amp; 10-year wealth charts, and what to do next. Lands in their inbox in seconds.</p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto">
         <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="openModal('email')">
           <span style="font-size:1.3rem">📧</span>
-          <span><strong>Email me the report</strong><br><span style="font-size:0.78rem;opacity:0.85">PDF arrives in minutes — it's the clearest way to see the numbers</span></span>
+          <span><strong>Email me the report</strong><br><span style="font-size:0.78rem;opacity:0.85">PDF arrives in minutes - it's the clearest way to see the numbers</span></span>
         </button>
         <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="openModal('whatsapp')">
           <span style="font-size:1.3rem">💬</span>
@@ -803,7 +809,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </button>
         <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="openModal('booking')">
           <span style="font-size:1.3rem">📅</span>
-          <span><strong>Book a free consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time — 15-min call, no obligation</span></span>
+          <span><strong>Book a free consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time -15-min call, no obligation</span></span>
         </button>
       </div>
       <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">Contact details are collected before sending. Your financial numbers stay private.</p>
@@ -829,12 +835,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
   <!-- Centre disclaimer -->
   <div class="float-foot-disclaimer">
-    For information only &mdash; not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
+    For information only - not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
   </div>
   <!-- Affordability Calculator QR + link -->
   <a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client"
      target="_blank" rel="noopener noreferrer" class="float-foot-calc-qr">
-    <div id="qrCalc" style="width:30px;height:30px;background:#fff;flex-shrink:0;border:1px solid rgba(0,0,0,0.15)"></div>
+    <div id="qrCalc" style="width:56px;height:56px;background:#fff;flex-shrink:0;border:1px solid rgba(0,0,0,0.15)"></div>
     <span>Affordability<br>Calculator</span>
   </a>
   <!-- RHS logo -->
@@ -897,7 +903,7 @@ const CONFIG = {
   DEFAULT_APPRECIATION: 3.5,
   DEFAULT_RENT_INF:     4.0,
   HISA_RETURN:          4.0,
-  // property tax — Calgary residential
+  // property tax - Calgary residential
   PROP_TAX_PCT:         0.0065,
   // home insurance
   HOME_INS_MONTHLY:     150,
@@ -911,7 +917,7 @@ const CONFIG = {
   CLOSING_PCT:          0.025,
   // cost to sell (% of sale price at exit)
   SALE_COST_PCT:        0.06,
-  // seeded neighbourhood medians — flagged as defaults
+  // seeded neighbourhood medians - flagged as defaults
   NEIGHBOURHOOD_PRICES: {
     'Bridgeland':  { 1: 320000, 2: 480000, 3: 620000, 4: 850000 },
     'Beltline':    { 1: 295000, 2: 425000, 3: 580000, 4: 0       },
@@ -1026,7 +1032,7 @@ function getAutoLoanMonthly()       {
 function computeAffordablePrice() {
   const B       = getMonthlyBudget() - getAutoLoanMonthly(); // auto loan reduces housing budget (TDS)
   const downPct = getDownPct();
-  const mr      = monthlyRate(getStressRate()); // OSFI stress test — bank qualifies at higher rate
+  const mr      = monthlyRate(getStressRate()); // OSFI stress test - bank qualifies at higher rate
   const n       = getAmort() * 12;
   const pf      = paymentFactor(mr, n);
   const ins       = getInsMonthly();
@@ -1116,20 +1122,20 @@ function renderOwnershipCard() {
   el('condoFeeInputWrap').style.display = condoChecked ? '' : 'none';
   el('brCondo_yr').textContent = condoChecked ? fmt(oc.condo * 12) : '—';
 
-  // Property tax — auto-fill from price; checkbox controls visibility + total
+  // Property tax - auto-fill from price; checkbox controls visibility + total
   el('propTaxMonthly').value = Math.round(oc.tax);
   const propTaxChecked = el('propTaxYes')?.checked !== false;
   el('propTaxNone').style.display      = propTaxChecked ? 'none' : '';
   el('propTaxInputWrap').style.display = propTaxChecked ? '' : 'none';
   el('brTax_yr').textContent           = propTaxChecked ? fmt(getPropTaxMonthly() * 12) : '—';
 
-  // Insurance — checkbox controls visibility + total
+  // Insurance - checkbox controls visibility + total
   const homeInsChecked = el('homeInsYes')?.checked !== false;
   el('homeInsNone').style.display      = homeInsChecked ? 'none' : '';
   el('homeInsInputWrap').style.display = homeInsChecked ? '' : 'none';
   el('brIns_yr').textContent           = homeInsChecked ? fmt(getInsMonthly() * 12) : '—';
 
-  // Maintenance — checkbox + range slider label
+  // Maintenance - checkbox + range slider label
   const maintChecked = el('maintYes')?.checked !== false;
   const maintPctVal  = gv('maintPct', 1.0);
   el('maintPctLabel').textContent     = `est. ${maintPctVal.toFixed(1)}%/yr of home value`;
@@ -1360,11 +1366,11 @@ function showComparison() {
   STATE.tenYr   = computeWealth(10);
   STATE.longYr  = computeWealth(getAmort());
 
-  // 4. Fire lead to backend (non-blocking — before showing results so it
+  // 4. Fire lead to backend (non-blocking - before showing results so it
   //    always reaches CRM even if user closes the tab immediately)
   if (firstName || email || phone) {
     _fireLeadToBackend({ firstName, lastName, phone, email, preferredContact: 'comparison_view' });
-    el('leadCaptureStatus').textContent = '✅ Details saved — your comparison is ready';
+    el('leadCaptureStatus').textContent = '✅ Details saved - your comparison is ready';
   }
 
   // 5. Show step2 FIRST so Chart.js canvas has real dimensions (iOS fix —
@@ -1479,7 +1485,7 @@ function renderResults() {
 
   // Hero
   el('heroValue').textContent = fmt(f5.cumRentPaid);
-  el('heroNote').textContent  = `vs ${fmt(f5.cumOwnerCash)} total out-of-pocket owning — but equity works for you`;
+  el('heroNote').textContent  = `vs ${fmt(f5.cumOwnerCash)} total out-of-pocket owning - but equity works for you`;
   el('stat5yrEquity').textContent = fmt(Math.max(0, f5.equityBuilt));
   el('stat5yrGap').textContent    = fmt(f5.wealthGap);
   el('stat10yrGap').textContent   = fmt(f10.wealthGap);
@@ -1516,10 +1522,10 @@ function renderResults() {
   renderChart('chart5yr',   _chartInst5,    f5,   inst => { _chartInst5    = inst; }, 'chart5Legend');
   renderChart('chart10yr',  _chartInst10,   f10,  inst => { _chartInst10   = inst; }, 'chart10Legend');
   renderChart('chartLong',  _chartInstLong, fLng, inst => { _chartInstLong = inst; }, 'chartLongLegend');
-  el('chartLongTitle').textContent = `📊 ${amort}-Year Wealth Position — At Mortgage Payoff`;
-  el('breakdownTitle').textContent = `🔢 Wealth Breakdown — 5, 10 & ${amort} Years`;
+  el('chartLongTitle').textContent = `📊 ${amort}-Year Wealth Position`;
+  el('breakdownTitle').textContent = `🔢 Wealth Breakdown -5, 10 & ${amort} Years`;
 
-  // ── Detailed breakdown — unified table ───────────────────────────────────
+  // ── Detailed breakdown - unified table ───────────────────────────────────
   const bg = el('breakdownGrid');
   const hasCondo = (f5.cumCondoPaid > 0);
   const v = (f, key) => fmt(f[key]);  // shorthand
@@ -1547,11 +1553,11 @@ function renderResults() {
         <td>${v(f5,'cumRenterIns')}</td><td>${v(f10,'cumRenterIns')}</td><td>${v(fLng,'cumRenterIns')}</td>
       </tr>
       <tr class="wt-subtotal wt-red">
-        <td>Total cash out — renting</td>
+        <td>Total cash out - renting</td>
         <td>${v(f5,'cumRentPaid')}</td><td>${v(f10,'cumRentPaid')}</td><td>${v(fLng,'cumRentPaid')}</td>
       </tr>
       <tr>
-        <td>High-Interest Savings Account (HISA) — down payment invested @ ${fmtPct(CONFIG.HISA_RETURN)}%</td>
+        <td>High-Interest Savings Account (HISA) - down payment invested @ ${fmtPct(CONFIG.HISA_RETURN)}%</td>
         <td>${v(f5,'hisaBalance')}</td><td>${v(f10,'hisaBalance')}</td><td>${v(fLng,'hisaBalance')}</td>
       </tr>
       <tr class="wt-net">
@@ -1572,11 +1578,11 @@ function renderResults() {
         <td>${v(f5,'cumMortgPayments')}</td><td>${v(f10,'cumMortgPayments')}</td><td>${v(fLng,'cumMortgPayments')}</td>
       </tr>
       <tr class="wt-indent wt-green">
-        <td>↳ Principal repaid — equity gained</td>
+        <td>↳ Principal repaid - equity gained</td>
         <td>${v(f5,'cumPrincipalRepaid')}</td><td>${v(f10,'cumPrincipalRepaid')}</td><td>${v(fLng,'cumPrincipalRepaid')}</td>
       </tr>
       <tr class="wt-indent wt-red">
-        <td>↳ Interest paid — cost of borrowing</td>
+        <td>↳ Interest paid - cost of borrowing</td>
         <td>${v(f5,'cumInterestPaid')}</td><td>${v(f10,'cumInterestPaid')}</td><td>${v(fLng,'cumInterestPaid')}</td>
       </tr>
       <tr class="wt-muted">
@@ -1596,7 +1602,7 @@ function renderResults() {
         <td>${v(f5,'cumCondoPaid')}</td><td>${v(f10,'cumCondoPaid')}</td><td>${v(fLng,'cumCondoPaid')}</td>
       </tr>` : ''}
       <tr class="wt-subtotal wt-red">
-        <td>Total cash out — owning</td>
+        <td>Total cash out - owning</td>
         <td>${v(f5,'cumOwnerCash')}</td><td>${v(f10,'cumOwnerCash')}</td><td>${v(fLng,'cumOwnerCash')}</td>
       </tr>
       <tr>
@@ -1620,7 +1626,7 @@ function renderResults() {
 
       <!-- ── WEALTH GAP ── -->
       <tr class="wt-gap">
-        <td>💰 Wealth Gap — Owner Advantage</td>
+        <td>💰 Wealth Gap - Owner Advantage</td>
         <td>${v(f5,'wealthGap')}</td><td>${v(f10,'wealthGap')}</td><td>${v(fLng,'wealthGap')}</td>
       </tr>
 
@@ -1803,7 +1809,7 @@ async function submitLead() {
     window.open(CONFIG.ROSH_BOOKING, '_blank');
   }
 
-  // Supabase REST — fire and forget (non-blocking for UX)
+  // Supabase REST - fire and forget (non-blocking for UX)
   if (CONFIG.SUPABASE_ANON_KEY !== 'PASTE_ROTATED_KEY_HERE') {
     fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rent_vs_own_leads`, {
       method:  'POST',
@@ -1814,7 +1820,7 @@ async function submitLead() {
         'Prefer':        'return=minimal',
       },
       body: JSON.stringify(supabasePayload),
-    }).catch(() => {}); // silent fail — Apps Script is the backup
+    }).catch(() => {}); // silent fail - Apps Script is the backup
   }
 
   // Dual-write to Apps Script via sendBeacon (avoids iOS Safari auth sheet bug)
@@ -1836,7 +1842,7 @@ async function submitLead() {
   btn.classList.remove('pulse');
   btn.textContent = '✅ Done!';
   const msgs = {
-    email    : 'Your report is on its way. Check your inbox — Rosh will follow up shortly.',
+    email    : 'Your report is on its way. Check your inbox - Rosh will follow up shortly.',
     whatsapp : 'Opening WhatsApp now…',
     booking  : 'Opening the booking calendar…',
   };
@@ -1848,7 +1854,7 @@ async function submitLead() {
 // ─── PDF generation (client-side jsPDF) ──────────────────────────────────
 function generatePDF(firstName, lastName, email) {
   if (typeof window.jspdf === 'undefined') {
-    console.warn('jsPDF not loaded — skipping PDF generation');
+    console.warn('jsPDF not loaded - skipping PDF generation');
     return;
   }
   const { jsPDF } = window.jspdf;
@@ -2307,7 +2313,7 @@ function generatePDF(firstName, lastName, email) {
   doc.setFont('helvetica','normal');
   doc.setFontSize(9);
   doc.setTextColor(...grey);
-  doc.text('Issac Realty Inc. — Associates of Dreamhouse Realty Ltd.', M+8, 81);
+  doc.text('Issac Realty Inc. - Associates of Dreamhouse Realty Ltd.', M+8, 81);
   doc.text('Calgary, Alberta  |  825 449 5083  |  rosh@issacrealty.com', M+8, 87);
   doc.text('RECA Licence #: 00579553', M+8, 93);
 
@@ -2357,7 +2363,7 @@ function generatePDF(firstName, lastName, email) {
   doc.setFont('helvetica','bold');
   doc.setFontSize(7);
   doc.setTextColor(...grey);
-  doc.text('Issac Realty Team — Associates of Dreamhouse Realty Ltd.', W/2, 285, { align:'center' });
+  doc.text('Issac Realty Team - Associates of Dreamhouse Realty Ltd.', W/2, 285, { align:'center' });
 
   // ── PAGE 2: Monthly comparison + 5-year ───────────────────────────────
   doc.addPage();
@@ -2490,10 +2496,10 @@ function generatePDF(firstName, lastName, email) {
   const sections = [
     {
       title: 'Down Payment',
-      body:  'The most common barrier is not the income to qualify — it\'s having the down payment saved. ' +
+      body:  'The most common barrier is not the income to qualify - it\'s having the down payment saved. ' +
              'With home prices in Calgary, you typically need 5% on the first $500,000 and 10% on anything above that. ' +
              `Based on the ${fmt(STATE.homePrice)} comparison we ran today, your target down payment is ${fmt(f5.dp)}. ` +
-             'There are programs that can help — including RRSP Home Buyers\' Plan (up to $35,000 each, $70,000 combined) and the First Home Savings Account (FHSA), which gives you both a tax deduction and tax-free growth.'
+             'There are programs that can help - including RRSP Home Buyers\' Plan (up to $35,000 each, $70,000 combined) and the First Home Savings Account (FHSA), which gives you both a tax deduction and tax-free growth.'
     },
     {
       title: 'Mortgage Qualifying',
@@ -2506,7 +2512,7 @@ function generatePDF(firstName, lastName, email) {
     {
       title: 'Market Timing',
       body:  'Trying to time the market is one of the most expensive decisions renters make. ' +
-             'Every month you delay, you are paying rent — money that builds no equity. The wealth gap analysis ' +
+             'Every month you delay, you are paying rent - money that builds no equity. The wealth gap analysis ' +
              'in this report assumes a modest ' + fmtPct(getAppreciation()*100) + '/yr home appreciation. ' +
              'The real question is not whether the market will go up or down in the short term. ' +
              'It is whether, over a 5- to 10-year horizon, owning the home you would otherwise rent puts you in a materially better financial position. ' +
@@ -2547,10 +2553,10 @@ function generatePDF(firstName, lastName, email) {
   doc.setFont('helvetica','normal');
   doc.setFontSize(9);
   doc.setTextColor(...grey);
-  doc.text('Rosh Issac, Realtor® — Issac Realty Inc., Associates of Dreamhouse Realty Ltd.', M+8, y4+18);
+  doc.text('Rosh Issac, Realtor® - Issac Realty Inc., Associates of Dreamhouse Realty Ltd.', M+8, y4+18);
   doc.text('825 449 5083  |  rosh@issacrealty.com  |  roshaissac.github.io', M+8, y4+25);
   doc.setFont('helvetica','italic');
-  doc.text('RECA Licence #: 00579553 — Licensed to trade in real estate in Alberta', M+8, y4+32);
+  doc.text('RECA Licence #: 00579553 - Licensed to trade in real estate in Alberta', M+8, y4+32);
 
   _pdfFooter(doc, W, M, grey, orange);
 
@@ -2593,24 +2599,24 @@ window.addEventListener('load', () => {
   // ── QR codes ──────────────────────────────────────────────────────────────
   if (typeof QRCode !== 'undefined') {
     const qrOpts = { colorDark:'#000000', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.L };
-    // Business card — advisor header + client header (only one is visible but both init fine)
+    // Business card - advisor header + client header (only one is visible but both init fine)
     ['qrBizCard', 'qrBizCardClient'].forEach(id => {
       const node = el(id);
       if (node) new QRCode(node, { ...qrOpts, text:'https://roshaissac.github.io/Businesscard', width:48, height:48 });
     });
-    // Affordability calculator — footer (opens in client mode for sharing)
+    // Affordability calculator - footer (opens in client mode for sharing)
     const calcNode = el('qrCalc');
     if (calcNode) new QRCode(calcNode, { ...qrOpts,
       text:'https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client',
-      width:30, height:30 });
+      width:56, height:56 });
   } else {
-    // QR library unavailable — show fallback text links
+    // QR library unavailable - show fallback text links
     ['qrBizCard', 'qrBizCardClient'].forEach(id => {
       const node = el(id);
       if (node) { node.style.cssText = 'width:48px;height:48px;display:flex;align-items:center;justify-content:center'; node.innerHTML = '<a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener" style="font-size:0.58rem;color:#F7934C;text-decoration:underline;line-height:1.3;text-align:center">View<br>card ↗</a>'; }
     });
     const calcNode = el('qrCalc');
-    if (calcNode) { calcNode.style.cssText = 'width:30px;height:30px;display:flex;align-items:center;justify-content:center'; calcNode.innerHTML = '<a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client" target="_blank" rel="noopener" style="font-size:0.52rem;color:#F7934C;text-decoration:underline;text-align:center;line-height:1.3">Open ↗</a>'; }
+    if (calcNode) { calcNode.style.cssText = 'width:56px;height:56px;display:flex;align-items:center;justify-content:center'; calcNode.innerHTML = '<a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client" target="_blank" rel="noopener" style="font-size:0.52rem;color:#F7934C;text-decoration:underline;text-align:center;line-height:1.3">Open ↗</a>'; }
   }
 
   // ── Hide floating CTA when the inline "Show My Comparison" button is near or in view ──
@@ -2620,7 +2626,7 @@ window.addEventListener('load', () => {
     const floatBtn  = el('floatingShowCTA');
     if (!inlineBtn || !floatBtn) return;
     function updateFloatCTA() {
-      // If we're on step2, showComparison() already hid it — don't touch
+      // If we're on step2, showComparison() already hid it - don't touch
       if (el('step1')?.style.display === 'none') return;
       const rect = inlineBtn.getBoundingClientRect();
       // Hide when the inline button's top edge is within the visible viewport
