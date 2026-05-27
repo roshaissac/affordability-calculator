@@ -79,21 +79,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 }
 
 /* ── Floating footer bar ── */
-.floating-footer{position:fixed;bottom:0;left:0;right:0;z-index:998;background:var(--white);border-top:1px solid var(--border);box-shadow:0 -2px 14px rgba(0,0,0,0.09);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.floating-footer{position:fixed;bottom:0;left:0;right:0;z-index:998;background:var(--orange);border-top:none;box-shadow:0 -2px 14px rgba(0,0,0,0.15);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
 .float-foot-brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
 .float-foot-brand-text{line-height:1.35}
-.float-foot-brand-text .name{font-weight:700;color:var(--orange);font-size:0.88rem;letter-spacing:-0.01em}
-.float-foot-brand-text .title{font-size:0.78rem;color:var(--text);font-weight:400}
-.float-foot-brand-text .brokerage{font-size:0.71rem;color:var(--text-muted)}
+.float-foot-brand-text .name{font-weight:700;color:var(--white);font-size:0.88rem;letter-spacing:-0.01em}
+.float-foot-brand-text .title{font-size:0.78rem;color:rgba(255,255,255,0.85);font-weight:400}
+.float-foot-brand-text .brokerage{font-size:0.71rem;color:rgba(255,255,255,0.8)}
 .float-foot-brand-text .brokerage em{font-style:italic}
-.float-foot-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.float-foot-disclaimer{font-size:0.69rem;color:var(--text-subtle);text-align:right;line-height:1.4;max-width:280px}
-.float-foot-disclaimer a{color:var(--orange);text-decoration:none;font-weight:600}
-.float-foot-logo{height:34px;width:auto;display:block;flex-shrink:0}
+.float-foot-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.float-foot-disclaimer{font-size:0.69rem;color:rgba(255,255,255,0.88);text-align:right;line-height:1.4;max-width:280px}
+.float-foot-disclaimer a{color:var(--white);text-decoration:underline;font-weight:600}
+.float-foot-logo-wrap{background:var(--white);border-radius:7px;padding:5px 8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.float-foot-logo{height:42px;width:auto;display:block}
 @media(max-width:600px){
   .floating-footer{padding:7px 14px;gap:8px}
   .float-foot-disclaimer{display:none}
-  .float-foot-logo{height:28px}
+  .float-foot-logo{height:34px}
   .float-foot-brand-text .name{font-size:0.82rem}
   .float-foot-brand-text .brokerage{font-size:0.67rem}
 }
@@ -567,8 +568,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <div class="float-foot-disclaimer">
       For information purposes only &mdash; not a lender commitment. Numbers are estimates based on inputs provided and current market assumptions. Actual mortgage qualification, costs, and market outcomes may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
     </div>
-    <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
-      class="float-foot-logo" onerror="this.style.display='none'">
+    <div class="float-foot-logo-wrap">
+      <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
+        class="float-foot-logo" onerror="this.parentElement.style.display='none'">
+    </div>
   </div>
 </div>
 
