@@ -79,26 +79,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 }
 
 /* ── Floating footer bar ── */
-.floating-footer{position:fixed;bottom:0;left:0;right:0;z-index:998;background:var(--orange);border-top:none;box-shadow:0 -2px 14px rgba(0,0,0,0.15);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px}
-.float-foot-brand{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.float-foot-brand-text{line-height:1.35}
-.float-foot-brand-text .name{font-weight:700;color:var(--white);font-size:0.88rem;letter-spacing:-0.01em}
-.float-foot-brand-text .title{font-size:0.78rem;color:rgba(255,255,255,0.85);font-weight:400}
-.float-foot-brand-text .brokerage{font-size:0.71rem;color:rgba(255,255,255,0.8)}
+.floating-footer{position:fixed;bottom:0;left:0;right:0;z-index:998;background:#D95F0A;border-top:none;box-shadow:0 -3px 16px rgba(0,0,0,0.22);padding:5px 18px;display:flex;align-items:center;gap:14px}
+.float-foot-brand{display:flex;align-items:center;flex-shrink:0}
+.float-foot-brand-text{line-height:1.3}
+.float-foot-brand-text .name{font-weight:700;color:var(--white);font-size:0.85rem;letter-spacing:-0.01em}
+.float-foot-brand-text .brokerage{font-size:0.68rem;color:rgba(255,255,255,0.82)}
 .float-foot-brand-text .brokerage em{font-style:italic}
-.float-foot-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
-.float-foot-disclaimer{font-size:0.69rem;color:rgba(255,255,255,0.88);text-align:right;line-height:1.4;max-width:280px}
+.float-foot-disclaimer{flex:1;font-size:0.67rem;font-style:italic;color:rgba(255,255,255,0.9);text-align:center;line-height:1.35;padding:0 12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .float-foot-disclaimer a{color:var(--white);text-decoration:underline;font-weight:600}
-.float-foot-logo-wrap{background:var(--white);border-radius:7px;padding:5px 8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.float-foot-logo{height:42px;width:auto;display:block}
+.float-foot-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.float-foot-logo-wrap{background:var(--white);border-radius:6px;padding:4px 7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.float-foot-logo{height:36px;width:auto;display:block}
 @media(max-width:600px){
-  .floating-footer{padding:7px 14px;gap:8px}
+  .floating-footer{padding:5px 12px;gap:8px}
   .float-foot-disclaimer{display:none}
-  .float-foot-logo{height:34px}
-  .float-foot-brand-text .name{font-size:0.82rem}
-  .float-foot-brand-text .brokerage{font-size:0.67rem}
+  .float-foot-logo{height:30px}
+  .float-foot-brand-text .name{font-size:0.8rem}
+  .float-foot-brand-text .brokerage{font-size:0.65rem}
 }
-body{padding-bottom:68px}
+body{padding-bottom:58px}
 
 /* ── Banners ── */
 .banner{padding:11px 24px;font-size:0.84rem;font-weight:500;display:flex;align-items:center;gap:10px}
@@ -558,20 +557,21 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 <!-- ══ FLOATING FOOTER ═══════════════════════════════════════════════ -->
 <div class="floating-footer">
+  <!-- LHS brand -->
   <div class="float-foot-brand">
     <div class="float-foot-brand-text">
       <div><span class="name">Issac Realty Team</span></div>
       <div class="brokerage"><em>Associates of</em> Dreamhouse Realty Ltd., Alberta Canada</div>
     </div>
   </div>
-  <div class="float-foot-right">
-    <div class="float-foot-disclaimer">
-      For information purposes only &mdash; not a lender commitment. Numbers are estimates based on inputs provided and current market assumptions. Actual mortgage qualification, costs, and market outcomes may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
-    </div>
-    <div class="float-foot-logo-wrap">
-      <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
-        class="float-foot-logo" onerror="this.parentElement.style.display='none'">
-    </div>
+  <!-- Centre disclaimer -->
+  <div class="float-foot-disclaimer">
+    For information only &mdash; not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
+  </div>
+  <!-- RHS logo -->
+  <div class="float-foot-logo-wrap">
+    <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
+      class="float-foot-logo" onerror="this.parentElement.style.display='none'">
   </div>
 </div>
 
