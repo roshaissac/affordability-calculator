@@ -2346,8 +2346,8 @@ function generatePDF(firstName, lastName, email) {
   doc.setFont('helvetica','italic');
   doc.setFontSize(7);
   doc.setTextColor(...grey);
-  const disc = 'This report is for informational purposes only and does not constitute financial, legal, or mortgage advice. All projections use assumed appreciation and interest rates which may differ from actual market conditions. Consult a licensed mortgage professional before making any real estate decisions.';
-  const discLines = doc.splitTextToSize(disc, cW);
+  const discText = 'This report is for informational purposes only and does not constitute financial, legal, or mortgage advice. All projections use assumed appreciation and interest rates which may differ from actual market conditions. Consult a licensed mortgage professional before making any real estate decisions.';
+  const discLines = doc.splitTextToSize(discText, cW);
   doc.text(discLines, M, 270);
 
   // Footer rule
@@ -2386,7 +2386,7 @@ function generatePDF(firstName, lastName, email) {
     theme: 'plain',
   });
 
-  let y2 = doc.lastAutoTable.finalY + 10;
+  y2 = doc.lastAutoTable.finalY + 10;
   _pdfSectionTitle(doc, '5-Year Wealth Summary', y2, M, cW, orange);
   y2 += 7;
 
@@ -2450,7 +2450,7 @@ function generatePDF(firstName, lastName, email) {
     theme: 'plain',
   });
 
-  let y3 = doc.lastAutoTable.finalY + 10;
+  y3 = doc.lastAutoTable.finalY + 10;
   _pdfSectionTitle(doc, 'Assumptions Used', y3, M, cW, orange);
   y3 += 7;
 
@@ -2514,7 +2514,7 @@ function generatePDF(firstName, lastName, email) {
     },
   ];
 
-  let y4 = 30;
+  y4 = 30;
   sections.forEach(({ title, body }) => {
     doc.setFillColor(...orange);
     doc.setDrawColor(...orange);
