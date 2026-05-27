@@ -2,7 +2,7 @@
    Caches the app shell + CDN scripts so it loads offline/on spotty LTE.
    Version bump CACHE_NAME to force refresh after major updates. */
 
-const CACHE_NAME = 'rvo-v11';
+const CACHE_NAME = 'rvo-v12';
 const SHELL = [
   './rent-vs-own.html',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js',

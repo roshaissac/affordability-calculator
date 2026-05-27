@@ -92,7 +92,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .float-foot-logo-wrap{background:var(--white);border-radius:6px;padding:4px 7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .float-foot-logo{height:36px;width:auto;display:block}
 /* ── Footer calculator QR widget ── */
-.float-foot-calc-qr{flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;border-left:1px solid rgba(255,255,255,0.18);padding-left:12px}
+.float-foot-calc-qr{flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;border:2px solid #000000;border-radius:7px;padding:4px 8px;margin-left:6px}
 .float-foot-calc-qr span{font-size:0.62rem;color:rgba(255,255,255,0.85);line-height:1.3;white-space:nowrap}
 @media(max-width:600px){
   .floating-footer{padding:5px 12px;gap:8px}
@@ -250,6 +250,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .modal-field input:focus{outline:none;border-color:var(--orange)}
 .consent-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;font-size:0.78rem;color:#555;line-height:1.45}
 .consent-row input[type=checkbox]{width:16px;height:16px;margin-top:2px;cursor:pointer;accent-color:var(--orange);flex-shrink:0}
+
+/* ── Floating "Show My Comparison" CTA ── */
+.floating-cta-btn{position:fixed;bottom:68px;right:16px;z-index:997;background:rgba(0,0,0,0.72);color:var(--white);border:2px solid var(--orange);border-radius:30px;padding:9px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.28);display:flex;align-items:center;gap:6px;letter-spacing:0.01em;transition:background 0.15s}
+.floating-cta-btn:hover{background:rgba(247,147,76,0.9)}
 </style>
 </head>
 <body>
@@ -259,11 +263,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="header-inner">
     <!-- LHS — QR card + Rosh -->
     <div style="display:flex;align-items:center;gap:10px">
-      <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
-         style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
-        <div id="qrBizCard" style="width:52px;height:52px;border-radius:4px;overflow:hidden;background:#fff;flex-shrink:0"></div>
-        <span style="font-size:0.52rem;color:rgba(255,255,255,0.48);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
-      </a>
+      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+        <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
+           style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div id="qrBizCard" style="background:#fff;flex-shrink:0;padding:2px;line-height:0"></div>
+          <span style="font-size:0.52rem;color:rgba(255,255,255,0.75);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
+        </a>
+      </div>
       <div class="header-agent">
         <div><span class="agent-name">Rosh Issac</span> <span class="agent-role">Realtor&#174;</span></div>
         <div class="agent-phone">825 449-5083</div>
@@ -275,11 +281,21 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <h1>Rent vs Own Calculator</h1>
       <p>What renting costs · What owning builds · 5 &amp; 10-year wealth comparison</p>
     </div>
-    <!-- RHS — Sheena -->
-    <div class="header-agent header-agent-right">
-      <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
-      <div class="agent-phone">825 440-4583</div>
-      <div class="agent-email">sheena@issacrealty.com</div>
+    <!-- RHS — Sheena + QR placeholder -->
+    <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end">
+      <div class="header-agent header-agent-right">
+        <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
+        <div class="agent-phone">825 440-4583</div>
+        <div class="agent-email">sheena@issacrealty.com</div>
+      </div>
+      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
+          </div>
+          <span style="font-size:0.52rem;color:rgba(255,255,255,0.48);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -289,11 +305,13 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="header-inner">
     <!-- LHS — QR card + Rosh (client header) -->
     <div style="display:flex;align-items:center;gap:10px">
-      <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
-         style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
-        <div id="qrBizCardClient" style="width:52px;height:52px;border-radius:4px;overflow:hidden;background:#fff;flex-shrink:0"></div>
-        <span style="font-size:0.52rem;color:rgba(255,255,255,0.48);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
-      </a>
+      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+        <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
+           style="flex-shrink:0;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div id="qrBizCardClient" style="background:#fff;flex-shrink:0;padding:2px;line-height:0"></div>
+          <span style="font-size:0.52rem;color:rgba(255,255,255,0.75);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
+        </a>
+      </div>
       <div class="header-agent">
         <div><span class="agent-name">Rosh Issac</span> <span class="agent-role">Realtor&#174;</span></div>
         <div class="agent-phone">825 449-5083</div>
@@ -304,10 +322,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <h1>Rent vs Own — Your Numbers</h1>
       <p>Fill in what you know. See what renting costs versus what owning builds.</p>
     </div>
-    <div class="header-agent header-agent-right">
-      <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
-      <div class="agent-phone">825 440-4583</div>
-      <div class="agent-email">sheena@issacrealty.com</div>
+    <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end">
+      <div class="header-agent header-agent-right">
+        <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
+        <div class="agent-phone">825 440-4583</div>
+        <div class="agent-email">sheena@issacrealty.com</div>
+      </div>
+      <div style="border:2px solid var(--orange);border-radius:7px;padding:4px 6px;flex-shrink:0">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
+          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
+          </div>
+          <span style="font-size:0.52rem;color:rgba(255,255,255,0.48);line-height:1.25;white-space:nowrap;text-align:center">Scan for<br>business card</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -457,14 +485,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brCondo_yr">—</td>
             </tr>
-            <!-- Property Tax — editable (auto-filled from price) -->
+            <!-- Property Tax — checkbox (pre-ticked) + editable (auto-filled from price) -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
-                <div style="color:#444">Property Tax</div>
-                <div style="font-size:0.67rem;color:#bbb">0.65%/yr Calgary avg — edit if known</div>
+                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
+                  <input type="checkbox" id="propTaxYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
+                  <div>
+                    <div style="color:#444;font-size:0.8rem">Property Tax</div>
+                    <div style="font-size:0.67rem;color:#bbb">0.65%/yr Calgary avg — edit if known</div>
+                  </div>
+                </label>
               </td>
-              <td style="padding:4px 4px">
-                <div class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
+              <td style="text-align:right;padding:4px 4px">
+                <span id="propTaxNone" style="color:#ccc;font-size:0.75rem;display:none">—</span>
+                <div id="propTaxInputWrap" class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
                   <span class="pre" style="font-size:0.75rem">$</span>
                   <input type="number" id="propTaxMonthly" value="233" min="0" max="3000" step="10"
                          style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
@@ -473,14 +507,20 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brTax_yr">—</td>
             </tr>
-            <!-- Home Insurance — editable -->
+            <!-- Home Insurance — checkbox (pre-ticked) + editable -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
-                <div style="color:#444">Home Insurance</div>
-                <div style="font-size:0.67rem;color:#bbb">est. — edit if known</div>
+                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
+                  <input type="checkbox" id="homeInsYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
+                  <div>
+                    <div style="color:#444;font-size:0.8rem">Home Insurance</div>
+                    <div style="font-size:0.67rem;color:#bbb">est. — edit if known</div>
+                  </div>
+                </label>
               </td>
-              <td style="padding:4px 4px">
-                <div class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
+              <td style="text-align:right;padding:4px 4px">
+                <span id="homeInsNone" style="color:#ccc;font-size:0.75rem;display:none">—</span>
+                <div id="homeInsInputWrap" class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
                   <span class="pre" style="font-size:0.75rem">$</span>
                   <input type="number" id="homeInsMonthly" value="150" min="0" max="1000" step="10"
                          style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
@@ -489,13 +529,26 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brIns_yr">—</td>
             </tr>
-            <!-- Maintenance reserve — auto -->
+            <!-- Maintenance reserve — checkbox (pre-ticked) + range slider -->
             <tr style="border-bottom:1px solid #f0f0f0">
               <td style="padding:6px 4px">
-                <div style="color:#444">Maintenance reserve</div>
-                <div style="font-size:0.67rem;color:#bbb">est. 1%/yr of home value</div>
+                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
+                  <input type="checkbox" id="maintYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
+                  <div>
+                    <div style="color:#444;font-size:0.8rem">Maintenance reserve</div>
+                    <div style="font-size:0.67rem;color:#bbb" id="maintPctLabel">est. 1.0%/yr of home value</div>
+                  </div>
+                </label>
               </td>
-              <td style="text-align:right;padding:6px 4px;font-weight:600" id="brMaint_mo">—</td>
+              <td style="text-align:right;padding:4px 4px">
+                <span id="maintNone" style="color:#ccc;font-size:0.75rem;display:none">—</span>
+                <div id="maintSliderWrap" style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                  <span style="font-weight:600;font-size:0.8rem" id="brMaint_mo">—</span>
+                  <input type="range" id="maintPct" min="0.5" max="2.5" step="0.1" value="1.0"
+                         style="width:80px;accent-color:var(--orange);margin:0"
+                         oninput="renderOwnershipCard()">
+                </div>
+              </td>
               <td style="text-align:right;padding:6px 4px;color:#777" id="brMaint_yr">—</td>
             </tr>
           </tbody>
@@ -567,7 +620,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
 
         <div style="font-size:0.7rem;color:#bbb;line-height:1.5;font-style:italic">
-          Property tax auto-estimated at 0.65%/yr (Calgary avg) — edit the field above if you have the exact figure. Maintenance reserve is 1%/yr estimate. Mortgage uses Canadian semi-annual compounding.
+          Property tax auto-estimated at 0.65%/yr (Calgary avg) — edit above if known. Maintenance reserve adjustable via slider (0.5–2.5%/yr). Untick any line to exclude it and see the impact instantly. Mortgage uses Canadian semi-annual compounding.
         </div>
       </div>
 
@@ -753,6 +806,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
 </div><!-- /container -->
 
+<!-- ══ FLOATING "SHOW MY COMPARISON" CTA ════════════════════════════ -->
+<button id="floatingShowCTA" class="floating-cta-btn" onclick="showComparison()">
+  📊 Show My Comparison
+</button>
+
 <!-- ══ FLOATING FOOTER ═══════════════════════════════════════════════ -->
 <div class="floating-footer">
   <!-- LHS brand -->
@@ -766,11 +824,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div class="float-foot-disclaimer">
     For information only &mdash; not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
   </div>
-  <!-- Calculator QR + link -->
+  <!-- Affordability Calculator QR + link -->
   <a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client"
      target="_blank" rel="noopener noreferrer" class="float-foot-calc-qr">
-    <div id="qrCalc" style="width:34px;height:34px;border-radius:3px;overflow:hidden;background:#fff;flex-shrink:0"></div>
-    <span>Rent vs Own<br>Calculator</span>
+    <div id="qrCalc" style="background:#fff;flex-shrink:0;padding:2px;line-height:0"></div>
+    <span>Affordability<br>Calculator</span>
   </a>
   <!-- RHS logo -->
   <div class="float-foot-logo-wrap">
@@ -936,7 +994,18 @@ function getRate()                  { return gv('ownerRate', CONFIG.DEFAULT_RATE
 function getStressRate()            { return Math.max(getRate() + 0.02, 0.0525); } // OSFI: max(contract+2%, 5.25%)
 function getAmort()                 { return parseInt(el('ownerAmort')?.value || CONFIG.DEFAULT_AMORT); }
 function getDownPct()               { return gv('ownerDown', 5) / 100; }
-function getInsMonthly()            { return gv('homeInsMonthly', CONFIG.HOME_INS_MONTHLY); }
+function getInsMonthly() {
+  if (el('homeInsYes') && !el('homeInsYes').checked) return 0;
+  return gv('homeInsMonthly', CONFIG.HOME_INS_MONTHLY);
+}
+function getPropTaxMonthly() {
+  if (el('propTaxYes') && !el('propTaxYes').checked) return 0;
+  return gv('propTaxMonthly', 0);
+}
+function getMaintRate() {
+  if (el('maintYes') && !el('maintYes').checked) return 0;
+  return gv('maintPct', 1.0) / 100;
+}
 function getCondoFee()              {
   if (!el('condoFeeYes')?.checked) return 0;
   return gv('condoFeeMonthly', 500);
@@ -953,16 +1022,18 @@ function computeAffordablePrice() {
   const mr      = monthlyRate(getStressRate()); // OSFI stress test — bank qualifies at higher rate
   const n       = getAmort() * 12;
   const pf      = paymentFactor(mr, n);
-  const ins     = getInsMonthly();
-  const condo   = getCondoFee();
+  const ins       = getInsMonthly();
+  const condo     = getCondoFee();
+  const taxRate   = (el('propTaxYes') && !el('propTaxYes').checked) ? 0 : CONFIG.PROP_TAX_PCT;
+  const maintRate = getMaintRate();
 
   let P = 500000;
   for (let i = 0; i < 120; i++) {
     const cm    = cmhcRate(downPct);
     const loan  = P * (1 - downPct) * (1 + cm);
     const pi    = loan * pf;
-    const tax   = P * CONFIG.PROP_TAX_PCT / 12;   // percentage-based in solver
-    const maint = P * CONFIG.MAINT_PCT / 12;
+    const tax   = P * taxRate / 12;
+    const maint = P * maintRate / 12;
     const total = pi + tax + maint + ins + condo;
     const newP  = P * (B / total);
     if (!isFinite(newP) || newP <= 0) break;
@@ -982,7 +1053,7 @@ function computeOwnershipCosts(price) {
   const pi      = loan * paymentFactor(mr, n);
   const tax     = price * CONFIG.PROP_TAX_PCT / 12;  // used to auto-fill editable field
   const ins     = getInsMonthly();
-  const maint   = price * CONFIG.MAINT_PCT / 12;
+  const maint   = price * getMaintRate() / 12;
   const condo   = getCondoFee();
   const total   = pi + tax + ins + maint + condo;
   return { pi, tax, ins, maint, condo, total };
@@ -999,13 +1070,13 @@ function updateRentalDisplays() {
 
 // ─── Lightweight totals re-render (when user edits tax inline) ────────────
 function renderOwnershipTotals() {
-  const tax   = gv('propTaxMonthly', 0);
+  const tax   = getPropTaxMonthly();
   const ins   = getInsMonthly();
   const condo = getCondoFee();
   const pi    = parseFloat(el('brPI_mo')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
   const maint = parseFloat(el('brMaint_mo')?.textContent?.replace(/[^0-9.]/g,'')) || 0;
   const total = pi + tax + ins + maint + condo;
-  el('brTax_yr').textContent         = fmt(tax * 12);
+  el('brTax_yr').textContent          = tax > 0 ? fmt(tax * 12) : '—';
   el('ownerTotalMonthly').textContent = fmt(total);
   el('ownerTotalAnnual').textContent  = fmt(total * 12);
 }
@@ -1038,19 +1109,30 @@ function renderOwnershipCard() {
   el('condoFeeInputWrap').style.display = condoChecked ? '' : 'none';
   el('brCondo_yr').textContent = condoChecked ? fmt(oc.condo * 12) : '—';
 
-  // Property tax — auto-fill from price (user can override)
-  el('propTaxMonthly').value   = Math.round(oc.tax);
-  el('brTax_yr').textContent   = fmt(Math.round(oc.tax) * 12);
+  // Property tax — auto-fill from price; checkbox controls visibility + total
+  el('propTaxMonthly').value = Math.round(oc.tax);
+  const propTaxChecked = el('propTaxYes')?.checked !== false;
+  el('propTaxNone').style.display      = propTaxChecked ? 'none' : '';
+  el('propTaxInputWrap').style.display = propTaxChecked ? '' : 'none';
+  el('brTax_yr').textContent           = propTaxChecked ? fmt(getPropTaxMonthly() * 12) : '—';
 
-  // Insurance annual
-  el('brIns_yr').textContent  = fmt(getInsMonthly() * 12);
+  // Insurance — checkbox controls visibility + total
+  const homeInsChecked = el('homeInsYes')?.checked !== false;
+  el('homeInsNone').style.display      = homeInsChecked ? 'none' : '';
+  el('homeInsInputWrap').style.display = homeInsChecked ? '' : 'none';
+  el('brIns_yr').textContent           = homeInsChecked ? fmt(getInsMonthly() * 12) : '—';
 
-  // Maintenance
-  el('brMaint_mo').textContent = fmt(oc.maint);
-  el('brMaint_yr').textContent = fmt(oc.maint * 12);
+  // Maintenance — checkbox + range slider label
+  const maintChecked = el('maintYes')?.checked !== false;
+  const maintPctVal  = gv('maintPct', 1.0);
+  el('maintPctLabel').textContent     = `est. ${maintPctVal.toFixed(1)}%/yr of home value`;
+  el('maintNone').style.display       = maintChecked ? 'none' : '';
+  el('maintSliderWrap').style.display = maintChecked ? '' : 'none';
+  el('brMaint_mo').textContent        = maintChecked ? fmt(oc.maint) : '—';
+  el('brMaint_yr').textContent        = maintChecked ? fmt(oc.maint * 12) : '—';
 
-  // Total housing cost (use actual input values for tax/ins in case user edited them)
-  const taxActual   = gv('propTaxMonthly', Math.round(oc.tax));
+  // Total housing cost (respects all checkbox states)
+  const taxActual   = getPropTaxMonthly();
   const insActual   = getInsMonthly();
   const condoActual = getCondoFee();
   const totalActual = oc.pi + taxActual + insActual + oc.maint + condoActual;
@@ -1079,15 +1161,17 @@ function computeAffordablePriceBase() {
   const mr      = monthlyRate(getStressRate()); // consistent with main solver
   const n       = getAmort() * 12;
   const pf      = paymentFactor(mr, n);
-  const ins     = getInsMonthly();
-  const condo   = getCondoFee();
+  const ins       = getInsMonthly();
+  const condo     = getCondoFee();
+  const taxRate   = (el('propTaxYes') && !el('propTaxYes').checked) ? 0 : CONFIG.PROP_TAX_PCT;
+  const maintRate = getMaintRate();
   let P = 500000;
   for (let i = 0; i < 120; i++) {
     const cm    = cmhcRate(downPct);
     const loan  = P * (1 - downPct) * (1 + cm);
     const pi    = loan * pf;
-    const tax   = P * CONFIG.PROP_TAX_PCT / 12;
-    const maint = P * CONFIG.MAINT_PCT / 12;
+    const tax   = P * taxRate / 12;
+    const maint = P * maintRate / 12;
     const total = pi + tax + maint + ins + condo;
     const newP  = P * (B / total);
     if (!isFinite(newP) || newP <= 0) break;
@@ -1124,12 +1208,13 @@ function computeWealth(years) {
   const totalMortg  = baseMortg * (1 + cm);
   const closingCost = homePrice * CONFIG.CLOSING_PCT;
 
-  // Monthly ownership costs
+  // Monthly ownership costs (respects checkbox states for tax/ins/maint)
   const monthlyPI      = totalMortg * paymentFactor(monthlyRate(contractR), n);
-  const monthlyTax     = homePrice * CONFIG.PROP_TAX_PCT / 12;
+  const propTaxRate    = (el('propTaxYes') && !el('propTaxYes').checked) ? 0 : CONFIG.PROP_TAX_PCT;
+  const monthlyTax     = homePrice * propTaxRate / 12;
   const monthlyCondo   = getCondoFee();
-  const monthlyIns     = CONFIG.HOME_INS_MONTHLY;
-  const monthlyMaint   = homePrice * CONFIG.MAINT_PCT / 12;
+  const monthlyIns     = getInsMonthly();
+  const monthlyMaint   = homePrice * getMaintRate() / 12;
   const monthlyOwnTotal = monthlyPI + monthlyTax + monthlyCondo + monthlyIns + monthlyMaint;
 
   // Cumulative cost of owning over horizon
@@ -1279,6 +1364,7 @@ function showComparison() {
   renderResults();
   el('step1').style.display = 'none';
   el('step2').style.display = '';
+  if (el('floatingShowCTA')) el('floatingShowCTA').style.display = 'none';
   setStepActive(2);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -1361,6 +1447,7 @@ function _fireLeadToBackend(lead) {
 function goBack() {
   el('step2').style.display = 'none';
   el('step1').style.display = '';
+  if (el('floatingShowCTA')) el('floatingShowCTA').style.display = '';
   setStepActive(1);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -2501,13 +2588,13 @@ window.addEventListener('load', () => {
     // Business card — advisor header + client header (only one is visible but both init fine)
     ['qrBizCard', 'qrBizCardClient'].forEach(id => {
       const node = el(id);
-      if (node) new QRCode(node, { ...qrOpts, text:'https://roshaissac.github.io/Businesscard', width:52, height:52 });
+      if (node) new QRCode(node, { ...qrOpts, text:'https://roshaissac.github.io/Businesscard', width:48, height:48 });
     });
-    // Rent vs Own calculator — footer (opens in client mode for sharing)
+    // Affordability calculator — footer (opens in client mode for sharing)
     const calcNode = el('qrCalc');
     if (calcNode) new QRCode(calcNode, { ...qrOpts,
       text:'https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client',
-      width:34, height:34 });
+      width:30, height:30 });
   }
 
   // Register service worker for PWA / offline support
