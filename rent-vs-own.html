@@ -465,12 +465,37 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           </tbody>
           <tfoot>
             <tr style="border-top:2px solid #111">
-              <td style="padding:8px 4px;font-weight:700;font-size:0.82rem">Total</td>
+              <td style="padding:8px 4px;font-weight:700;font-size:0.82rem">Total Housing Cost</td>
               <td id="ownerTotalMonthly" style="text-align:right;padding:8px 4px;font-weight:700;color:var(--orange)">—</td>
               <td id="ownerTotalAnnual" style="text-align:right;padding:8px 4px;font-weight:700;color:var(--orange)">—</td>
             </tr>
           </tfoot>
         </table>
+
+        <!-- Auto / Vehicle Loan — TDS adjustment -->
+        <div style="border:1px dashed #e0e0e0;border-radius:7px;padding:8px 12px;margin-bottom:10px;background:#fafafa">
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;margin:0;font-size:0.82rem;font-weight:600;color:#444">
+            <input type="checkbox" id="autoLoanYes" onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0">
+            Auto / Vehicle Loan (monthly payment)
+          </label>
+          <div id="autoLoanInputArea" style="display:none;margin-top:8px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end">
+              <div>
+                <label style="font-size:0.71rem;color:#888;display:block;margin-bottom:3px">Monthly payment</label>
+                <div class="input-wrap"><span class="pre">$</span>
+                  <input type="number" id="autoLoanMonthly" value="650" min="0" max="3000" step="50"
+                         oninput="renderOwnershipCard()">
+                </div>
+              </div>
+              <div>
+                <label style="font-size:0.71rem;color:#888;display:block;margin-bottom:3px">Annual</label>
+                <div id="autoLoanAnnual" style="padding:10px 12px;background:#f0f0f0;border-radius:7px;font-weight:700;color:#555;font-size:0.88rem">$7,800</div>
+              </div>
+            </div>
+            <div id="autoLoanImpact" style="margin-top:6px;font-size:0.72rem;color:#D95F0A;font-style:italic"></div>
+          </div>
+          <div style="font-size:0.67rem;color:#bbb;margin-top:4px">Car payment is deducted from your monthly budget — purchase price target adjusts accordingly (TDS impact)</div>
+        </div>
 
         <!-- Mortgage assumptions row -->
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px">
@@ -504,20 +529,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="card-title">👤 A few details to personalise your comparison</div>
       <div class="grid-2" style="margin-bottom:14px">
         <div class="field" style="margin:0">
-          <label>First Name</label>
-          <input type="text" id="leadFirstName" placeholder="Jane" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+          <label id="lbl-leadFirstName">First Name <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
+          <input type="text" id="leadFirstName" placeholder="Jane"
+                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
+                 oninput="clearReqState(this)">
         </div>
         <div class="field" style="margin:0">
-          <label>Last Name</label>
-          <input type="text" id="leadLastName" placeholder="Smith" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+          <label id="lbl-leadLastName">Last Name <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
+          <input type="text" id="leadLastName" placeholder="Smith"
+                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
+                 oninput="clearReqState(this)">
         </div>
         <div class="field" style="margin:0">
-          <label>Cell Phone</label>
-          <input type="tel" id="leadPhone" placeholder="825 555 0100" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+          <label id="lbl-leadPhone">Cell Phone <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
+          <input type="tel" id="leadPhone" placeholder="825 555 0100"
+                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
+                 oninput="clearReqState(this)">
         </div>
         <div class="field" style="margin:0">
-          <label>Email</label>
-          <input type="email" id="leadEmail" placeholder="jane@email.com" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem">
+          <label id="lbl-leadEmail">Email <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
+          <input type="email" id="leadEmail" placeholder="jane@email.com"
+                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
+                 oninput="clearReqState(this)">
         </div>
       </div>
       <button class="btn btn-black btn-block" style="font-size:1rem;padding:15px" onclick="showComparison()">
@@ -852,10 +885,14 @@ function getCondoFee()              {
   if (!el('condoFeeYes')?.checked) return 0;
   return gv('condoFeeMonthly', 500);
 }
+function getAutoLoanMonthly()       {
+  if (!el('autoLoanYes')?.checked) return 0;
+  return gv('autoLoanMonthly', 650);
+}
 
 // ─── Iterative: home price the monthly budget can support ─────────────────
 function computeAffordablePrice() {
-  const B       = getMonthlyBudget();
+  const B       = getMonthlyBudget() - getAutoLoanMonthly(); // auto loan reduces housing budget (TDS)
   const downPct = getDownPct();
   const mr      = monthlyRate(getRate());
   const n       = getAmort() * 12;
@@ -953,13 +990,52 @@ function renderOwnershipCard() {
   el('brMaint_mo').textContent = fmt(oc.maint);
   el('brMaint_yr').textContent = fmt(oc.maint * 12);
 
-  // Total (use actual input values for tax/ins in case user edited them)
+  // Total housing cost (use actual input values for tax/ins in case user edited them)
   const taxActual   = gv('propTaxMonthly', Math.round(oc.tax));
   const insActual   = getInsMonthly();
   const condoActual = getCondoFee();
   const totalActual = oc.pi + taxActual + insActual + oc.maint + condoActual;
   el('ownerTotalMonthly').textContent = fmt(totalActual);
   el('ownerTotalAnnual').textContent  = fmt(totalActual * 12);
+
+  // Auto / Vehicle loan section
+  const autoChecked = el('autoLoanYes')?.checked;
+  el('autoLoanInputArea').style.display = autoChecked ? '' : 'none';
+  if (autoChecked) {
+    const autoAmt = getAutoLoanMonthly();
+    el('autoLoanAnnual').textContent  = '$' + (autoAmt * 12).toLocaleString();
+    // Show impact: price without vs with auto loan
+    const priceWithout = computeAffordablePriceBase();  // without auto loan
+    const priceDiff    = priceWithout - price;
+    el('autoLoanImpact').textContent =
+      `$${autoAmt.toLocaleString()}/mo car payment reduces purchase target by ~${fmt(priceDiff)} ` +
+      `(from ${fmt(priceWithout)} → ${fmt(price)})`;
+  }
+}
+
+// Version of the solver that ignores auto loan (for impact calculation)
+function computeAffordablePriceBase() {
+  const B       = getMonthlyBudget();
+  const downPct = getDownPct();
+  const mr      = monthlyRate(getRate());
+  const n       = getAmort() * 12;
+  const pf      = paymentFactor(mr, n);
+  const ins     = getInsMonthly();
+  const condo   = getCondoFee();
+  let P = 500000;
+  for (let i = 0; i < 120; i++) {
+    const cm    = cmhcRate(downPct);
+    const loan  = P * (1 - downPct) * (1 + cm);
+    const pi    = loan * pf;
+    const tax   = P * CONFIG.PROP_TAX_PCT / 12;
+    const maint = P * CONFIG.MAINT_PCT / 12;
+    const total = pi + tax + maint + ins + condo;
+    const newP  = P * (B / total);
+    if (!isFinite(newP) || newP <= 0) break;
+    if (Math.abs(newP - P) < 200) { P = newP; break; }
+    P = P * 0.45 + newP * 0.55;
+  }
+  return Math.max(50000, Math.round(P / 1000) * 1000);
 }
 
 // ─── Pre-fill budget when rent or extras change ───────────────────────────
@@ -1061,8 +1137,41 @@ function setPropType(t) {
   renderOwnershipCard();
 }
 
+// ─── Client-mode validation helpers ─────────────────────────────────────
+function markRequired(inputEl) {
+  inputEl.style.borderColor = '#e53e3e';
+  const mark = document.querySelector(`label[id="lbl-${inputEl.id}"] .req-mark`);
+  if (mark) mark.style.display = 'inline';
+}
+function clearReqState(inputEl) {
+  if (inputEl.value.trim()) {
+    inputEl.style.borderColor = '';
+    const mark = document.querySelector(`label[id="lbl-${inputEl.id}"] .req-mark`);
+    if (mark) mark.style.display = 'none';
+  }
+}
+
 // ─── Show comparison (step 1 → 2) ────────────────────────────────────────
 function showComparison() {
+  // 0. Client mode: require all lead fields before proceeding
+  if (STATE.mode === 'client') {
+    const required = ['leadFirstName', 'leadLastName', 'leadPhone', 'leadEmail'];
+    let missing = false;
+    required.forEach(id => {
+      const inp = el(id);
+      if (!inp.value.trim()) { markRequired(inp); missing = true; }
+      else { inp.style.borderColor = ''; }
+    });
+    if (missing) {
+      const status = el('leadCaptureStatus');
+      status.textContent = '⚠ Please fill in all fields to view your personalised comparison.';
+      status.style.color = '#e53e3e';
+      el('leadFirstName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    el('leadCaptureStatus').style.color = '';
+  }
+
   // 1. Capture inline lead fields
   const firstName = el('leadFirstName')?.value?.trim() || '';
   const lastName  = el('leadLastName')?.value?.trim()  || '';
