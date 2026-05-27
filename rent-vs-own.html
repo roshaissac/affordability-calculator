@@ -698,24 +698,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <div class="price-note" id="heroNote"></div>
       <div class="stats-grid">
         <div class="stat-box">
-          <div class="stat-box-label">5-yr equity if you bought</div>
+          <div class="stat-box-label" id="statEquityLabel">Equity built</div>
           <div class="stat-box-value col-green" id="stat5yrEquity">—</div>
-          <div class="stat-box-sub">Net appreciation − mortgage balance</div>
+          <div class="stat-box-sub" id="statEquitySub">Net appreciation − mortgage balance</div>
         </div>
         <div class="stat-box">
-          <div class="stat-box-label">5-yr wealth gap</div>
+          <div class="stat-box-label" id="statGapLabel">Wealth gap</div>
           <div class="stat-box-value col-orange" id="stat5yrGap">—</div>
           <div class="stat-box-sub">Owner net position − renter net position</div>
         </div>
         <div class="stat-box">
-          <div class="stat-box-label">10-yr wealth gap</div>
-          <div class="stat-box-value col-orange" id="stat10yrGap">—</div>
-          <div class="stat-box-sub">Compounding advantage of ownership</div>
+          <div class="stat-box-label" id="statCumRentLabel">Cumulative rent paid</div>
+          <div class="stat-box-value" id="statCumRent">—</div>
+          <div class="stat-box-sub" id="statCumRentSub">Total rent paid over period</div>
         </div>
         <div class="stat-box">
-          <div class="stat-box-label" id="statLongLabel">Long-term wealth gap</div>
-          <div class="stat-box-value col-orange" id="statLongGap">—</div>
-          <div class="stat-box-sub" id="statLongSub">At mortgage payoff</div>
+          <div class="stat-box-label" id="statLongLabel">Owner cash out</div>
+          <div class="stat-box-value" id="statLongGap">—</div>
+          <div class="stat-box-sub" id="statLongSub">DP + closing + all payments</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">Monthly: Rent vs Own</div>
@@ -1507,9 +1507,31 @@ function setHeroTab(period) {
   if (el(activeId)) el(activeId).classList.add('active');
 
   const data = period === '5' ? f5 : period === '10' ? f10 : fLng;
-  el('heroLabel').textContent = `Net cost of renting over ${data.years} years`;
+  const yrs  = data.years;
+
+  // Big number + note
+  el('heroLabel').textContent = `Net cost of renting over ${yrs} years`;
   el('heroValue').textContent = fmt(data.cumRentPaid);
   el('heroNote').textContent  = `vs ${fmt(data.cumOwnerCash)} total out-of-pocket owning - equity works for you`;
+
+  // Stat box 1 — equity built
+  if (el('statEquityLabel')) el('statEquityLabel').textContent = `${yrs}-yr equity built`;
+  el('stat5yrEquity').textContent = fmt(Math.max(0, data.equityBuilt));
+  if (el('statEquitySub')) el('statEquitySub').textContent = `Net appreciation − mortgage balance`;
+
+  // Stat box 2 — wealth gap
+  if (el('statGapLabel')) el('statGapLabel').textContent = `${yrs}-yr wealth gap`;
+  el('stat5yrGap').textContent = fmt(data.wealthGap);
+
+  // Stat box 3 — cumulative rent paid
+  if (el('statCumRentLabel')) el('statCumRentLabel').textContent = `Cumulative rent (${yrs} yrs)`;
+  if (el('statCumRent'))      el('statCumRent').textContent = fmt(data.cumRentPaid);
+  if (el('statCumRentSub'))   el('statCumRentSub').textContent = `All rent + renter's insurance paid`;
+
+  // Stat box 4 — total owner cash out
+  if (el('statLongLabel')) el('statLongLabel').textContent = `Owner cash out (${yrs} yrs)`;
+  if (el('statLongGap'))   el('statLongGap').textContent = fmt(data.cumOwnerCash);
+  if (el('statLongSub'))   el('statLongSub').textContent = `DP + closing costs + all payments`;
 }
 
 // ─── Render results ───────────────────────────────────────────────────────
@@ -1519,17 +1541,9 @@ function renderResults() {
   const fLng = STATE.longYr;
   const amort = getAmort();
 
-  // Hero tabs - set long-term tab label then default to it
+  // Hero tabs - set long-term tab label then default to it (also populates all 5 stat boxes)
   if (el('heroTabLng')) el('heroTabLng').textContent = `${amort} yr`;
   setHeroTab('long');
-
-  el('stat5yrEquity').textContent = fmt(Math.max(0, f5.equityBuilt));
-  el('stat5yrGap').textContent    = fmt(f5.wealthGap);
-  el('stat10yrGap').textContent   = fmt(f10.wealthGap);
-  // Long-term stat box
-  el('statLongLabel').textContent = `${amort}-yr wealth gap`;
-  el('statLongGap').textContent   = fmt(fLng.wealthGap);
-  el('statLongSub').textContent   = `At mortgage payoff (${amort} yrs)`;
   const rentDiff = f5.monthlyOwnTotal - getMonthlyRent();
   el('statMonthlyDiff').textContent    = (rentDiff >= 0 ? '+' : '-') + fmt(Math.abs(rentDiff));
   el('statMonthlyDiffNote').textContent = rentDiff >= 0
