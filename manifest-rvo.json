@@ -1,0 +1,25 @@
+{
+  "name": "Rent vs Own — Issac Realty",
+  "short_name": "Rent vs Own",
+  "description": "See what renting is costing you — and what owning could build. Door-knocking tool by Issac Real Estate Team.",
+  "start_url": "./rent-vs-own.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#F7934C",
+  "icons": [
+    {
+      "src": "./assets/The Team Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/The Team Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

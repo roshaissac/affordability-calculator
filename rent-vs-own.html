@@ -11,6 +11,15 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
 
+<!-- PWA -->
+<link rel="manifest" href="manifest-rvo.json">
+<meta name="theme-color" content="#F7934C">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rent vs Own">
+<link rel="apple-touch-icon" href="assets/The Team Logo.png">
+
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <!-- jsPDF + AutoTable for client-side PDF generation -->
@@ -1548,6 +1557,11 @@ window.addEventListener('load', () => {
   applyMode();
   STATE.maxQualPrice = computeMaxQualifyingPrice(getIncome(), getSavings(), getMonthlyDebt());
   updateSavingsHint();
+
+  // Register service worker for PWA / offline support
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw-rvo.js').catch(() => {/* non-fatal */});
+  }
 });
 </script>
 </body>
