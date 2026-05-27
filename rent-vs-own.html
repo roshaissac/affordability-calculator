@@ -380,7 +380,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
         <!-- Affordable home price hero -->
         <div style="background:#f9f5f0;border-radius:8px;padding:13px 16px;margin-bottom:16px">
-          <div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:4px">Home you could afford</div>
+          <div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:4px">Your Purchase Price Target</div>
           <div id="affordablePrice" style="font-size:1.75rem;font-weight:800;color:#111;letter-spacing:-0.02em">—</div>
           <div id="affordableNote" style="font-size:0.72rem;color:#888;margin-top:3px">Adjust inputs to see your range</div>
         </div>
@@ -481,14 +481,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <div class="field" style="margin:0">
             <label style="font-size:0.71rem">Amortization</label>
             <select id="ownerAmort" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:0.82rem" onchange="renderOwnershipCard()">
-              <option value="30">30 yr</option>
-              <option value="25" selected>25 yr</option>
+              <option value="30" selected>30 yr</option>
+              <option value="25">25 yr</option>
               <option value="20">20 yr</option>
             </select>
           </div>
           <div class="field" style="margin:0">
             <label style="font-size:0.71rem">Down Payment %</label>
-            <div class="input-wrap"><input type="number" id="ownerDown" value="20" min="5" max="50" step="5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
+            <div class="input-wrap"><input type="number" id="ownerDown" value="5" min="5" max="50" step="5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
           </div>
         </div>
 
@@ -553,6 +553,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <div class="stat-box-sub">Compounding advantage of ownership</div>
         </div>
         <div class="stat-box">
+          <div class="stat-box-label" id="statLongLabel">Long-term wealth gap</div>
+          <div class="stat-box-value col-orange" id="statLongGap">—</div>
+          <div class="stat-box-sub" id="statLongSub">At mortgage payoff</div>
+        </div>
+        <div class="stat-box">
           <div class="stat-box-label">Monthly: Rent vs Own</div>
           <div class="stat-box-value" id="statMonthlyDiff">—</div>
           <div class="stat-box-sub" id="statMonthlyDiffNote"></div>
@@ -602,8 +607,8 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- Charts -->
-    <div class="grid-2" style="margin-bottom:18px">
+    <!-- Charts — 5yr & 10yr side by side -->
+    <div class="grid-2" style="margin-bottom:14px">
       <div class="card">
         <div class="card-title">📊 5-Year Wealth Position</div>
         <div class="chart-wrap"><canvas id="chart5yr"></canvas></div>
@@ -616,10 +621,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- Detailed breakdown -->
+    <!-- Chart — long-term (amortization payoff) full width -->
     <div class="card span-2" style="margin-bottom:18px">
-      <div class="card-title">🔢 5 &amp; 10-Year Detailed Breakdown</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px" id="breakdownGrid"></div>
+      <div class="card-title" id="chartLongTitle">📊 30-Year Wealth Position — At Mortgage Payoff</div>
+      <div class="chart-wrap" style="max-height:260px"><canvas id="chartLong"></canvas></div>
+      <div id="chartLongLegend" style="margin-top:10px;font-size:0.75rem;color:var(--text-muted);text-align:center"></div>
+    </div>
+
+    <!-- Detailed breakdown — 3 columns -->
+    <div class="card span-2" style="margin-bottom:18px">
+      <div class="card-title" id="breakdownTitle">🔢 Wealth Breakdown — 5, 10 &amp; Long-Term</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px" id="breakdownGrid"></div>
     </div>
 
     <!-- Ownership cost breakdown -->
@@ -773,12 +785,14 @@ let STATE = {
   monthlyOwnCost:  0,
   fiveYr:          null,
   tenYr:           null,
+  longYr:          null,
   lead:            null,
 };
 
-let _cmDest       = 'email';
-let _chartInst5   = null;
-let _chartInst10  = null;
+let _cmDest        = 'email';
+let _chartInst5    = null;
+let _chartInst10   = null;
+let _chartInstLong = null;
 
 // ─── Mode detection ───────────────────────────────────────────────────────
 const URL_PARAMS  = new URLSearchParams(window.location.search);
@@ -832,7 +846,7 @@ function getRentInflation()         { return gv('rentInflation', CONFIG.DEFAULT_
 function getMonthlyBudget()         { return gv('ownershipBudget', Math.round(getTotalRentalCommitment() * 1.5 / 50) * 50); }
 function getRate()                  { return gv('ownerRate', CONFIG.DEFAULT_RATE) / 100; }
 function getAmort()                 { return parseInt(el('ownerAmort')?.value || CONFIG.DEFAULT_AMORT); }
-function getDownPct()               { return gv('ownerDown', 20) / 100; }
+function getDownPct()               { return gv('ownerDown', 5) / 100; }
 function getInsMonthly()            { return gv('homeInsMonthly', CONFIG.HOME_INS_MONTHLY); }
 function getCondoFee()              {
   if (!el('condoFeeYes')?.checked) return 0;
@@ -1061,8 +1075,9 @@ function showComparison() {
   STATE.homePrice = hp;
 
   // 3. Compute wealth scenarios
-  STATE.fiveYr = computeWealth(5);
-  STATE.tenYr  = computeWealth(10);
+  STATE.fiveYr  = computeWealth(5);
+  STATE.tenYr   = computeWealth(10);
+  STATE.longYr  = computeWealth(getAmort());
 
   // 4. Fire lead to backend (non-blocking — before showing results so it
   //    always reaches CRM even if user closes the tab immediately)
@@ -1082,8 +1097,9 @@ function showComparison() {
 // ─── Refresh comparison when Step 2 assumptions are edited ───────────────
 function refreshComparison() {
   if (!STATE.homePrice) return; // not yet computed
-  STATE.fiveYr = computeWealth(5);
-  STATE.tenYr  = computeWealth(10);
+  STATE.fiveYr  = computeWealth(5);
+  STATE.tenYr   = computeWealth(10);
+  STATE.longYr  = computeWealth(getAmort());
   renderResults();
 }
 
@@ -1172,8 +1188,10 @@ function setStepActive(n) {
 
 // ─── Render results ───────────────────────────────────────────────────────
 function renderResults() {
-  const f5 = STATE.fiveYr;
-  const f10= STATE.tenYr;
+  const f5   = STATE.fiveYr;
+  const f10  = STATE.tenYr;
+  const fLng = STATE.longYr;
+  const amort = getAmort();
 
   // Hero
   el('heroValue').textContent = fmt(f5.cumRentPaid);
@@ -1181,7 +1199,10 @@ function renderResults() {
   el('stat5yrEquity').textContent = fmt(Math.max(0, f5.equityBuilt));
   el('stat5yrGap').textContent    = fmt(f5.wealthGap);
   el('stat10yrGap').textContent   = fmt(f10.wealthGap);
-  const diff = f5.monthlyOwnTotal - f5.monthlyPI - 0 + 0; // for display
+  // Long-term stat box
+  el('statLongLabel').textContent = `${amort}-yr wealth gap`;
+  el('statLongGap').textContent   = fmt(fLng.wealthGap);
+  el('statLongSub').textContent   = `At mortgage payoff (${amort} yrs)`;
   const rentDiff = f5.monthlyOwnTotal - getMonthlyRent();
   el('statMonthlyDiff').textContent    = (rentDiff >= 0 ? '+' : '-') + fmt(Math.abs(rentDiff));
   el('statMonthlyDiffNote').textContent = rentDiff >= 0
@@ -1192,29 +1213,32 @@ function renderResults() {
   const tb = el('monthlyTableBody');
   tb.innerHTML = '';
   const rows = [
-    ['Rent / Principal payment', fmt(getMonthlyRent()), fmt(f5.monthlyPI)],
-    ['Property tax',              '—',                  fmt(f5.monthlyTax)],
-    ['Condo / maintenance fees',  '—',                  fmt(f5.monthlyCondo)],
-    ['Insurance',                 fmt(20),               fmt(f5.monthlyIns)],
-    ['Maintenance reserve',       '—',                  fmt(f5.monthlyMaint)],
+    ['Rent / Principal payment', fmt(getTotalRentalCommitment()), fmt(f5.monthlyPI)],
+    ['Property tax',              '—',                             fmt(f5.monthlyTax)],
+    ['Condo / maintenance fees',  '—',                             fmt(f5.monthlyCondo)],
+    ['Insurance',                 '—',                             fmt(f5.monthlyIns)],
+    ['Maintenance reserve',       '—',                             fmt(f5.monthlyMaint)],
   ];
   rows.forEach(r => {
     tb.innerHTML += `<tr><td>${r[0]}</td><td class="rent-col">${r[1]}</td><td class="own-col">${r[2]}</td></tr>`;
   });
   tb.innerHTML += `<tr class="total">
     <td>Total monthly</td>
-    <td class="rent-col">${fmt(getMonthlyRent() + 20)}</td>
+    <td class="rent-col">${fmt(getTotalRentalCommitment())}</td>
     <td class="own-col">${fmt(f5.monthlyOwnTotal)}</td>
   </tr>`;
 
   // Charts
-  renderChart('chart5yr', _chartInst5, f5, inst => { _chartInst5 = inst; }, 'chart5Legend');
-  renderChart('chart10yr', _chartInst10, f10, inst => { _chartInst10 = inst; }, 'chart10Legend');
+  renderChart('chart5yr',   _chartInst5,    f5,   inst => { _chartInst5    = inst; }, 'chart5Legend');
+  renderChart('chart10yr',  _chartInst10,   f10,  inst => { _chartInst10   = inst; }, 'chart10Legend');
+  renderChart('chartLong',  _chartInstLong, fLng, inst => { _chartInstLong = inst; }, 'chartLongLegend');
+  el('chartLongTitle').textContent = `📊 ${amort}-Year Wealth Position — At Mortgage Payoff`;
+  el('breakdownTitle').textContent = `🔢 Wealth Breakdown — 5, 10 & ${amort} Years`;
 
   // Detailed breakdown
   const bg = el('breakdownGrid');
   bg.innerHTML = '';
-  [f5, f10].forEach(f => {
+  [f5, f10, fLng].forEach(f => {
     const col = document.createElement('div');
     col.innerHTML = `
       <div class="bk-title">${f.years}-Year Wealth Summary</div>
