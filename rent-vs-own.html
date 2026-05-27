@@ -173,6 +173,22 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .bk-row.total{font-weight:700;border-top:2px solid var(--grey);border-bottom:none;margin-top:4px;padding-top:9px}
 .bk-row.total .bk-label{color:var(--black)}
 .bk-row.total .bk-val{font-size:0.97rem;color:var(--black)}
+/* ── Wealth comparison table ── */
+.wt{width:100%;border-collapse:collapse;font-size:0.82rem}
+.wt th{padding:8px 10px;font-size:0.69rem;font-weight:700;text-align:right;color:#888;border-bottom:2px solid #eee;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap}
+.wt th:first-child{text-align:left;width:38%}
+.wt td{padding:7px 10px;border-bottom:1px solid #f2f2f2;color:#444;vertical-align:middle}
+.wt td:not(:first-child){text-align:right;font-weight:600;color:#333;white-space:nowrap}
+.wt-section td{background:#f4f4f4;font-weight:800;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:#555;padding:5px 10px;border-top:3px solid #ddd}
+.wt-indent td:first-child{padding-left:22px;font-size:0.79rem;color:#888}
+.wt-indent td:not(:first-child){font-size:0.79rem;color:#888;font-weight:500}
+.wt-subtotal td{border-top:2px solid #ccc;font-weight:700;background:#fafafa}
+.wt-net td{font-weight:700;font-size:0.88rem;background:#f9fdf9}
+.wt-gap td{background:#fff3e0;font-weight:800;font-size:0.95rem;border-top:3px solid #D95F0A}
+.wt-gap td:not(:first-child){color:#D95F0A}
+.wt-green td:not(:first-child){color:#276749}
+.wt-red td:not(:first-child){color:#c53030}
+.wt-muted td:not(:first-child){color:#888;font-weight:500}
 
 /* ── Alerts ── */
 .info-box{background:#fffbf7;border:1.5px solid #fbd38d;border-radius:7px;padding:10px 14px;font-size:0.79rem;color:#7a3b10;line-height:1.55}
@@ -664,7 +680,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     <!-- Detailed breakdown — 3 columns -->
     <div class="card span-2" style="margin-bottom:18px">
       <div class="card-title" id="breakdownTitle">🔢 Wealth Breakdown — 5, 10 &amp; Long-Term</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px" id="breakdownGrid"></div>
+      <div style="overflow-x:auto" id="breakdownGrid"></div>
     </div>
 
     <!-- Ownership cost breakdown -->
@@ -1101,6 +1117,18 @@ function computeWealth(years) {
   }
   const renterNetPosition = hisaBalance - cumRentPaid;
 
+  // Derived breakdown components
+  const paymentsMonths    = Math.min(years * 12, n);
+  const cumMortgPayments  = monthlyPI * paymentsMonths;
+  const cumPrincipalRepaid= totalMortg - remainMortg;
+  const cumInterestPaid   = Math.max(0, cumMortgPayments - cumPrincipalRepaid);
+  const cumTaxPaid        = monthlyTax   * years * 12;
+  const cumInsPaid        = monthlyIns   * years * 12;
+  const cumMaintPaid      = monthlyMaint * years * 12;
+  const cumCondoPaid      = monthlyCondo * years * 12;
+  const cumRenterIns      = renterIns    * years * 12;
+  const cumRentOnly       = cumRentPaid  - cumRenterIns;
+
   return {
     years,
     homePrice,
@@ -1122,7 +1150,16 @@ function computeWealth(years) {
     ownerNetPosition,
     hisaBalance,
     cumRentPaid,
+    cumRentOnly,
+    cumRenterIns,
     renterNetPosition,
+    cumMortgPayments,
+    cumPrincipalRepaid,
+    cumInterestPaid,
+    cumTaxPaid,
+    cumInsPaid,
+    cumMaintPaid,
+    cumCondoPaid,
     wealthGap: ownerNetPosition - renterNetPosition,
     equityBuilt: saleProceeds - remainMortg - dp - closingCost,
   };
@@ -1344,23 +1381,113 @@ function renderResults() {
   el('chartLongTitle').textContent = `📊 ${amort}-Year Wealth Position — At Mortgage Payoff`;
   el('breakdownTitle').textContent = `🔢 Wealth Breakdown — 5, 10 & ${amort} Years`;
 
-  // Detailed breakdown
+  // ── Detailed breakdown — unified table ───────────────────────────────────
   const bg = el('breakdownGrid');
-  bg.innerHTML = '';
-  [f5, f10, fLng].forEach(f => {
-    const col = document.createElement('div');
-    col.innerHTML = `
-      <div class="bk-title">${f.years}-Year Wealth Summary</div>
-      <div class="bk-row"><span class="bk-label">Total rent paid</span><span class="bk-val red">${fmt(f.cumRentPaid)}</span></div>
-      <div class="bk-row"><span class="bk-label">Home value at exit</span><span class="bk-val green">${fmt(f.exitHomeValue)}</span></div>
-      <div class="bk-row"><span class="bk-label">Remaining mortgage</span><span class="bk-val">${fmt(f.remainMortg)}</span></div>
-      <div class="bk-row"><span class="bk-label">Net sale proceeds</span><span class="bk-val">${fmt(f.saleProceeds)}</span></div>
-      <div class="bk-row"><span class="bk-label">Owner net position</span><span class="bk-val green">${fmt(f.ownerNetPosition)}</span></div>
-      <div class="bk-row"><span class="bk-label">HISA balance (renter)</span><span class="bk-val">${fmt(f.hisaBalance)}</span></div>
-      <div class="bk-row"><span class="bk-label">Renter net position</span><span class="bk-val ${f.renterNetPosition < 0 ? 'red' : ''}">${fmt(f.renterNetPosition)}</span></div>
-      <div class="bk-row total"><span class="bk-label">Wealth gap (owner advantage)</span><span class="bk-val ${f.wealthGap >= 0 ? 'blue' : 'red'}">${fmt(f.wealthGap)}</span></div>`;
-    bg.appendChild(col);
-  });
+  const hasCondo = (f5.cumCondoPaid > 0);
+  const v = (f, key) => fmt(f[key]);  // shorthand
+
+  bg.innerHTML = `
+  <table class="wt">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>${f5.years} Years</th>
+        <th>${f10.years} Years</th>
+        <th>${fLng.years} Years</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- ── RENTING ── -->
+      <tr class="wt-section"><td colspan="4">🏠 Renting</td></tr>
+      <tr>
+        <td>Rent paid (escalating ${fmtPct(getRentInflation()*100)}/yr)</td>
+        <td>${v(f5,'cumRentOnly')}</td><td>${v(f10,'cumRentOnly')}</td><td>${v(fLng,'cumRentOnly')}</td>
+      </tr>
+      <tr class="wt-muted">
+        <td>Renter's insurance ($20/mo)</td>
+        <td>${v(f5,'cumRenterIns')}</td><td>${v(f10,'cumRenterIns')}</td><td>${v(fLng,'cumRenterIns')}</td>
+      </tr>
+      <tr class="wt-subtotal wt-red">
+        <td>Total cash out — renting</td>
+        <td>${v(f5,'cumRentPaid')}</td><td>${v(f10,'cumRentPaid')}</td><td>${v(fLng,'cumRentPaid')}</td>
+      </tr>
+      <tr>
+        <td>High-Interest Savings Account (HISA) — down payment invested @ ${fmtPct(CONFIG.HISA_RETURN)}%</td>
+        <td>${v(f5,'hisaBalance')}</td><td>${v(f10,'hisaBalance')}</td><td>${v(fLng,'hisaBalance')}</td>
+      </tr>
+      <tr class="wt-net">
+        <td>Renter Net Position (HISA − cash out)</td>
+        <td class="${f5.renterNetPosition<0?'wt-neg':''}" style="color:${f5.renterNetPosition<0?'#c53030':'#276749'}">${v(f5,'renterNetPosition')}</td>
+        <td style="color:${f10.renterNetPosition<0?'#c53030':'#276749'}">${v(f10,'renterNetPosition')}</td>
+        <td style="color:${fLng.renterNetPosition<0?'#c53030':'#276749'}">${v(fLng,'renterNetPosition')}</td>
+      </tr>
+
+      <!-- ── OWNING ── -->
+      <tr class="wt-section"><td colspan="4">🏡 Owning</td></tr>
+      <tr class="wt-muted">
+        <td>Down payment + closing costs (one-time)</td>
+        <td>${fmt(f5.dp + f5.closingCost)}</td><td>${fmt(f10.dp + f10.closingCost)}</td><td>${fmt(fLng.dp + fLng.closingCost)}</td>
+      </tr>
+      <tr>
+        <td>Total mortgage payments (P+I)</td>
+        <td>${v(f5,'cumMortgPayments')}</td><td>${v(f10,'cumMortgPayments')}</td><td>${v(fLng,'cumMortgPayments')}</td>
+      </tr>
+      <tr class="wt-indent wt-green">
+        <td>↳ Principal repaid — equity gained</td>
+        <td>${v(f5,'cumPrincipalRepaid')}</td><td>${v(f10,'cumPrincipalRepaid')}</td><td>${v(fLng,'cumPrincipalRepaid')}</td>
+      </tr>
+      <tr class="wt-indent wt-red">
+        <td>↳ Interest paid — cost of borrowing</td>
+        <td>${v(f5,'cumInterestPaid')}</td><td>${v(f10,'cumInterestPaid')}</td><td>${v(fLng,'cumInterestPaid')}</td>
+      </tr>
+      <tr class="wt-muted">
+        <td>Property tax paid (${fmtPct(CONFIG.PROP_TAX_PCT*100)}/yr)</td>
+        <td>${v(f5,'cumTaxPaid')}</td><td>${v(f10,'cumTaxPaid')}</td><td>${v(fLng,'cumTaxPaid')}</td>
+      </tr>
+      <tr class="wt-muted">
+        <td>Home insurance paid</td>
+        <td>${v(f5,'cumInsPaid')}</td><td>${v(f10,'cumInsPaid')}</td><td>${v(fLng,'cumInsPaid')}</td>
+      </tr>
+      <tr class="wt-muted">
+        <td>Maintenance reserve paid (est. 1%/yr)</td>
+        <td>${v(f5,'cumMaintPaid')}</td><td>${v(f10,'cumMaintPaid')}</td><td>${v(fLng,'cumMaintPaid')}</td>
+      </tr>
+      ${hasCondo ? `<tr class="wt-muted">
+        <td>Condo / HOA fees paid</td>
+        <td>${v(f5,'cumCondoPaid')}</td><td>${v(f10,'cumCondoPaid')}</td><td>${v(fLng,'cumCondoPaid')}</td>
+      </tr>` : ''}
+      <tr class="wt-subtotal wt-red">
+        <td>Total cash out — owning</td>
+        <td>${v(f5,'cumOwnerCash')}</td><td>${v(f10,'cumOwnerCash')}</td><td>${v(fLng,'cumOwnerCash')}</td>
+      </tr>
+      <tr>
+        <td>Home value at exit (${fmtPct(getAppreciation()*100)}/yr appreciation)</td>
+        <td>${v(f5,'exitHomeValue')}</td><td>${v(f10,'exitHomeValue')}</td><td>${v(fLng,'exitHomeValue')}</td>
+      </tr>
+      <tr class="wt-muted">
+        <td>Less: sale costs (${fmtPct(CONFIG.SALE_COST_PCT*100)})</td>
+        <td>${fmt(f5.exitHomeValue - f5.saleProceeds)}</td>
+        <td>${fmt(f10.exitHomeValue - f10.saleProceeds)}</td>
+        <td>${fmt(fLng.exitHomeValue - fLng.saleProceeds)}</td>
+      </tr>
+      <tr class="wt-muted">
+        <td>Remaining mortgage balance</td>
+        <td>${v(f5,'remainMortg')}</td><td>${v(f10,'remainMortg')}</td><td>${v(fLng,'remainMortg')}</td>
+      </tr>
+      <tr class="wt-net wt-green">
+        <td>Owner Net Position (proceeds − balance − cash out)</td>
+        <td>${v(f5,'ownerNetPosition')}</td><td>${v(f10,'ownerNetPosition')}</td><td>${v(fLng,'ownerNetPosition')}</td>
+      </tr>
+
+      <!-- ── WEALTH GAP ── -->
+      <tr class="wt-gap">
+        <td>💰 Wealth Gap — Owner Advantage</td>
+        <td>${v(f5,'wealthGap')}</td><td>${v(f10,'wealthGap')}</td><td>${v(fLng,'wealthGap')}</td>
+      </tr>
+
+    </tbody>
+  </table>`;
 
   // Assumptions used
   const ag = el('assumptionsGrid');
