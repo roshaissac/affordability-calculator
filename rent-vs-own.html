@@ -240,6 +240,15 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 .cta-card{background:var(--white);border:2px solid var(--orange);border-radius:12px;padding:24px;text-align:center;margin-top:4px}
 .cta-card h3{font-size:1rem;font-weight:800;color:var(--black);margin-bottom:6px}
 .cta-card p{font-size:0.83rem;color:var(--text-muted);margin-bottom:18px;line-height:1.55}
+/* Copyable link boxes inside CTA card */
+.link-share-box{text-align:left;margin:4px 0}
+.link-share-label{font-size:0.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px}
+.link-share-row{display:flex;gap:6px;align-items:stretch}
+.link-share-input{flex:1;min-width:0;padding:9px 10px;border-radius:7px;border:1.5px solid var(--border);background:#f7f7f7;color:var(--text);font-size:0.7rem;font-family:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:text}
+.link-share-input:focus{outline:none;border-color:var(--orange)}
+.link-share-copy{flex-shrink:0;padding:9px 14px;border-radius:7px;border:1.5px solid var(--orange);background:transparent;color:var(--orange);font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;line-height:1}
+.link-share-copy:hover{background:var(--orange);color:#fff}
+.link-share-copy.copied{background:var(--orange);color:#fff}
 
 /* ── Advanced toggle ── */
 .adv-toggle{font-size:0.78rem;font-weight:600;color:var(--orange);cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:none;padding:0}
@@ -821,6 +830,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       <h3>📄 Send the personalised PDF report to the renter</h3>
       <p>A full 4-page comparison report - their numbers, the 5 &amp; 10-year wealth charts, and what to do next. Lands in their inbox in seconds.</p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto">
+
+        <!-- Link box 1: business card -->
+        <div class="link-share-box">
+          <div class="link-share-label">🪪 Rosh's Digital Business Card</div>
+          <div class="link-share-row">
+            <input type="text" readonly class="link-share-input" value="https://roshaissac.github.io/Businesscard" onclick="this.select()">
+            <button class="link-share-copy" onclick="copyShareLink(this,'https://roshaissac.github.io/Businesscard')">Copy</button>
+          </div>
+        </div>
+
         <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="openModal('email')">
           <span style="font-size:1.3rem">📧</span>
           <span><strong>Email me the report</strong><br><span style="font-size:0.78rem;opacity:0.85">PDF arrives in minutes - it's the clearest way to see the numbers</span></span>
@@ -833,6 +852,16 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
           <span style="font-size:1.3rem">📅</span>
           <span><strong>Book a free consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time -15-min call, no obligation</span></span>
         </button>
+
+        <!-- Link box 2: affordability calculator -->
+        <div class="link-share-box">
+          <div class="link-share-label">🧮 Share this Affordability Calculator</div>
+          <div class="link-share-row">
+            <input type="text" readonly class="link-share-input" value="https://affordability-calculator.rosh-4d0.workers.dev/?mode=client" onclick="this.select()">
+            <button class="link-share-copy" onclick="copyShareLink(this,'https://affordability-calculator.rosh-4d0.workers.dev/?mode=client')">Copy</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1477,6 +1506,31 @@ function _fireLeadToBackend(lead) {
     fetch(CONFIG.WEB_APP_URL, { method:'POST', mode:'no-cors',
       headers:{'Content-Type':'text/plain'}, body:appsPayload }).catch(()=>{});
   }
+}
+
+// ─── Copy link helper (used by link-share boxes) ─────────────────────────
+function copyShareLink(btn, url) {
+  const finish = () => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2200);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(finish).catch(() => {
+      _fallbackCopy(url); finish();
+    });
+  } else {
+    _fallbackCopy(url); finish();
+  }
+}
+function _fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
 }
 
 function goBack() {
