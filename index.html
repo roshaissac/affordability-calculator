@@ -374,6 +374,13 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
         </div>
       </div>
       <div class="field">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+          <input type="checkbox" id="ftbNewBuild" style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer">
+          First-time buyer or new build
+        </label>
+        <div class="hint">Allows 30-year amortization on insured mortgages (&lt;20% down) per the Dec 2024 rules. A 0.20% CMHC premium surcharge applies over 25 years.</div>
+      </div>
+      <div class="field">
         <label>Annual Property Tax</label>
         <div class="toggle-group">
           <button class="toggle-btn active" id="ptBtnPct" onclick="setPTMode('pct')">% of Price</button>
@@ -456,7 +463,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
       <h3>✅ Your Estimate is Ready — Connect with Rosh</h3>
       <p style="margin-bottom:6px">Based on standard Canadian mortgage assumptions, your estimated home affordability is approximately:</p>
       <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
-      <div class="client-afford-note">Using 5.5% rate · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
+      <div class="client-afford-note"><span id="clientRateNote">Using 5.5% rate</span> · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
       <p style="margin:18px 0 10px;font-weight:600;font-size:0.95rem;color:#333">How would you like to connect?</p>
       <div style="display:flex;flex-direction:column;gap:10px;max-width:400px;margin:0 auto">
         <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="showContactModal('email')">
@@ -629,10 +636,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
           <div class="bk-row sub"><span class="bk-label">10.00–14.99% down</span><span class="bk-val">3.10% of mortgage</span></div>
           <div class="bk-row sub"><span class="bk-label">15.00–19.99% down</span><span class="bk-val">2.80% of mortgage</span></div>
           <div class="bk-row"><span class="bk-label">Down ≥ 20%</span><span class="bk-val green">No CMHC premium</span></div>
-          <div class="bk-title" style="margin-top:14px">Min. Down Payment</div>
+          <div class="bk-row sub"><span class="bk-label">30-yr insured amortization</span><span class="bk-val">+0.20% surcharge (FTB / new build only)</span></div>
+          <div class="bk-title" style="margin-top:14px">Min. Down Payment <span style="font-weight:400;text-transform:none">(Dec 2024 rules)</span></div>
           <div class="bk-row"><span class="bk-label">Price ≤ $500,000</span><span class="bk-val">5% minimum</span></div>
-          <div class="bk-row"><span class="bk-label">$500K–$999,999</span><span class="bk-val">5% on 1st $500K + 10% on rest</span></div>
-          <div class="bk-row"><span class="bk-label">$1,000,000+</span><span class="bk-val">20% minimum</span></div>
+          <div class="bk-row"><span class="bk-label">$500K–$1,499,999</span><span class="bk-val">5% on 1st $500K + 10% on rest</span></div>
+          <div class="bk-row"><span class="bk-label">$1,500,000+</span><span class="bk-val">20% minimum (not insurable)</span></div>
         </div>
         <div>
           <div class="bk-title">Professional Programs</div>
@@ -692,6 +700,10 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 const URL_PARAMS   = new URLSearchParams(window.location.search);
 const CLIENT_MODE  = URL_PARAMS.get('mode') === 'client';
 const HAS_DATA     = URL_PARAMS.get('d') != null;
+// Contract rate for the client-mode estimate, set by the advisor's intake
+// link (?rate=). Falls back to 5.5% for bare links.
+const _rateParam   = parseFloat(URL_PARAMS.get('rate'));
+const CLIENT_RATE  = (isFinite(_rateParam) && _rateParam > 0.5 && _rateParam < 20) ? _rateParam / 100 : 0.055;
 
 // ─── State ───────────────────────────────────────────────────────────────
 let dpMode = 'pct';
@@ -877,8 +889,13 @@ function getBaseURL() {
 }
 
 // ─── Sharing ─────────────────────────────────────────────────────────────
+// The intake link carries the advisor's current rate so the client-side
+// estimate never relies on a hard-coded number that goes stale.
+function clientPortalURL() {
+  return getBaseURL() + '?mode=client&rate=' + encodeURIComponent(getVal('contractRate', 5.5));
+}
 function copyClientPortalLink() {
-  const url = getBaseURL() + '?mode=client';
+  const url = clientPortalURL();
   document.getElementById('clientPortalURL').textContent = url;
   navigator.clipboard.writeText(url).then(() => {
     const fb = document.getElementById('copyFeedbackPortal');
@@ -1075,11 +1092,18 @@ function paymentFactor(mr, n) {
   if (mr < 1e-10) return 1 / n;
   return mr * Math.pow(1+mr,n) / (Math.pow(1+mr,n) - 1);
 }
+// +0.20% premium surcharge when an insured mortgage is amortized over 25
+// years (CMHC, effective 2024). Set by calculate() before solving.
+let CMHC_SURCHARGE = 0;
 function cmhcRate(dp) {
-  if (dp >= 0.20) return 0; if (dp >= 0.15) return 0.028; if (dp >= 0.10) return 0.031; return 0.040;
+  if (dp >= 0.20) return 0;
+  const base = dp >= 0.15 ? 0.028 : dp >= 0.10 ? 0.031 : 0.040;
+  return base + CMHC_SURCHARGE;
 }
+// Dec 15, 2024 federal change: insured price cap raised $1M → $1.5M,
+// so the 5%/10% blended tiers now extend to $1.5M.
 function minDownAmt(price) {
-  if (price >= 1000000) return price * 0.20;
+  if (price >= 1500000) return price * 0.20;
   if (price <= 500000)  return price * 0.05;
   return 25000 + (price - 500000) * 0.10;
 }
@@ -1139,7 +1163,7 @@ function calculate() {
   // ── Client mode: simplified estimate with Alberta defaults ──────────────
   if (CLIENT_MODE) {
     const clientTaxPct = 0.0065; // Alberta 0.65%
-    const clientQualRate = Math.max(0.055 + 0.02, 0.0525); // 5.5% contract + stress test
+    const clientQualRate = Math.max(CLIENT_RATE + 0.02, 0.0525); // advisor-set contract rate + stress test
     const clientN   = 25 * 12;
     const clientQPF = paymentFactor(monthlyRate(clientQualRate), clientN);
     const clientFixedH = 150;
@@ -1176,10 +1200,15 @@ function calculate() {
 
   // ── Advisor mode: full calculation ──────────────────────────────────────
   const contractRatePct = getVal('contractRate', 5.5);
+  const purl = el('clientPortalURL');
+  if (purl) purl.textContent = clientPortalURL(); // keep intake link's rate fresh
   const contractRateAnn = contractRatePct / 100;
   const qualRateAnn     = Math.max(contractRateAnn + 0.02, 0.0525);
-  const amortYears      = parseInt(el('amort').value) || 25;
-  const n               = amortYears * 12;
+  let amortYears        = parseInt(el('amort').value) || 25;
+  const ftbEligible     = el('ftbNewBuild')?.checked || false;
+  let amortNote         = '';
+  CMHC_SURCHARGE        = amortYears > 25 ? 0.002 : 0;
+  let n                 = amortYears * 12;
   const ptParam         = ptMode === 'pct' ? getVal('propTaxPct', 0.65) / 100 : getVal('propTaxFixed', 5000);
   const heating         = getVal('heating', 150);
   const condoFees       = getVal('condoFees', 0);
@@ -1191,21 +1220,31 @@ function calculate() {
   const tdsLimit        = tdsLimitPct / 100;
   const closingPct      = getVal('closingPct', 2.5) / 100;
 
-  const qualPF  = paymentFactor(monthlyRate(qualRateAnn), n);
-  const contrPF = paymentFactor(monthlyRate(contractRateAnn), n);
   const dpPctIn = getVal('dpPct', 20) / 100;
   const dpAmtIn = getVal('dpAmt', 150000);
 
-  const pGDS     = computeMaxPrice(gdsLimit * monthlyGross,              ptMode, ptParam, fixedHCosts, qualPF, dpMode, dpPctIn, dpAmtIn);
-  const pTDS     = computeMaxPrice(tdsLimit * monthlyGross - totalDebts, ptMode, ptParam, fixedHCosts, qualPF, dpMode, dpPctIn, dpAmtIn);
-  const maxPrice = Math.min(pGDS, pTDS);
-  const binding  = pGDS <= pTDS ? 'GDS' : 'TDS';
+  let qualPF, contrPF, pGDS, pTDS, maxPrice, binding, dpAmt, dpPct;
+  function solveAll() {
+    qualPF  = paymentFactor(monthlyRate(qualRateAnn), n);
+    contrPF = paymentFactor(monthlyRate(contractRateAnn), n);
+    pGDS     = computeMaxPrice(gdsLimit * monthlyGross,              ptMode, ptParam, fixedHCosts, qualPF, dpMode, dpPctIn, dpAmtIn);
+    pTDS     = computeMaxPrice(tdsLimit * monthlyGross - totalDebts, ptMode, ptParam, fixedHCosts, qualPF, dpMode, dpPctIn, dpAmtIn);
+    maxPrice = Math.min(pGDS, pTDS);
+    binding  = pGDS <= pTDS ? 'GDS' : 'TDS';
+    if (dpMode === 'pct') { dpPct = dpPctIn; dpAmt = maxPrice * dpPct; }
+    else                  { dpAmt = dpAmtIn; dpPct = maxPrice > 0 ? dpAmt / maxPrice : 1; }
+  }
+  solveAll();
+
+  // 30-yr amortization on an insured mortgage (<20% down) is restricted to
+  // first-time buyers and new builds (Dec 2024 rules).
+  if (amortYears > 25 && dpPct < 0.20 && !ftbEligible) {
+    amortYears = 25; n = 300; CMHC_SURCHARGE = 0;
+    amortNote = '⚠️ <strong>30-year amortization with less than 20% down</strong> is limited to first-time buyers and new builds. Recalculated at 25 years — tick "First-time buyer or new build" if it applies.';
+    solveAll();
+  }
 
   if (maxPrice <= 0 || !isFinite(maxPrice)) { el('results-area').style.display = 'none'; return; }
-
-  let dpAmt, dpPct;
-  if (dpMode === 'pct') { dpPct = dpPctIn; dpAmt = maxPrice * dpPct; }
-  else                  { dpAmt = dpAmtIn; dpPct = dpAmt / maxPrice; }
 
   const cm             = cmhcRate(dpPct);
   const baseMortg      = maxPrice - dpAmt;
@@ -1267,7 +1306,7 @@ function calculate() {
     ['Purchase Price', fmt(maxPrice), 'blue'],
     ['Down Payment', `${fmt(dpAmt)} (${fmtPct(dpPct*100)})`, dpPct >= 0.20 ? 'green' : ''],
     ['Base Mortgage', fmt(baseMortg)],
-    cm > 0 ? ['CMHC Premium', `${fmt(cmhcPrem)} (${fmtPct(cm*100)})`, 'orange'] : ['CMHC Insurance', 'None', 'green'],
+    cm > 0 ? ['CMHC Premium', `${fmt(cmhcPrem)} (${fmtPct(cm*100)}${CMHC_SURCHARGE > 0 ? ' incl. 0.20% 30-yr surcharge' : ''})`, 'orange'] : ['CMHC Insurance', 'None', 'green'],
     ['Total Mortgage', fmt(totalMortg), '', '', 'total'],
     ['Contract Rate', fmtPct(contractRatePct)],
     ['Qualifying Rate', fmtPct(qualRateAnn * 100), 'blue'],
@@ -1332,11 +1371,23 @@ function calculate() {
   const minDP = minDownAmt(maxPrice);
   const wEl   = document.getElementById('dpWarnBox');
   if (dpAmt < minDP * 0.99) {
+    const capMsg = maxPrice > 1500000 && dpPct < 0.20
+      ? 'Mortgage default insurance is unavailable above $1.5M — a minimum 20% down payment is required at this price.'
+      : 'Increase down payment or reduce target price.';
     const box = wEl || document.createElement('div');
     box.id = 'dpWarnBox'; box.className = 'warning-box';
-    box.innerHTML = `⚠️ <strong>Down payment below regulatory minimum</strong> for ${fmt(maxPrice)} (min ≈ ${fmt(minDP)} / ${fmtPct(minDP/maxPrice*100)}). Increase down payment or reduce target price.`;
+    box.innerHTML = `⚠️ <strong>Down payment below regulatory minimum</strong> for ${fmt(maxPrice)} (min ≈ ${fmt(minDP)} / ${fmtPct(minDP/maxPrice*100)}). ${capMsg}`;
     if (!wEl) el('results-area').prepend(box);
   } else if (wEl) wEl.remove();
+
+  // Amortization eligibility note (30-yr insured restricted to FTB/new build)
+  const aEl = document.getElementById('amortWarnBox');
+  if (amortNote) {
+    const box = aEl || document.createElement('div');
+    box.id = 'amortWarnBox'; box.className = 'warning-box';
+    box.innerHTML = amortNote;
+    if (!aEl) el('results-area').prepend(box);
+  } else if (aEl) aEl.remove();
 }
 
 // ─── Apply mode on load ───────────────────────────────────────────────────
@@ -1357,9 +1408,11 @@ function applyMode() {
       const inc = el('income1');
       if (inc) { inc.value = ''; inc.placeholder = 'e.g. 120,000'; }
     }
+    const rn = el('clientRateNote');
+    if (rn) rn.textContent = 'Using ' + (CLIENT_RATE * 100).toFixed(2).replace(/\.?0+$/, '') + '% rate';
   } else {
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'block');
-    el('clientPortalURL').textContent = getBaseURL() + '?mode=client';
+    el('clientPortalURL').textContent = clientPortalURL();
     if (HAS_DATA) {
       el('clientLoadedBanner').style.display = '';
       el('nextStepsCard').style.display = '';
