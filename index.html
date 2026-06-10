@@ -210,6 +210,26 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
   .container{padding:14px 12px}
 }
 
+/* ── Results reveal ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#results-area>*{animation:fadeUp 0.35s ease both}
+
+/* ── Print: clean one-page client report ── */
+#printMeta{display:none}
+@media print{
+  body{background:#fff}
+  .share-panel,.banner,.grid-2,.cc-panel,.brokerage-badge,#nextStepsCard,#contactModal,.btn,#advisorModeLink{display:none!important}
+  #results-area{display:block!important}
+  #printMeta{display:block;font-size:0.78rem;color:#444;padding:10px 0 14px;border-bottom:2px solid var(--orange);margin-bottom:14px}
+  .header-advisor,.header-client,.result-hero{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .container{padding:8px 0;max-width:100%}
+  .card{box-shadow:none;border:1px solid #ccc;break-inside:avoid;margin-top:12px}
+  .result-hero{break-inside:avoid}
+  .scenario-table{font-size:0.72rem}
+  #results-area>*{animation:none}
+  .page-footer{border-top:1px solid #ccc}
+}
+
 /* ── Footer ── */
 .page-footer{text-align:center;padding:20px;font-size:0.72rem;color:var(--text-subtle);border-top:1px solid var(--grey);background:var(--white);margin-top:16px}
 .page-footer a{color:var(--orange);text-decoration:none;font-weight:600}
@@ -290,6 +310,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
         <label>Other Monthly Income <span style="font-weight:400;color:#888">(rental, alimony, etc.)</span></label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="otherIncome" value="0" min="0" step="100"></div>
         <div class="hint">Included at 100%; lenders may apply 50–80% for rental income.</div>
+      </div>
+      <div class="field">
+        <label>Comfortable Monthly Housing Budget <span style="font-weight:400;color:#888">(optional)</span></label>
+        <div class="input-wrap"><span class="pre">$</span><input type="number" id="monthlyBudget" value="" min="0" step="100" placeholder="e.g. 3,500"></div>
+        <div class="hint">Prefer to think in monthly terms? Cap your total housing cost (mortgage + tax + heat + fees) and the max price adjusts to stay within it.</div>
       </div>
       <div class="field" style="margin-top:4px">
         <label>Down Payment</label>
@@ -522,7 +547,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
                        border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer;">
           Send to Rosh →
         </button>
-        <div id="cm-status" style="margin-top:12px;font-size:0.82rem;text-align:center;color:#666;"></div>
+        <div id="cm-status" aria-live="polite" style="margin-top:12px;font-size:0.82rem;text-align:center;color:#666;"></div>
       </div>
     </div>
 
@@ -563,6 +588,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 
   <!-- ── RESULTS (advisor only) ──────────────────────────────────────── -->
   <div id="results-area" class="advisor-only">
+
+    <div id="printMeta">
+      <strong>Home Affordability Estimate</strong> · Prepared by Rosh Issac, REALTOR&#174; — Dreamhouse Realty Ltd.
+      · rosh@issacrealty.com · +1 (825) 449-5083 · <span id="printDate"></span>
+    </div>
 
     <div class="result-hero">
       <h2>Maximum Affordable Home Price</h2>
@@ -671,7 +701,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
           &#x1F5A8; Print / Save as PDF
         </button>
       </div>
-      <div id="advisoryStatus" style="margin-top:10px;font-size:0.85rem;font-weight:600"></div>
+      <div id="advisoryStatus" aria-live="polite" style="margin-top:10px;font-size:0.85rem;font-weight:600"></div>
     </div>
 
     <div style="height:28px"></div>
@@ -853,7 +883,7 @@ function updateCCTotal() {
 }
 
 // ─── URL encode / decode ─────────────────────────────────────────────────
-const CLIENT_FIELDS = ['income1','income2','otherIncome','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt'];
+const CLIENT_FIELDS = ['income1','income2','otherIncome','monthlyBudget','autoLoan','studentLoan','ccPayment','otherDebt','dpPct','dpAmt'];
 const ALL_FIELDS    = [...CLIENT_FIELDS,'contractRate','propTaxPct','propTaxFixed','heating','condoFees','hoaFees','gdsLimit','tdsLimit','closingPct','province'];
 
 function encodeData(fieldsArr) {
@@ -1172,7 +1202,15 @@ function calculate() {
 
     const pG  = computeMaxPrice(0.39 * monthlyGross, 'pct', clientTaxPct, clientFixedH, clientQPF, dpMode, dpPctIn, dpAmtIn);
     const pT  = computeMaxPrice(0.44 * monthlyGross - totalDebts, 'pct', clientTaxPct, clientFixedH, clientQPF, dpMode, dpPctIn, dpAmtIn);
-    const est = Math.min(pG, pT);
+    // Optional comfort budget caps actual monthly cost (contract rate, not stress-tested)
+    const budgetM = getVal('monthlyBudget', 0);
+    let pB = Infinity;
+    if (budgetM > 0) {
+      const clientContrPF = paymentFactor(monthlyRate(CLIENT_RATE), clientN);
+      pB = computeMaxPrice(budgetM, 'pct', clientTaxPct, clientFixedH, clientContrPF, dpMode, dpPctIn, dpAmtIn);
+    }
+    const est = Math.min(pG, pT, pB);
+    const budgetBound = isFinite(pB) && pB <= pG && pB <= pT;
 
     const card = el('clientSubmitCard');
     if (est > 0 && isFinite(est) && monthlyGross > 0) {
@@ -1183,7 +1221,8 @@ function calculate() {
         ? `≈ ${fmt(est * dpPctIn)} (${fmtPct(dpPctIn * 100)})`
         : `= ${fmtPct(dpPct * 100)} of price`;
       const cmhcMsg = cmhcRate(dpPct) > 0 ? 'CMHC premium applies — estimated.' : 'No CMHC required (≥ 20% down).';
-      el('cmhc-note').textContent = `Based on your estimated max home price of ${fmt(est)}. ${cmhcMsg}`;
+      const budgetMsg = budgetBound ? ` Capped by your ${fmt(budgetM)}/mo comfort budget — you may qualify for more.` : '';
+      el('cmhc-note').textContent = `Based on your estimated max home price of ${fmt(est)}.${budgetMsg} ${cmhcMsg}`;
       // Flag a down payment below the regulatory minimum (advisor view has
       // this check, but clients in fixed-$ mode never saw it).
       const minDP = minDownAmt(est);
@@ -1223,14 +1262,19 @@ function calculate() {
   const dpPctIn = getVal('dpPct', 20) / 100;
   const dpAmtIn = getVal('dpAmt', 150000);
 
-  let qualPF, contrPF, pGDS, pTDS, maxPrice, binding, dpAmt, dpPct;
+  const budgetM      = getVal('monthlyBudget', 0);
+  const fullFixedH   = heating + condoFees + hoaMonthly; // budget cap uses real cash costs
+
+  let qualPF, contrPF, pGDS, pTDS, pBud, maxPrice, binding, dpAmt, dpPct;
   function solveAll() {
     qualPF  = paymentFactor(monthlyRate(qualRateAnn), n);
     contrPF = paymentFactor(monthlyRate(contractRateAnn), n);
     pGDS     = computeMaxPrice(gdsLimit * monthlyGross,              ptMode, ptParam, fixedHCosts, qualPF, dpMode, dpPctIn, dpAmtIn);
     pTDS     = computeMaxPrice(tdsLimit * monthlyGross - totalDebts, ptMode, ptParam, fixedHCosts, qualPF, dpMode, dpPctIn, dpAmtIn);
-    maxPrice = Math.min(pGDS, pTDS);
-    binding  = pGDS <= pTDS ? 'GDS' : 'TDS';
+    // Comfort budget binds on actual monthly cost (contract rate, full condo fees)
+    pBud     = budgetM > 0 ? computeMaxPrice(budgetM, ptMode, ptParam, fullFixedH, contrPF, dpMode, dpPctIn, dpAmtIn) : Infinity;
+    maxPrice = Math.min(pGDS, pTDS, pBud);
+    binding  = (pGDS <= pTDS && pGDS <= pBud) ? 'GDS' : (pTDS <= pBud) ? 'TDS' : 'Budget';
     if (dpMode === 'pct') { dpPct = dpPctIn; dpAmt = maxPrice * dpPct; }
     else                  { dpAmt = dpAmtIn; dpPct = maxPrice > 0 ? dpAmt / maxPrice : 1; }
   }
@@ -1266,7 +1310,9 @@ function calculate() {
 
   el('results-area').style.display = 'block';
   el('rPrice').textContent    = fmt(maxPrice);
-  el('rPriceNote').textContent = `Binding: ${binding} at ${fmtPct(binding === 'GDS' ? gdsLimitPct : tdsLimitPct, 0)} limit  |  ${amortYears}-year amortization`;
+  el('rPriceNote').textContent = binding === 'Budget'
+    ? `Binding: your ${fmt(budgetM)}/mo comfort budget (qualifies for more)  |  ${amortYears}-year amortization`
+    : `Binding: ${binding} at ${fmtPct(binding === 'GDS' ? gdsLimitPct : tdsLimitPct, 0)} limit  |  ${amortYears}-year amortization`;
 
   function ratioC(v, lim) {
     const r = v / lim;
@@ -1355,11 +1401,13 @@ function calculate() {
     const isCur = Math.abs(r - contractRatePct) < 0.01;
     tbl += `<tr${isCur?' class="highlight"':''}>`;
     tbl += `<td>${fmtPct(r)} ${isCur?'★':''}</td>`;
+    const cpf = paymentFactor(monthlyRate(r/100), n);
     downs.forEach(d => {
       const dA = dpMode === 'pct' ? d/100 : d;
       const p1 = computeMaxPrice(gdsLimit*monthlyGross,              ptMode, ptParam, fixedHCosts, qpf, dpMode, dA, dA);
       const p2 = computeMaxPrice(tdsLimit*monthlyGross-totalDebts,   ptMode, ptParam, fixedHCosts, qpf, dpMode, dA, dA);
-      const p  = Math.min(p1, p2);
+      const p3 = budgetM > 0 ? computeMaxPrice(budgetM, ptMode, ptParam, fullFixedH, cpf, dpMode, dA, dA) : Infinity;
+      const p  = Math.min(p1, p2, p3);
       const bold = isCur && Math.abs(d - (dpMode==='pct' ? dpPct*100 : dpAmt)) < (dpMode==='pct' ? 0.5 : 1);
       tbl += `<td${bold?' style="font-weight:800"':''}>${p > 0 ? fmt(p) : '—'}</td>`;
     });
@@ -1426,6 +1474,8 @@ window.addEventListener('load', () => {
   loadFromParams();
   buildCCItems();
   calculate();
+  const pd = el('printDate');
+  if (pd) pd.textContent = new Date().toLocaleDateString('en-CA', { year:'numeric', month:'long', day:'numeric' });
 });
 document.addEventListener('input', calculate);
 </script>
