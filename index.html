@@ -920,6 +920,35 @@ function closeContactModal() {
   document.getElementById('cm-status').textContent = '';
 }
 
+// POST to Apps Script and read back its JSON confirmation.
+// Plain-text body keeps this a CORS "simple request" (no preflight, and no
+// iOS Safari Google sign-in sheet — that bug was specific to mode:'no-cors').
+// credentials:'omit' ensures no Google cookies ride along.
+function postToBackend(data, timeoutMs = 12000) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  return fetch(WEB_APP_URL, {
+    method: 'POST', mode: 'cors', credentials: 'omit',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(data),
+    signal: ctrl.signal,
+  })
+  .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(j => { if (!j.ok) throw new Error(j.error || 'backend error'); return j; })
+  .finally(() => clearTimeout(timer));
+}
+
+function leadMailtoHref(c) {
+  const subj = 'Home Affordability Lead — ' + c.firstName + (c.lastName ? ' ' + c.lastName : '');
+  const body = 'Hi Rosh,\n\nName: ' + c.firstName + ' ' + c.lastName +
+    '\nEmail: ' + c.email + '\nPhone: ' + c.phone +
+    '\nCombined Income: ' + c.income + '\nDown Payment: ' + c.downPayment +
+    '\nMonthly Debts: ' + c.debts +
+    (c.affordEstimate ? '\nEstimate: ' + c.affordEstimate : '') +
+    '\n\nPre-filled calculator:\n' + c.calcLink + '\n\nPlease let me know how much I can afford!';
+  return 'mailto:rosh@issacrealty.com?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(body);
+}
+
 function submitToRosh() {
   const firstName = document.getElementById('cm-first').value.trim();
   const lastName  = document.getElementById('cm-last').value.trim();
@@ -939,6 +968,15 @@ function submitToRosh() {
   const dp     = dpMode === 'pct' ? getVal('dpPct') + '% of purchase price' : '$' + Math.round(getVal('dpAmt')).toLocaleString();
   const afford = document.getElementById('clientAffordEstimate')?.textContent || '';
 
+  const payload = {
+    firstName, lastName, email, phone,
+    income      : '$' + inc.toLocaleString(),
+    downPayment : dp,
+    debts       : '$' + debts.toLocaleString() + '/mo',
+    affordEstimate: afford,
+    calcLink,
+  };
+
   // Update UI
   const btn = document.getElementById('cm-submit');
   const status = document.getElementById('cm-status');
@@ -946,26 +984,7 @@ function submitToRosh() {
   btn.textContent = 'Sending…';
   status.textContent = '';
 
-  // POST to Apps Script — sendBeacon is fire-and-forget and avoids the iOS
-  // Safari bug where fetch(mode:'no-cors') to script.google.com triggers a
-  // native "Sign in with Google" auth sheet that blocks the submission.
-  if (WEB_APP_URL !== 'PASTE_WEB_APP_URL_HERE') {
-    const payload = JSON.stringify({
-      firstName, lastName, email, phone,
-      income      : '$' + inc.toLocaleString(),
-      downPayment : dp,
-      debts       : '$' + debts.toLocaleString() + '/mo',
-      affordEstimate: afford,
-      calcLink,
-    });
-    if (typeof navigator.sendBeacon === 'function') {
-      navigator.sendBeacon(WEB_APP_URL, payload);
-    } else {
-      fetch(WEB_APP_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:payload }).catch(()=>{});
-    }
-  }
-
-  // iOS Safari blocks window.open() inside setTimeout (gesture expires after ~1s).
+  // iOS Safari blocks window.open() inside async callbacks (gesture expires).
   // Open any external URL NOW, synchronously, while the tap gesture is still active.
   if (_cmDest === 'whatsapp') {
     const waMsg = encodeURIComponent(
@@ -975,25 +994,31 @@ function submitToRosh() {
     );
     window.open('https://wa.me/' + ROSH_WHATSAPP + '?text=' + waMsg, '_blank');
   } else if (_cmDest === 'booking') {
-    if (ROSH_BOOKING !== 'PASTE_CALENDLY_URL_HERE') {
-      window.open(ROSH_BOOKING, '_blank');
-    } else {
-      alert('Booking link coming soon! Rosh has been notified and will reach out to schedule a call.');
-    }
+    window.open(ROSH_BOOKING, '_blank');
   }
 
-  // Show success state then close modal
-  btn.textContent = '✅ Done!';
-  const destMessages = {
-    email    : 'Your info is saved. Rosh will email you shortly!',
-    whatsapp : 'Opening WhatsApp now…',
-    booking  : 'Opening the booking calendar…',
-  };
-  status.innerHTML = destMessages[_cmDest] || destMessages.email;
-
-  setTimeout(() => {
-    closeContactModal();
-  }, 1500);
+  postToBackend(payload).then(() => {
+    btn.textContent = '✅ Done!';
+    const destMessages = {
+      email    : 'Your info is on its way to Rosh — he\'ll email you shortly!',
+      whatsapp : 'Info saved. Continue the chat on WhatsApp!',
+      booking  : 'Info saved. Pick a time on the booking calendar!',
+    };
+    status.style.color = '#2a7a2a';
+    status.innerHTML = destMessages[_cmDest] || destMessages.email;
+    setTimeout(closeContactModal, 2000);
+  }).catch(() => {
+    // Best-effort beacon in case only the response was lost, then be honest
+    // with the user and give them a direct path that cannot fail silently.
+    if (typeof navigator.sendBeacon === 'function') {
+      try { navigator.sendBeacon(WEB_APP_URL, JSON.stringify(payload)); } catch(e) {}
+    }
+    btn.disabled = false;
+    btn.textContent = 'Try Again';
+    status.style.color = '#c53030';
+    status.innerHTML = 'We couldn\'t confirm your info reached Rosh. Please try again, or ' +
+      '<a href="' + leadMailtoHref(payload) + '" style="color:var(--orange);font-weight:700">email Rosh directly</a> — your details are pre-filled.';
+  });
 }
 
 // ─── Advisory email — sent server-side via Apps Script (no Gmail app needed) ─
@@ -1009,7 +1034,7 @@ function sendAdvisoryEmail() {
   btn.textContent = 'Sending…';
   status.textContent = '';
 
-  const payload = JSON.stringify({
+  const payload = {
     action    : 'sendAdvisory',
     clientEmail,
     price     : document.getElementById('rPrice')?.textContent        || '',
@@ -1019,13 +1044,18 @@ function sendAdvisoryEmail() {
     gds       : document.getElementById('rGDSVal')?.textContent       || '',
     tds       : document.getElementById('rTDSVal')?.textContent       || '',
     qualRate  : document.getElementById('rQualRate')?.textContent     || '',
+  };
+
+  postToBackend(payload).then(() => {
+    btn.textContent = '✅ Sent!';
+    status.style.color = '#2a7a2a';
+    status.textContent = 'Advisory emailed to ' + clientEmail + '. Check your sent folder shortly.';
+  }).catch(err => {
+    btn.disabled = false;
+    btn.textContent = '\u{1F4E7} Send Advisory to Client';
+    status.style.color = '#c53030';
+    status.textContent = 'Delivery not confirmed (' + (err.message || 'network error') + '). Check your Gmail Sent folder before retrying to avoid duplicates.';
   });
-
-  navigator.sendBeacon(WEB_APP_URL, payload);
-
-  btn.textContent = '✅ Sent!';
-  status.style.color = '#2a7a2a';
-  status.textContent = 'Advisory emailed to ' + clientEmail + '. Check your sent folder shortly.';
 }
 
 // ─── Advisor mode switch (from client view) ───────────────────────────────
@@ -1130,6 +1160,13 @@ function calculate() {
         : `= ${fmtPct(dpPct * 100)} of price`;
       const cmhcMsg = cmhcRate(dpPct) > 0 ? 'CMHC premium applies — estimated.' : 'No CMHC required (≥ 20% down).';
       el('cmhc-note').textContent = `Based on your estimated max home price of ${fmt(est)}. ${cmhcMsg}`;
+      // Flag a down payment below the regulatory minimum (advisor view has
+      // this check, but clients in fixed-$ mode never saw it).
+      const minDP = minDownAmt(est);
+      const dpEntered = dpMode === 'pct' ? est * dpPctIn : dpAmtIn;
+      if (dpEntered < minDP * 0.99) {
+        el('cmhc-note').textContent = `⚠️ For a ${fmt(est)} home the minimum down payment is about ${fmt(minDP)}. Your estimate will be refined by Rosh — consider a larger down payment.`;
+      }
       card.style.display = '';
     } else {
       card.style.display = 'none';
@@ -1314,6 +1351,12 @@ function applyMode() {
     // Province hidden in client mode — fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
+    // Client mode starts blank: no estimate from placeholder numbers.
+    // (Advisor mode keeps the $120K default as a working example.)
+    if (!HAS_DATA) {
+      const inc = el('income1');
+      if (inc) { inc.value = ''; inc.placeholder = 'e.g. 120,000'; }
+    }
   } else {
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'block');
     el('clientPortalURL').textContent = getBaseURL() + '?mode=client';
