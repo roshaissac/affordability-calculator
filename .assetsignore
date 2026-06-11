@@ -1,0 +1,11 @@
+gas/
+.claude/
+*.gs
+QR Code*
+.git/
+.gitignore
+supabase/
+node_modules/
+wrangler.jsonc
+netlify.toml
+_redirects

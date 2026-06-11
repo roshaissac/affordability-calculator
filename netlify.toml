@@ -1,0 +1,7 @@
+# This Netlify site is retired — permanently redirect every request
+# (preserving path and query string) to the canonical Cloudflare Worker.
+[[redirects]]
+  from = "/*"
+  to = "https://affordability-calculator.rosh-4d0.workers.dev/:splat"
+  status = 301
+  force = true
