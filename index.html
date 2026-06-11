@@ -48,16 +48,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .header-text{flex:1;min-width:0}
 .header-text h1{font-size:1.35rem;font-weight:700;letter-spacing:-0.02em;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .header-text p{color:rgba(255,255,255,0.5);font-size:0.82rem;margin-top:3px}
-.header-contact{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-top:25px;font-size:0.8rem;font-weight:600;line-height:1.4}
+.header-contact{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:0.78rem;font-weight:600;line-height:1.45;text-align:right}
 .header-contact a{color:var(--white);text-decoration:none}
 .header-contact a:hover{color:var(--orange)}
+.advisor-mode-btn{display:inline-block;margin-top:5px;border:1.5px solid var(--orange);color:var(--orange)!important;padding:2px 10px;border-radius:6px;font-weight:700;font-size:0.72rem}
+.advisor-mode-btn:hover{background:var(--orange);color:var(--white)!important}
 @media(max-width:820px){
   .header-inner{padding:11px 16px}
   .header-text h1{font-size:1.1rem}
 }
 @media(max-width:600px){
-  .header-inner{flex-direction:column;gap:4px}
-  .header-contact{flex-direction:row;align-items:center;gap:10px;margin-top:2px;align-self:flex-end;font-size:0.72rem}
+  .header-contact{font-size:0.7rem;gap:1px}
 }
 
 /* ── Brand band — fixed full-width footer with brokerage details ── */
@@ -257,12 +258,14 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <div class="header-advisor" id="headerAdvisor">
   <div class="header-inner">
     <div class="header-text">
-      <div style="margin-bottom:5px"><span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span> <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400">Realtor&#174;</span> <span style="color:rgba(255,255,255,0.45);font-size:0.75rem;font-weight:400">&nbsp;·&nbsp; Issac Realty Team — Associates of Dreamhouse Realty Ltd.</span></div>
+      <div style="margin-bottom:5px;color:rgba(255,255,255,0.45);font-size:0.75rem">Issac Realty Team — Associates of Dreamhouse Realty Ltd.</div>
       <h1>Home Affordability Calculator</h1>
       <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
     </div>
     <div class="header-contact">
-      <a href="tel:+18254495083">+1 (825) 449-5083</a>
+      <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
+      <span style="color:rgba(255,255,255,0.75);font-size:0.74rem;font-weight:400">Realtor&#174;</span>
+      <a href="tel:+18254495083">825 449 5083</a>
       <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a>
     </div>
   </div>
@@ -272,18 +275,17 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <div class="header-client" id="headerClient" style="display:none">
   <div class="header-inner">
     <div class="header-text">
-      <div style="margin-bottom:4px">
-        <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
-        <span style="color:rgba(255,255,255,0.75);font-size:0.78rem;font-weight:400"> Realtor&#174;</span>
-        <span style="color:rgba(255,255,255,0.45);font-size:0.75rem;font-weight:400">&nbsp;·&nbsp; Issac Realty Team — Associates of Dreamhouse Realty Ltd.</span>
-      </div>
+      <div style="margin-bottom:4px;color:rgba(255,255,255,0.45);font-size:0.75rem">Issac Realty Team — Associates of Dreamhouse Realty Ltd.</div>
       <h1 style="font-size:1.15rem">Mortgage Pre-Assessment</h1>
-      <p>Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.</p>
+      <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
+      <p style="margin-top:2px">Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.</p>
     </div>
     <div class="header-contact">
-      <a href="tel:+18254495083">+1 (825) 449-5083</a>
+      <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
+      <span style="color:rgba(255,255,255,0.75);font-size:0.74rem;font-weight:400">Realtor&#174;</span>
+      <a href="tel:+18254495083">825 449 5083</a>
       <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a>
-      <span id="advisorModeLink" style="display:none"><a href="javascript:void(0)" onclick="switchToAdvisorMode()" style="color:var(--orange);font-weight:700">Advisor Mode →</a></span>
+      <span id="advisorModeLink" style="display:none"><a href="javascript:void(0)" onclick="switchToAdvisorMode()" class="advisor-mode-btn">Advisor →</a></span>
     </div>
   </div>
 </div>
@@ -291,11 +293,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <!-- Advisor banner: shown when client data pre-loaded -->
 <div class="banner banner-client-loaded" id="clientLoadedBanner" style="display:none">
   ✅ <strong>Client data pre-loaded from intake form.</strong> Review the fields below, complete the mortgage assumptions, then click <strong>Execute Affordability Estimate</strong>.
-</div>
-
-<!-- Client banner -->
-<div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
-  📋 Fill in what you know below. Fields you're unsure about can be left at their default — your Realtor&#174; will adjust them. Click <strong>"Send My Information to Rosh"</strong> when done.
 </div>
 
 <div class="container">
@@ -1467,7 +1464,6 @@ function applyMode() {
   if (CLIENT_MODE) {
     el('headerAdvisor').style.display    = 'none';
     el('headerClient').style.display     = '';
-    el('clientModeBanner').style.display = '';
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
     el('advisorModeLink').style.display = '';
