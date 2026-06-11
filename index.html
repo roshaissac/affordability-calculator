@@ -72,21 +72,21 @@ body{padding-bottom:92px}
 .brand-band-line1 a{color:var(--white);text-decoration:none}
 .brand-band-line1 a:hover{color:var(--orange)}
 .brand-band-fine{font-size:0.62rem;color:rgba(255,255,255,0.5);line-height:1.45;margin-top:3px}
-.brand-band-logo{flex-shrink:0;background:var(--white);border-radius:6px;padding:3px 8px;display:flex;align-items:center}
-.brand-band-logo img{height:26px;width:auto;display:block}
+.brand-band-logo{flex-shrink:0;background:var(--white);border-radius:6px;padding:4px 8px;display:flex;align-items:flex-start}
+.brand-band-logo img{height:36px;width:auto;display:block}
 @media(max-width:600px){
   body{padding-bottom:118px}
   .brand-band{padding:7px 12px 9px}
   .brand-band-line1{font-size:0.66rem}
   .brand-band-fine{font-size:0.56rem}
-  .brand-band-logo{padding:2px 6px}
-  .brand-band-logo img{height:22px}
+  .brand-band-logo{padding:4px 7px}
+  .brand-band-logo img{height:36px}
 }
 
 /* ── Banners ── */
 .banner{padding:11px 24px;font-size:0.84rem;font-weight:500;display:block;line-height:1.55}
 .banner-client-loaded{background:#fff8f3;color:#7a3b10;border-bottom:2px solid var(--orange)}
-.banner-client-mode{background:#fffbf7;color:#7a3b10;border-bottom:2px solid var(--orange);font-size:0.81rem;padding:10px 24px}
+.banner-client-mode{background:#fffbf7;color:#7a3b10;border-bottom:2px solid var(--orange);font-size:0.81rem;padding:10px 24px;display:block}
 
 /* ── Layout ── */
 .container{max-width:1200px;margin:0 auto;padding:24px 20px}
@@ -259,9 +259,9 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <div class="header-advisor" id="headerAdvisor">
   <div class="header-inner">
     <div class="header-text">
-      <div style="margin-bottom:5px;color:rgba(255,255,255,0.45);font-size:0.75rem">Issac Realty Team — Associates of Dreamhouse Realty Ltd.</div>
       <h1>Home Affordability Calculator</h1>
       <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
+      <span style="margin-top:6px;display:inline-block;border:1.5px solid #4caf50;color:#4caf50;padding:2px 10px;border-radius:6px;font-weight:700;font-size:0.72rem">✓ Advisor Mode</span>
     </div>
     <div class="header-contact">
       <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
@@ -276,19 +276,22 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <div class="header-client" id="headerClient" style="display:none">
   <div class="header-inner">
     <div class="header-text">
-      <div style="margin-bottom:4px;color:rgba(255,255,255,0.45);font-size:0.75rem">Issac Realty Team — Associates of Dreamhouse Realty Ltd.</div>
-      <h1 style="font-size:1.15rem">Mortgage Pre-Assessment</h1>
+      <h1>Home Affordability Calculator</h1>
       <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
-      <p style="margin-top:2px">Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.</p>
+      <span id="advisorModeLink" style="display:none"><a href="javascript:void(0)" onclick="switchToAdvisorMode()" class="advisor-mode-btn" style="margin-top:6px;display:inline-block">Advisor →</a></span>
     </div>
     <div class="header-contact">
       <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
       <span style="color:rgba(255,255,255,0.75);font-size:0.74rem;font-weight:400">Realtor&#174;</span>
       <a href="tel:+18254495083">825 449 5083</a>
       <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a>
-      <span id="advisorModeLink" style="display:none"><a href="javascript:void(0)" onclick="switchToAdvisorMode()" class="advisor-mode-btn">Advisor →</a></span>
     </div>
   </div>
+</div>
+
+<!-- Client mode instructions banner -->
+<div class="banner-client-mode" id="clientInstructionsBanner" style="display:none">
+  Fill in what you know — your Realtor&#174; Rosh will complete the rest and share your full estimate.
 </div>
 
 <!-- Advisor banner: shown when client data pre-loaded -->
@@ -737,11 +740,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
   <div class="brand-band-inner">
     <div class="brand-band-main">
       <div class="brand-band-line1">
-        <strong>Issac Realty Team</strong><span class="sep">·</span>Associates of Dreamhouse Realty Ltd.<span class="sep">·</span>2000 Pegasus Rd NE, Unit 2, Calgary, Alberta, T2E 8K7
+        <strong style="color:var(--orange)">Issac Realty Team</strong><br><span style="font-weight:300">Associates of Dreamhouse Realty Ltd. · 2000 Pegasus Rd NE, Unit 2, Calgary, Alberta, T2E 8K7</span>
       </div>
-      <div class="brand-band-fine">Rosh Issac is a licensed REALTOR&#174;, not a mortgage advisor. This tool provides informational estimates only and does not constitute mortgage advice or a lender commitment. Rates and qualification criteria vary by lender — for an accurate assessment and pre-approval, we are glad to refer trusted mortgage brokers.</div>
+      <div class="brand-band-fine">For illustrative purposes only. Not financial, mortgage, or lending advice, and not a lender commitment. Assumed rates and terms are for educational purposes only. Approval is subject to lender criteria. Mortgage broker referrals available.</div>
     </div>
-    <div class="brand-band-logo">
+    <div class="brand-band-logo" style="align-self:flex-start">
       <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd." onerror="this.parentElement.style.display='none'">
     </div>
   </div>
@@ -1467,6 +1470,7 @@ function applyMode() {
     el('headerClient').style.display     = '';
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
+    el('clientInstructionsBanner').style.display = 'block';
     el('advisorModeLink').style.display = '';
     // Province hidden in client mode — fix to AB so math runs immediately
     const provEl = el('province');
