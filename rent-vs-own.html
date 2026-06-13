@@ -891,7 +891,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   </div>
   <!-- Centre disclaimer -->
   <div class="float-foot-disclaimer">
-    For information only - not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.<span id="advisorModeLink" style="display:none"> &nbsp;<a href="rent-vs-own.html?mode=advisor">Advisor Mode →</a></span>
+    For information only - not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.
   </div>
   <!-- Affordability Calculator QR + link -->
   <a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client"
@@ -1011,7 +1011,9 @@ let _chartInstLong = null;
 
 // ─── Mode detection ───────────────────────────────────────────────────────
 const URL_PARAMS  = new URLSearchParams(window.location.search);
-const CLIENT_MODE = URL_PARAMS.get('mode') === 'client';
+// Client mode is the DEFAULT — bare URL safe to share; advisor view only
+// via the explicit ?mode=advisor link Rosh bookmarks (June 2026 fix).
+const CLIENT_MODE = URL_PARAMS.get('mode') !== 'advisor';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────
 function el(id)  { return document.getElementById(id); }
@@ -2415,7 +2417,6 @@ function applyMode() {
     el('clientModeBanner').style.display = '';
     el('advancedSection').style.display  = 'none';
     el('clientAssumptionsNote').style.display = '';
-    el('advisorModeLink').style.display  = '';
   } else {
     STATE.mode = 'advisor';
     el('headerAdvisor').style.display = '';

@@ -278,7 +278,6 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
     <div class="header-text">
       <h1>Home Affordability Calculator</h1>
       <p>GDS/TDS · OSFI Stress Test · CMHC · Closing Cost Analysis</p>
-      <span id="advisorModeLink" style="display:none"><a href="javascript:void(0)" onclick="switchToAdvisorMode()" class="advisor-mode-btn" style="margin-top:6px;display:inline-block">Advisor →</a></span>
     </div>
     <div class="header-contact">
       <span style="color:var(--orange);font-weight:800;font-size:1rem;letter-spacing:-0.01em">Rosh Issac</span>
@@ -753,7 +752,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:0.5}
 <script>
 // ─── Mode detection ──────────────────────────────────────────────────────
 const URL_PARAMS   = new URLSearchParams(window.location.search);
-const CLIENT_MODE  = URL_PARAMS.get('mode') === 'client';
+// Client mode is the DEFAULT — the bare URL is safe to share anywhere.
+// Advisor mode only via the explicit ?mode=advisor link Rosh bookmarks
+// (June 2026: clients could previously reach advisor view by trimming
+// the URL or tapping the old "Advisor →" button).
+const CLIENT_MODE  = URL_PARAMS.get('mode') !== 'advisor';
 const HAS_DATA     = URL_PARAMS.get('d') != null;
 // Contract rate for the client-mode estimate, set by the advisor's intake
 // link (?rate=). Falls back to 5.5% for bare links.
@@ -1032,7 +1035,8 @@ function submitToRosh() {
 
   // Build pre-filled calculator link with buyer's financial data
   const encoded  = encodeData(CLIENT_FIELDS);
-  const calcLink = getBaseURL() + '?d=' + encoded;
+  // ?mode=advisor: this link goes only into the intake email Rosh receives
+  const calcLink = getBaseURL() + '?mode=advisor&d=' + encoded;
 
   // Financial summary for the email body
   const inc    = Math.round(getVal('income1') + getVal('income2'));
@@ -1128,13 +1132,6 @@ function sendAdvisoryEmail() {
     status.style.color = '#c53030';
     status.textContent = 'Delivery not confirmed (' + (err.message || 'network error') + '). Check your Gmail Sent folder before retrying to avoid duplicates.';
   });
-}
-
-// ─── Advisor mode switch (from client view) ───────────────────────────────
-function switchToAdvisorMode() {
-  // Preserve the client's encoded data in the URL so it pre-fills the advisor calculator
-  const encoded = encodeData(CLIENT_FIELDS);
-  window.location.href = getBaseURL() + '?d=' + encoded;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────
@@ -1471,7 +1468,6 @@ function applyMode() {
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
     el('clientInstructionsBanner').style.display = 'block';
-    el('advisorModeLink').style.display = '';
     // Province hidden in client mode — fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
