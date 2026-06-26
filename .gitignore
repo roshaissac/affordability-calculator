@@ -2,3 +2,4 @@ gas/
 .claude/
 *.gs
 QR Code*
+.wrangler/
