@@ -2,385 +2,480 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rent vs Own Calculator - Issac Real Estate Team</title>
-<meta property="og:title" content="Rent vs Own Calculator - Rosh Issac, Realtor®">
-<meta property="og:description" content="See exactly what renting is costing you - and what owning could build. Free, instant, personalised. By Rosh Issac · Issac Real Estate Team · Dreamhouse Realty Ltd.">
-<meta property="og:url" content="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html">
-<meta property="og:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
-<meta property="og:image:width" content="1200">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rent vs Own Calculator - Sheena &amp; Rosh Issac Property Group, Associates of Dreamhouse Realty Ltd.</title>
+<meta name="description" content="See exactly what renting is costing you - and what owning could build. Free, instant, personalised. Calgary rent-vs-buy wealth comparison.">
+
+<!-- ── Open Graph / WhatsApp share preview ── -->
+<meta property="og:type"         content="website">
+<meta property="og:url"          content="https://affordability-calculator.rosh-4d0.workers.dev/rent-vs-own">
+<meta property="og:title"        content="Rent vs Own Calculator - Sheena &amp; Rosh Issac Property Group, Associates of Dreamhouse Realty Ltd.">
+<meta property="og:description"  content="See exactly what renting is costing you - and what owning could build. Free, instant, personalised.">
+<meta property="og:image"        content="https://affordability-calculator.rosh-4d0.workers.dev/assets/og-rvo.png">
+<meta property="og:image:width"  content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Issac Real Estate Team">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Rent vs Own Calculator - Rosh Issac, Realtor®">
+<meta property="og:image:type"   content="image/png">
+<meta property="og:site_name"    content="Sheena &amp; Rosh Issac Property Group, Associates of Dreamhouse Realty Ltd.">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Rent vs Own Calculator - Sheena &amp; Rosh Issac Property Group">
 <meta name="twitter:description" content="See exactly what renting is costing you - and what owning could build. Free &amp; instant.">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/roshaissac/affordability-calculator/main/assets/The%20Team%20Logo.png">
+<meta name="twitter:image"       content="https://affordability-calculator.rosh-4d0.workers.dev/assets/og-rvo.png">
 <!-- Prevent iOS from auto-detecting phone numbers as blue links -->
 <meta name="format-detection" content="telephone=no">
 
 <!-- PWA -->
 <link rel="manifest" href="manifest-rvo.json">
-<meta name="theme-color" content="#F7934C">
+<meta name="theme-color" content="#09090b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Rent vs Own">
-<link rel="apple-touch-icon" href="assets/The Team Logo.png">
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<!-- jsPDF + AutoTable for client-side PDF generation -->
-<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
-<!-- QR code generation (business card + calculator sharing) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<link rel="apple-touch-icon" href="assets/icon-rvo-180.png">
 
 <style>
-/* ── Reset & Base ── */
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f5;color:#111111;line-height:1.5}
+/* ════════════════════════════════════════════════════════════════════════
+   B-5 · RENT VS OWN - THE ISSAC HOUSE STYLE
+   Shared kit tokens + per-app knob (--app-accent: bronze #c98a4a).
+   Hero motif: "the crossover" - the year owning pulls ahead of renting.
+   Engine <script> below is byte-identical to the pre-restyle app; only the
+   skin (CSS + shell markup) and a decoupled layer script are new.
+   Self-hosted Fraunces (one woff2, same-origin) - zero third-party on paint.
+   ════════════════════════════════════════════════════════════════════════ */
+@font-face{
+  font-family:'Fraunces';font-style:normal;font-weight:400 600;font-display:swap;
+  src:url('assets/fraunces-latin-var.woff2') format('woff2');
+}
 
-/* ── Brand tokens (exact match to index.html) ── */
 :root{
-  --black:#000000;
-  --orange:#F7934C;
-  --grey:#D9D9D9;
-  --grey-light:#f5f5f5;
-  --grey-mid:#e8e8e8;
-  --white:#ffffff;
-  --text:#111111;
-  --text-muted:#666666;
-  --text-subtle:#999999;
-  --border:#D9D9D9;
-  --shadow:0 1px 4px rgba(0,0,0,0.08);
-  --radius:10px;
+  /* ── GLOBAL (identical across the suite) ─────────────────────────────── */
+  --c-paper:#09090b; --c-card:#16151b; --c-ink:#f4eee2; --c-ink-soft:#d9d3c6;
+  --c-ivory:#f3efe9; --c-ivory-card:#fbf9f5; --c-charcoal:#1c1b20;
+  --c-muted:#a79f91; --c-muted-l:#857c6f;
+  --c-orange:#ee8a4e; --c-gold:#c9a25e;
+  --c-hair-d:rgba(244,238,226,.12); --c-hair-l:rgba(28,27,32,.10);
+  --ok:#2f7d52; --err:#b0492e;
+  --grad-gold:linear-gradient(120deg,#dcbf86,#c9a25e 50%,#b08438);
+
+  /* ── PER-APP KNOB - B-5 bronze ───────────────────────────────────────── */
+  --app-accent:#c98a4a;
+  --app-accent-soft:rgba(201,138,74,.16);
+  --app-accent-ink:#7d4a15;          /* accent text on ivory, AA-safe */
+
+  /* ── Legacy aliases - the untouched engine's inline styles read these ── */
+  --orange:var(--app-accent-ink);    /* engine-era markup uses it as TEXT colour on ivory */
+  --border:var(--c-hair-l);
+  --text:var(--c-charcoal); --text-muted:var(--c-muted-l);
+  --black:var(--c-charcoal); --white:#ffffff;
+  --grey:var(--c-hair-l); --grey-mid:#e9e4da; --grey-light:#f1ece3;
+
+  --radius:22px; --radius-md:14px; --radius-sm:11px;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;
+  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
 }
 
-/* ── Header ── */
-.header-advisor,.header-client{background:var(--black);color:var(--white);padding:0;position:sticky;top:0;z-index:100}
-.header-inner{max-width:1200px;margin:0 auto;padding:16px 28px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
-/* Agent contact blocks */
-.header-agent{line-height:1.45}
-.header-agent .agent-name{font-weight:800;color:var(--orange);font-size:0.95rem;letter-spacing:-0.01em}
-.header-agent .agent-role{font-size:0.75rem;color:rgba(255,255,255,0.65);font-weight:400;display:block}
-.header-agent .agent-phone{font-size:0.8rem;color:rgba(255,255,255,0.85);margin-top:3px;letter-spacing:0.01em}
-.header-agent .agent-email{font-size:0.71rem;color:rgba(255,255,255,0.5);margin-top:1px}
-/* Prevent iOS from auto-styling phone numbers as blue links */
+/* ── Reset & base ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);font-size:14px;background:var(--c-paper);color:var(--c-charcoal);
+  line-height:1.5;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+a{color:var(--app-accent-ink)}
 a[href^="tel"]{color:inherit!important;text-decoration:none!important}
-.header-agent-right{text-align:right}
-/* QR boxes in header - column layout (image + label below), hide on very small phones */
-.header-qr-box{display:flex;flex-direction:column;align-items:center;gap:3px}
-@media(max-width:520px){.header-qr-box{display:none}}
-/* Centre title */
-.header-text{text-align:center;min-width:0}
-.header-text h1{font-size:1.2rem;font-weight:700;letter-spacing:-0.02em;color:var(--white)}
-.header-text p{color:rgba(255,255,255,0.45);font-size:0.77rem;margin-top:4px;line-height:1.4}
-/* Dividers between the three columns */
-.header-divider-v{width:1px;height:52px;background:rgba(255,255,255,0.12);display:none}
-@media(max-width:700px){
-  .header-inner{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:10px 8px;padding:12px 14px}
-  .header-text{grid-column:1/-1;order:-1;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px;margin-bottom:2px}
-  .header-text h1{font-size:1rem}
-  .header-agent-right{text-align:right}
-  .header-agent .agent-role{display:block;margin-top:1px}
-}
 
-/* ── Floating footer bar ── */
-.floating-footer{position:fixed;bottom:0;left:0;right:0;z-index:998;background:#D95F0A;border-top:none;box-shadow:0 -3px 16px rgba(0,0,0,0.22);padding:5px 18px;display:flex;align-items:center;gap:14px}
-.float-foot-brand{display:flex;align-items:center;flex-shrink:0}
-.float-foot-brand-text{line-height:1.3}
-.float-foot-brand-text .name{font-weight:700;color:var(--white);font-size:0.85rem;letter-spacing:-0.01em}
-.float-foot-brand-text .brokerage{font-size:0.68rem;color:rgba(255,255,255,0.82)}
-.float-foot-brand-text .brokerage em{font-style:italic}
-.float-foot-disclaimer{flex:1;font-size:0.67rem;font-style:italic;color:rgba(255,255,255,0.9);text-align:center;line-height:1.35;padding:0 12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.float-foot-disclaimer a{color:var(--white);text-decoration:underline;font-weight:600}
-.float-foot-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.float-foot-logo-wrap{background:var(--white);border-radius:6px;padding:4px 7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.float-foot-logo{height:36px;width:auto;display:block}
-/* ── Footer calculator QR widget ── */
-.float-foot-calc-qr{flex-shrink:0;display:flex;align-items:center;gap:7px;text-decoration:none;border-radius:7px;padding:4px 8px;margin-left:4px}
-.float-foot-calc-qr span{font-size:0.62rem;color:rgba(255,255,255,0.85);line-height:1.3;white-space:nowrap}
-@media(max-width:600px){
-  /* 2-row layout: [brand … logo] on top, [disclaimer] below */
-  .floating-footer{flex-wrap:wrap;padding:6px 12px 5px;gap:0;align-items:center}
-  .float-foot-brand{flex:1;min-width:0;padding-right:8px}
-  .float-foot-brand-text .name{font-size:0.8rem}
-  .float-foot-brand-text .brokerage{font-size:0.63rem}
-  .float-foot-right{flex-shrink:0}
-  .float-foot-logo-wrap{padding:3px 6px}
-  .float-foot-logo{height:28px}
-  /* Disclaimer drops to its own full-width row */
-  .float-foot-disclaimer{order:9;width:100%;flex:none;font-size:0.58rem;line-height:1.3;padding:4px 0 1px;-webkit-line-clamp:2;text-align:left}
-  .float-foot-calc-qr{display:none}
-}
-body{padding-bottom:64px}
-@media(max-width:600px){body{padding-bottom:82px}}
+/* ── SHELL ── stationary dark hero → scrolling ivory workspace → band ── */
+.app{position:relative;width:100%;max-width:1100px;height:100dvh;margin:0 auto;
+  background:var(--c-ivory);display:flex;flex-direction:column;overflow:hidden}
 
-/* ── Banners ── */
-.banner{padding:11px 24px;font-size:0.84rem;font-weight:500;display:flex;align-items:center;gap:10px}
-.banner-client-mode{background:#fffbf7;color:#7a3b10;border-bottom:2px solid var(--orange);font-size:0.81rem;padding:10px 24px}
+/* ── ZONE 1 · DARK CINEMATIC HERO (stationary) ── */
+.top{flex:0 0 auto}
+.hero{position:relative;background:var(--c-paper);color:var(--c-ink);
+  padding:calc(14px + env(safe-area-inset-top,0px)) 22px 10px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 80% at 80% 4%,var(--app-accent-soft),transparent 60%)}
+.hero::after{content:"";position:absolute;left:-22%;top:-46%;width:70%;height:100%;
+  pointer-events:none;opacity:.20;filter:blur(40px);
+  background:radial-gradient(circle,var(--app-accent),transparent 65%)}
+.hero>*{position:relative;animation:rise .6s var(--ease) backwards}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;
+  color:var(--app-accent);text-align:center}
+.display{font-family:var(--serif);font-weight:500;line-height:1;letter-spacing:-.02em;
+  font-size:clamp(34px,10vw,48px);margin:6px 0 0;text-align:center;
+  font-variant-numeric:tabular-nums}
+.display .num.is-empty{color:var(--c-muted)}
+.hero-sub{color:var(--c-ink-soft);font-size:12.5px;margin-top:5px;line-height:1.35;
+  text-align:center}
 
-/* ── Layout ── */
-.container{max-width:1100px;margin:0 auto;padding:24px 20px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+/* identity strip - compact row; advisor/client variants toggled by the engine */
+.hero-id{margin-top:8px;padding-top:8px;border-top:1px solid var(--c-hair-d);
+  display:flex;justify-content:space-between;align-items:center;gap:6px 14px;flex-wrap:wrap}
+.hero-id .who{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.hero-id .who .nm{color:var(--app-accent);font-weight:700;font-size:13px;letter-spacing:-.01em}
+.hero-id .who .ro{color:var(--c-ink-soft);font-size:10.5px;font-weight:500}
+.hero-id .reach{display:flex;align-items:center;gap:14px;font-size:11.5px;font-weight:600}
+.hero-id .reach a{color:var(--c-ink);text-decoration:none;min-height:24px;display:inline-flex;align-items:center}
+.hero-id .reach a:hover{color:var(--app-accent)}
+.adv-pill{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--app-accent);border:1px solid var(--app-accent);border-radius:999px;
+  padding:2px 9px;flex-shrink:0}
+@media(max-width:560px){.hero-id .who .ro{display:none}.hero-id .reach{gap:10px}}
+
+/* ── ZONE 2 · SOLID SEAM-EDGE (dark meets ivory crisply, suite-wide) ── */
+.seam{height:0}
+
+/* ── ZONE 3 · LIGHT WORKSPACE (the only scrolling zone) ── */
+.work{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  background:var(--c-ivory);color:var(--c-charcoal);
+  padding:14px 18px 26px;display:flex;flex-direction:column;gap:14px}
+.work>*{animation:rise .6s var(--ease) backwards;animation-delay:.06s}
+.work>*{flex-shrink:0}
+
+/* client-mode banner (engine toggles) */
+.banner-client-mode{background:#fff8f0;border:1px solid #e7c48f;border-left:4px solid var(--app-accent);
+  border-radius:var(--radius-sm);padding:11px 14px;font-size:12.5px;color:#5a4020;line-height:1.55}
+
+/* ── Step indicator (engine assigns .step-dot/.step-label/.step-connector + done/active) ── */
+.step-bar{display:flex;align-items:center;gap:0;overflow-x:auto;padding-bottom:2px}
+.step-item{display:flex;align-items:center;gap:0;white-space:nowrap}
+.step-dot{width:28px;height:28px;border-radius:50%;background:#e9e4da;color:var(--c-muted-l);
+  font-size:.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .2s}
+.step-dot.done{background:var(--app-accent);color:#fff}
+.step-dot.active{background:var(--c-charcoal);color:var(--c-ink)}
+.step-label{font-size:.73rem;font-weight:600;color:var(--c-muted-l);margin-left:6px;margin-right:10px}
+.step-label.active{color:var(--c-charcoal)}
+.step-label.done{color:var(--app-accent-ink)}
+.step-connector{width:24px;height:1.5px;background:#e0dacd;margin:0 2px;flex-shrink:0}
+.step-connector.done{background:var(--app-accent)}
+
+/* ── Cards ── */
+.card{background:var(--c-ivory-card);border:1px solid var(--c-hair-l);border-radius:var(--radius-md);
+  box-shadow:0 1px 2px rgba(0,0,0,.04),0 12px 26px rgba(28,27,32,.06);padding:18px 20px}
+.card-title{font-size:.72rem;font-weight:800;color:var(--c-charcoal);text-transform:uppercase;
+  letter-spacing:.1em;margin:-4px 0 16px;display:flex;align-items:center;gap:10px;
+  padding-bottom:11px;border-bottom:1px solid var(--c-hair-l)}
+.card-title::after{content:"";flex:1;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,var(--app-accent),transparent)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .span-2{grid-column:1/-1}
 @media(max-width:820px){.grid-2{grid-template-columns:1fr}.span-2{grid-column:auto}}
-.card{background:var(--white);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);border:1px solid var(--border)}
-.card-title{font-size:0.72rem;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:18px;display:flex;align-items:center;gap:7px;border-bottom:2px solid var(--orange);padding-bottom:10px}
+
+/* ── Fields ── */
 .field{margin-bottom:14px}
 .field:last-child{margin-bottom:0}
-label{display:block;font-size:0.81rem;font-weight:600;color:#333;margin-bottom:5px}
-.hint{font-size:0.73rem;color:var(--text-muted);margin-top:3px;line-height:1.45}
-
-/* ── Inputs ── */
+label{display:block;font-size:.78rem;font-weight:700;color:#3a352d;margin-bottom:5px;letter-spacing:.01em}
+.hint{font-size:.73rem;color:var(--c-muted-l);margin-top:4px;line-height:1.45}
 .input-wrap{position:relative}
-.input-wrap .pre{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.88rem;pointer-events:none;z-index:1}
-.input-wrap .suf{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.88rem;pointer-events:none}
-.input-wrap input,.input-wrap select,input[type=number],select{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem;color:var(--text);background:var(--white);transition:border-color 0.15s;-webkit-appearance:none;appearance:none}
-.input-wrap input{padding-left:26px}
-.input-wrap input.suf-pad{padding-right:36px}
-.input-wrap input:focus,.input-wrap select:focus,input[type=number]:focus,select:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(247,147,76,0.15)}
-input[type=number]::-webkit-inner-spin-button{opacity:0.5}
-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.input-wrap .pre{position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--c-muted-l);font-size:.88rem;pointer-events:none;z-index:1}
+.input-wrap .suf{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  color:var(--c-muted-l);font-size:.88rem;pointer-events:none}
+.input-wrap input,.input-wrap select,input[type=number],input[type=text],input[type=tel],input[type=email],select{
+  width:100%;padding:11px 13px;border:1.5px solid var(--c-hair-l);border-radius:var(--radius-sm);
+  font-size:16px;color:var(--c-charcoal);background:#fff;transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;appearance:none;font-family:var(--sans);min-height:44px}
+.input-wrap input{padding-left:27px}
+.input-wrap input.suf-pad{padding-right:38px}
+input::placeholder{color:#9a9486}
+.input-wrap input:focus,.input-wrap select:focus,input:focus,select:focus{outline:none;
+  border-color:var(--app-accent);box-shadow:0 0 0 3px var(--app-accent-soft)}
+input[type=number]::-webkit-inner-spin-button{opacity:.45}
+input[type=checkbox]{width:16px;min-height:0;padding:0}
+input[type=range]{border:none;padding:0;min-height:24px;background:transparent;box-shadow:none;
+  accent-color:var(--app-accent);height:4px;cursor:pointer}
+input[type=range]:focus{box-shadow:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23857c6f' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;padding-right:30px;cursor:pointer}
 
-/* ── Toggle buttons ── */
-.toggle-group{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
-.toggle-btn{flex:1;padding:9px 10px;border:1.5px solid var(--border);border-radius:6px;background:var(--white);cursor:pointer;font-size:0.82rem;font-weight:600;color:#555;text-align:center;transition:all 0.15s;min-width:70px}
-.toggle-btn.active{background:var(--black);border-color:var(--black);color:var(--white)}
+/* readonly value chips (annual displays, stress rate) */
+.value-chip{padding:11px 13px;background:#f1ece3;border-radius:var(--radius-sm);
+  border:1.5px solid transparent;font-weight:700;color:#5a5346;font-size:.88rem;min-height:44px;
+  display:flex;align-items:center}
+.value-chip.accent{background:#fff8f0;border-color:#e7c48f;color:var(--app-accent-ink)}
 
-/* ── Step indicator ── */
-.step-bar{display:flex;align-items:center;gap:0;margin-bottom:22px;overflow-x:auto;padding-bottom:4px}
-.step-item{display:flex;align-items:center;gap:0;white-space:nowrap}
-.step-dot{width:28px;height:28px;border-radius:50%;background:var(--grey-mid);color:#888;font-size:0.78rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
-.step-dot.done{background:var(--orange);color:var(--white)}
-.step-dot.active{background:var(--black);color:var(--white)}
-.step-label{font-size:0.73rem;font-weight:600;color:#999;margin-left:6px;margin-right:10px}
-.step-label.active{color:var(--text)}
-.step-label.done{color:var(--orange)}
-.step-connector{width:24px;height:1.5px;background:var(--grey-mid);margin:0 2px;flex-shrink:0}
-.step-connector.done{background:var(--orange)}
+/* ── Toggle buttons (engine toggles .active) ── */
+.toggle-group{display:flex;gap:6px;flex-wrap:wrap}
+.toggle-btn{flex:1;padding:10px 10px;border:1.5px solid var(--c-hair-l);border-radius:999px;
+  background:#fff;cursor:pointer;font-size:.8rem;font-weight:700;color:#5a5346;text-align:center;
+  transition:all .15s;min-width:70px;min-height:44px;font-family:var(--sans)}
+.toggle-btn.active{background:var(--c-charcoal);border-color:var(--c-charcoal);color:var(--c-ink)}
+@media(max-width:480px){.toggle-btn{flex:1 1 40%}}
+
+/* ── Inline breakdown table (step 1 ownership card) ── */
+.bd-table{width:100%;border-collapse:collapse;font-size:.8rem;margin-bottom:12px}
+.bd-table th{text-align:right;padding:6px 4px;color:var(--c-muted-l);font-weight:700;
+  font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;border-bottom:1.5px solid var(--c-hair-l)}
+.bd-table th:first-child{text-align:left}
+.bd-table td{padding:7px 4px;border-bottom:1px solid var(--c-hair-l);color:#3a352d;vertical-align:middle;
+  font-variant-numeric:tabular-nums}
+.bd-table tfoot td{border-top:2px solid var(--c-charcoal);border-bottom:none;font-weight:700;padding:9px 4px}
+.bd-note{font-size:.67rem;color:var(--c-muted)}
+
+/* price target inset */
+.price-inset{background:var(--c-paper);color:var(--c-ink);border-radius:var(--radius-md);
+  padding:14px 16px;margin-bottom:16px;position:relative;overflow:hidden}
+.price-inset::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 85% 0%,var(--app-accent-soft),transparent 60%)}
+.price-inset>*{position:relative}
+.price-inset .k{font-size:10px;color:var(--c-muted);text-transform:uppercase;letter-spacing:.09em;
+  margin-bottom:4px;font-weight:700}
+.price-inset .v{font-family:var(--serif);font-size:1.9rem;font-weight:500;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.price-inset .n{font-size:.72rem;color:var(--c-ink-soft);margin-top:4px}
+
+/* info / warning notes */
+.info-box{background:#fff8f0;border:1px solid #e7c48f;border-radius:var(--radius-sm);
+  padding:10px 14px;font-size:.75rem;color:#5a4020;line-height:1.55}
+.info-box strong{display:block;margin-bottom:2px}
 
 /* ── Buttons ── */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border:none;border-radius:8px;font-size:0.88rem;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em;text-decoration:none}
-.btn-block{display:flex;width:100%;justify-content:center;margin-top:10px;padding:14px}
-.btn-black{background:var(--black);color:var(--white)}.btn-black:hover{background:#222}
-.btn-orange{background:var(--orange);color:var(--white)}.btn-orange:hover{background:#e8813c}
-.btn-outline{background:var(--white);color:var(--black);border:1.5px solid var(--black)}.btn-outline:hover{background:var(--grey-light)}
-.btn-sm{padding:7px 13px;font-size:0.78rem;font-weight:700;border-radius:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 20px;
+  border:none;border-radius:999px;font-size:.88rem;font-weight:700;cursor:pointer;
+  transition:transform .12s var(--ease),box-shadow .15s,background .15s;letter-spacing:.01em;
+  text-decoration:none;font-family:var(--sans);min-height:44px}
+.btn:active{transform:scale(.98)}
+.btn-block{display:flex;width:100%;justify-content:center;margin-top:10px;padding:15px}
+.btn-black{background:var(--c-charcoal);color:var(--c-ink)}.btn-black:hover{background:#2a2830}
+.btn-gold{background:var(--grad-gold);color:#241a07;box-shadow:0 8px 22px rgba(176,132,56,.32)}
+.btn-gold:hover{box-shadow:0 10px 26px rgba(176,132,56,.42)}
+.btn-outline{background:#fff;color:var(--c-charcoal);border:1.5px solid var(--c-hair-l)}
+.btn-outline:hover{background:#faf7f1}
 
-/* ── Result hero ── */
-.result-hero{background:var(--black);color:var(--white);border-radius:12px;padding:26px 28px;margin-bottom:18px}
-/* Period tab pills inside hero */
+/* ── Step-2 result hero (dark inset card; engine fills the ids) ── */
+.result-hero{background:var(--c-paper);color:var(--c-ink);border-radius:var(--radius-md);
+  padding:22px 22px 20px;position:relative;overflow:hidden}
+.result-hero::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 85% 0%,var(--app-accent-soft),transparent 60%)}
+.result-hero>*{position:relative}
 .hero-tabs{display:flex;gap:6px;margin-bottom:14px}
-.hero-tab{padding:5px 15px;border-radius:20px;border:1.5px solid rgba(255,255,255,0.25);background:transparent;color:rgba(255,255,255,0.55);font-size:0.77rem;font-weight:600;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em}
-.hero-tab.active{background:var(--orange);border-color:var(--orange);color:#fff}
-.hero-tab:hover:not(.active){border-color:rgba(255,255,255,0.55);color:rgba(255,255,255,0.85)}
-.result-hero h2{font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px}
-.price-big{font-size:2.6rem;font-weight:800;color:var(--orange);letter-spacing:-0.03em;line-height:1}
-.price-note{font-size:0.81rem;color:rgba(255,255,255,0.45);margin-top:6px}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:20px}
-.stat-box{background:rgba(255,255,255,0.06);border-radius:8px;padding:13px 15px;border:1px solid rgba(255,255,255,0.08)}
-.stat-box-label{font-size:0.68rem;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.08em}
-.stat-box-value{font-size:1.2rem;font-weight:700;margin-top:3px}
-.stat-box-sub{font-size:0.7rem;color:rgba(255,255,255,0.35);margin-top:2px}
-.col-green{color:#68d391}.col-orange{color:var(--orange)}.col-red{color:#fc8181}.col-blue{color:var(--orange)}
+.hero-tab{padding:6px 15px;border-radius:999px;border:1.5px solid var(--c-hair-d);background:transparent;
+  color:var(--c-ink-soft);font-size:.77rem;font-weight:700;cursor:pointer;transition:all .15s;
+  letter-spacing:.02em;font-family:var(--sans);min-height:32px}
+.hero-tab.active{background:var(--app-accent);border-color:var(--app-accent);color:#241503}
+.hero-tab:hover:not(.active){border-color:rgba(244,238,226,.45);color:var(--c-ink)}
+.result-hero h2{font-size:.7rem;font-weight:700;color:var(--c-muted);text-transform:uppercase;
+  letter-spacing:.1em;margin-bottom:6px}
+.price-big{font-family:var(--serif);font-size:2.6rem;font-weight:500;color:var(--app-accent);
+  letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.price-note{font-size:.8rem;color:var(--c-ink-soft);margin-top:7px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:18px}
+.stat-box{background:rgba(244,238,226,.06);border-radius:var(--radius-sm);padding:12px 14px;
+  border:1px solid var(--c-hair-d)}
+.stat-box-label{font-size:.66rem;color:var(--c-muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.stat-box-value{font-size:1.15rem;font-weight:700;margin-top:3px;font-variant-numeric:tabular-nums}
+.stat-box-sub{font-size:.68rem;color:var(--c-muted);margin-top:2px;line-height:1.4}
+.col-green{color:#8fd3ab}.col-orange{color:var(--app-accent)}.col-red{color:#e8a397}.col-blue{color:var(--app-accent)}
 
-/* ── Breakdown rows ── */
-.bk-title{font-size:0.7rem;font-weight:800;color:var(--black);text-transform:uppercase;letter-spacing:0.09em;padding-bottom:8px;border-bottom:2px solid var(--orange);margin-bottom:10px}
-.bk-row{display:flex;justify-content:space-between;padding:6px 0;font-size:0.86rem;border-bottom:1px solid var(--grey-mid)}
-.bk-row:last-child{border-bottom:none}
-.bk-label{color:#555}
-.bk-val{font-weight:600;color:var(--text);text-align:right}
-.bk-val.blue{color:var(--orange)}.bk-val.green{color:#276749}.bk-val.orange{color:var(--orange)}.bk-val.red{color:#c53030}
-.bk-row.total{font-weight:700;border-top:2px solid var(--grey);border-bottom:none;margin-top:4px;padding-top:9px}
-.bk-row.total .bk-label{color:var(--black)}
-.bk-row.total .bk-val{font-size:0.97rem;color:var(--black)}
-/* ── Wealth comparison table ── */
-.wt{width:100%;border-collapse:collapse;font-size:0.82rem}
-.wt th{padding:8px 10px;font-size:0.69rem;font-weight:700;text-align:right;color:#888;border-bottom:2px solid #eee;text-transform:uppercase;letter-spacing:0.05em;white-space:nowrap}
-.wt th:first-child{text-align:left;width:38%}
-.wt td{padding:7px 10px;border-bottom:1px solid #f2f2f2;color:#444;vertical-align:middle}
-.wt td:not(:first-child){text-align:right;font-weight:600;color:#333;white-space:nowrap}
-.wt-section td{background:#f4f4f4;font-weight:800;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.08em;color:#555;padding:5px 10px;border-top:3px solid #ddd}
-.wt-indent td:first-child{padding-left:22px;font-size:0.79rem;color:#888}
-.wt-indent td:not(:first-child){font-size:0.79rem;color:#888;font-weight:500}
-.wt-subtotal td{border-top:2px solid #ccc;font-weight:700;background:#fafafa}
-.wt-net td{font-weight:700;font-size:0.88rem;background:#f9fdf9}
-.wt-gap td{background:#fff3e0;font-weight:800;font-size:0.95rem;border-top:3px solid #D95F0A}
-.wt-gap td:not(:first-child){color:#D95F0A}
-.wt-green td:not(:first-child){color:#276749}
-.wt-red td:not(:first-child){color:#c53030}
-.wt-muted td:not(:first-child){color:#888;font-weight:500}
+/* ── Monthly comparison table (engine writes tbody rows) ── */
+.comp-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:2px}
+.comp-table th{padding:9px 14px;text-align:right;font-weight:700;font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.06em;color:#3a352d;background:#f1ece3;border-bottom:1.5px solid var(--c-hair-l)}
+.comp-table th:first-child{text-align:left}
+.comp-table td{padding:8px 14px;border-bottom:1px solid var(--c-hair-l);text-align:right;
+  font-variant-numeric:tabular-nums}
+.comp-table td:first-child{text-align:left;color:#5a5346;font-weight:500}
+.comp-table tr.total td{font-weight:700;border-top:2px solid var(--app-accent);border-bottom:none;
+  padding-top:11px;background:#fff8f0}
+.comp-table tr.total td:first-child{color:var(--c-charcoal)}
+.comp-table .rent-col{color:var(--err)}
+.comp-table .own-col{color:var(--ok)}
 
-/* ── Alerts ── */
-.info-box{background:#fffbf7;border:1.5px solid #fbd38d;border-radius:7px;padding:10px 14px;font-size:0.79rem;color:#7a3b10;line-height:1.55}
-.info-box strong{display:block;margin-bottom:2px}
-.warning-box{background:#fff8f3;border:1.5px solid var(--orange);border-radius:7px;padding:10px 14px;font-size:0.8rem;color:#7a3b10;margin-bottom:14px}
+/* three assumption inputs in a row */
+.grid-3-inputs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:600px){.grid-3-inputs{grid-template-columns:1fr}}
 
-/* ── Chart container ── */
+/* ── Charts ── */
 .chart-wrap{position:relative;height:200px;margin-top:12px}
-/* ── 3-column chart row ── */
-.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:900px){.grid-3{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.grid-3{grid-template-columns:1fr}}
+.chart-legend{margin-top:8px;font-size:.72rem;color:var(--c-muted-l);text-align:center}
 
-/* ── Comparison table ── */
-.comp-table{width:100%;border-collapse:collapse;font-size:0.84rem;margin-top:12px}
-.comp-table th{padding:8px 14px;text-align:right;font-weight:700;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:#333;background:var(--grey-light);border-bottom:2px solid var(--grey)}
-.comp-table th:first-child{text-align:left}
-.comp-table td{padding:8px 14px;border-bottom:1px solid var(--grey-mid);text-align:right}
-.comp-table td:first-child{text-align:left;color:#555;font-weight:500}
-.comp-table tr.total td{font-weight:700;border-top:2px solid var(--grey);border-bottom:none;padding-top:11px}
-.comp-table tr.total td:first-child{color:var(--black)}
-.comp-table .rent-col{color:#c53030}
-.comp-table .own-col{color:#276749}
+/* ── Wealth breakdown table (engine writes the whole table) ── */
+.wt{width:100%;border-collapse:collapse;font-size:.82rem}
+.wt th{padding:8px 10px;font-size:.66rem;font-weight:700;text-align:right;color:#3a352d;
+  border-bottom:1.5px solid var(--c-hair-l);text-transform:uppercase;letter-spacing:.05em;
+  white-space:nowrap;background:#f1ece3}
+.wt th:first-child{text-align:left;width:38%}
+.wt td{padding:7px 10px;border-bottom:1px solid var(--c-hair-l);color:#3a352d;vertical-align:middle;
+  font-variant-numeric:tabular-nums}
+.wt td:not(:first-child){text-align:right;font-weight:600;color:#3a352d;white-space:nowrap}
+.wt-section td{background:#ece8e0;font-weight:800;font-size:.68rem;text-transform:uppercase;
+  letter-spacing:.08em;color:#5a5346;padding:6px 10px;border-top:2px solid #ddd6c8}
+.wt-indent td:first-child{padding-left:22px;font-size:.78rem;color:var(--c-muted-l)}
+.wt-indent td:not(:first-child){font-size:.78rem;color:var(--c-muted-l);font-weight:500}
+.wt-subtotal td{border-top:2px solid #cfc8b9;font-weight:700;background:#faf8f3}
+.wt-net td{font-weight:700;font-size:.86rem;background:#f7faf6}
+.wt-gap td{background:#fff3e4;font-weight:800;font-size:.92rem;border-top:2px solid var(--app-accent)}
+.wt-gap td:not(:first-child){color:var(--app-accent-ink)}
+.wt-green td:not(:first-child){color:var(--ok)}
+.wt-red td:not(:first-child){color:var(--err)}
+.wt-muted td:not(:first-child){color:var(--c-muted-l);font-weight:500}
 
-/* ── CTA card ── */
-.cta-card{background:var(--white);border:2px solid var(--orange);border-radius:12px;padding:24px;text-align:center;margin-top:4px}
-.cta-card h3{font-size:1rem;font-weight:800;color:var(--black);margin-bottom:6px}
-.cta-card p{font-size:0.83rem;color:var(--text-muted);margin-bottom:18px;line-height:1.55}
-/* Copyable link boxes inside CTA card */
+/* wealth-gap explainer */
+.gap-note{margin-top:16px;padding:14px 16px;background:#fff8f0;border-left:3px solid var(--app-accent);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:.82rem;line-height:1.6;color:#3a352d}
+.gap-note strong.hd{color:var(--app-accent-ink);font-size:.85rem}
+.gap-note em{color:var(--c-muted-l)}
+
+/* ── Assumptions rows (engine writes .bk-row) ── */
+.bk-row{display:flex;justify-content:space-between;padding:7px 0;font-size:.82rem;
+  border-bottom:1px solid var(--c-hair-l);gap:12px}
+.bk-label{color:var(--c-muted-l)}
+.bk-val{font-weight:600;color:var(--c-charcoal);text-align:right;font-variant-numeric:tabular-nums}
+
+/* ── CTA card - dark paper inset, gold-pill actions ── */
+.cta-card{background:var(--c-paper);color:var(--c-ink);border-radius:var(--radius-md);
+  padding:26px 22px;position:relative;overflow:hidden;text-align:center}
+.cta-card::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 85% 0%,var(--app-accent-soft),transparent 60%)}
+.cta-card>*{position:relative}
+.cta-card h3{font-family:var(--serif);font-size:21px;font-weight:500;letter-spacing:-.01em;margin-bottom:8px}
+.cta-card p{font-size:13px;color:var(--c-ink-soft);line-height:1.6;margin-bottom:18px}
+.cta-stack{display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto}
+.cta-btn{display:flex;align-items:center;gap:12px;text-align:left;border:none;border-radius:var(--radius-sm);
+  padding:14px 18px;font-size:.95rem;cursor:pointer;font-family:var(--sans);min-height:44px;
+  transition:transform .12s var(--ease);text-decoration:none}
+.cta-btn:active{transform:scale(.985)}
+.cta-btn strong{display:block;font-weight:700}
+.cta-btn .sub{font-size:.76rem;opacity:.85;font-weight:400}
+.cta-btn.primary{background:var(--grad-gold);color:#241a07;box-shadow:0 8px 22px rgba(176,132,56,.30)}
+.cta-btn.ghost{background:rgba(244,238,226,.07);color:var(--c-ink);border:1px solid var(--c-hair-d)}
+.cta-btn.ghost:hover{border-color:rgba(244,238,226,.35)}
+/* QR pair inside CTA */
+.cta-qrs{display:flex;justify-content:center;gap:22px;margin-top:20px;flex-wrap:wrap}
+.cta-qr{text-align:center}
+.cta-qr .qr-holder{background:#fff;border-radius:10px;padding:6px;display:inline-block}
+.cta-qr .qr-holder img{border-radius:4px}
+.cta-qr-label{font-size:10px;color:var(--c-muted);margin-top:6px}
+
+/* copyable link boxes */
 .link-share-box{text-align:left;margin:4px 0}
-.link-share-label{font-size:0.68rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px}
+.link-share-label{font-size:.66rem;font-weight:700;color:var(--c-muted);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:5px}
 .link-share-row{display:flex;gap:6px;align-items:stretch}
-.link-share-input{flex:1;min-width:0;padding:9px 10px;border-radius:7px;border:1.5px solid var(--border);background:#f7f7f7;color:var(--text);font-size:0.7rem;font-family:inherit;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:text}
-.link-share-input:focus{outline:none;border-color:var(--orange)}
-.link-share-copy{flex-shrink:0;padding:9px 14px;border-radius:7px;border:1.5px solid var(--orange);background:transparent;color:var(--orange);font-size:0.72rem;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;line-height:1}
-.link-share-copy:hover{background:var(--orange);color:#fff}
-.link-share-copy.copied{background:var(--orange);color:#fff}
+.link-share-input{flex:1;min-width:0;padding:10px 11px;border-radius:var(--radius-sm);
+  border:1.5px solid var(--c-hair-d);background:rgba(244,238,226,.06);color:var(--c-ink-soft);
+  font-size:.7rem;font-family:var(--sans);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  cursor:text;min-height:0}
+.link-share-input:focus{outline:none;border-color:var(--app-accent);box-shadow:none}
+.link-share-copy{flex-shrink:0;padding:9px 14px;border-radius:999px;border:1.5px solid var(--app-accent);
+  background:transparent;color:var(--app-accent);font-size:.72rem;font-weight:700;cursor:pointer;
+  transition:all .15s;white-space:nowrap;line-height:1;font-family:var(--sans);min-height:38px}
+.link-share-copy:hover,.link-share-copy.copied{background:var(--app-accent);color:#241503}
+/* advisor-toolbox variant on ivory */
+.card .link-share-input{border-color:var(--c-hair-l);background:#fff;color:var(--c-charcoal)}
+.card .link-share-label{color:var(--c-muted-l)}
+.card .link-share-copy{color:var(--app-accent-ink);border-color:var(--app-accent)}
+.card .link-share-copy:hover,.card .link-share-copy.copied{background:var(--app-accent);color:#241503}
 
-/* ── Advanced toggle ── */
-.adv-toggle{font-size:0.78rem;font-weight:600;color:var(--orange);cursor:pointer;display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:none;border:none;padding:0}
-.adv-body{display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--grey-mid)}
-.adv-body.open{display:block}
+/* ── Floating "Show My Comparison" CTA (engine toggles display) ── */
+.floating-cta-btn{position:fixed;bottom:76px;right:16px;z-index:999;background:rgba(9,9,11,.82);
+  color:var(--c-ink);border:1.5px solid var(--app-accent);border-radius:999px;padding:11px 18px;
+  font-size:.82rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,.28);display:flex;
+  align-items:center;gap:6px;letter-spacing:.01em;transition:background .15s;font-family:var(--sans);
+  min-height:44px}
+.floating-cta-btn:hover{background:rgba(201,138,74,.92);color:#241503}
 
-/* ── Progress pulse on submit ── */
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+/* ── Progress pulse on submit (engine adds .pulse) ── */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 .pulse{animation:pulse 1.2s infinite}
+
+/* ── Contact modal (engine toggles #contactModal display:flex) ── */
+#contactModal{display:none;position:fixed;inset:0;background:rgba(9,9,11,.62);z-index:9999;
+  align-items:center;justify-content:center;padding:16px}
+.modal-inner{background:var(--c-ivory-card);border-radius:var(--radius-md);padding:30px 26px;
+  max-width:420px;width:100%;box-shadow:0 12px 48px rgba(0,0,0,.35);position:relative;
+  max-height:92vh;overflow-y:auto;border:1px solid var(--c-hair-l)}
+.modal-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:1.5rem;
+  line-height:1;cursor:pointer;color:var(--c-muted-l);padding:8px;min-height:44px;min-width:44px}
+.modal-eyebrow{margin:0 0 4px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--app-accent-ink);font-weight:700}
+.modal-inner h3{font-family:var(--serif);font-weight:500;color:var(--c-charcoal);letter-spacing:-.01em}
+.modal-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.modal-field{margin-bottom:12px}
+.modal-field label{font-size:.78rem;font-weight:600;display:block;margin-bottom:4px}
+.consent-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;font-size:.76rem;
+  color:#5a5346;line-height:1.5}
+.consent-row input[type=checkbox]{width:16px;height:16px;margin-top:2px;cursor:pointer;
+  accent-color:var(--app-accent);flex-shrink:0}
+#cm-submit{width:100%;padding:15px;background:var(--grad-gold);color:#241a07;border:none;
+  border-radius:999px;font-size:1rem;font-weight:700;cursor:pointer;font-family:var(--sans);
+  min-height:44px;box-shadow:0 8px 22px rgba(176,132,56,.30);transition:transform .12s var(--ease)}
+#cm-submit:active{transform:scale(.985)}
+
+/* ── BAND · RECA brokerage disclosure (stationary bottom block) ── */
+.band{flex:0 0 auto;z-index:50;background:var(--c-paper);color:var(--c-ink-soft);
+  padding:9px 14px calc(9px + env(safe-area-inset-bottom,0px));
+  display:flex;align-items:center;gap:12px;border-top:1px solid rgba(244,238,226,.18)}
+.band .b-txt{flex:1;min-width:0}
+.band .b-team{display:block;font-size:10.5px;line-height:1.45}
+.band .b-team b{color:var(--c-ink);font-weight:600}
+.band .b-fine{display:block;font-size:8.5px;color:var(--c-muted);margin-top:3px;line-height:1.4}
+.band .logo{flex-shrink:0;background:#fff;border-radius:7px;padding:4px 7px;
+  display:flex;align-items:center;justify-content:center}
+.band .logo img{height:auto;width:auto;max-height:34px;max-width:96px}
+
+/* ── Animations ── */
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 /* ── Responsive ── */
 @media(max-width:600px){
   .price-big{font-size:2rem}
-  .container{padding:14px 12px}
+  .work{padding:12px 12px 22px}
   .result-hero{padding:18px 16px}
-  .comp-table th,.comp-table td{padding:7px 8px;font-size:0.78rem}
+  .comp-table th,.comp-table td{padding:7px 8px;font-size:.76rem}
+  .cta-card{padding:22px 16px}
 }
-
-/* ── Footer (removed, replaced by floating-footer) ── */
-
-/* ── Contact modal ── */
-#contactModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center}
-.modal-inner{background:#fff;border-radius:14px;padding:32px 28px;max-width:420px;width:90%;box-shadow:0 12px 48px rgba(0,0,0,0.22);position:relative;max-height:90vh;overflow-y:auto}
-.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888}
-.modal-eyebrow{margin:0 0 4px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:700}
-.modal-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.modal-field{margin-bottom:12px}
-.modal-field label{font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px}
-.modal-field input{width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem}
-.modal-field input:focus{outline:none;border-color:var(--orange)}
-.consent-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:18px;font-size:0.78rem;color:#555;line-height:1.45}
-.consent-row input[type=checkbox]{width:16px;height:16px;margin-top:2px;cursor:pointer;accent-color:var(--orange);flex-shrink:0}
-
-/* ── Floating "Show My Comparison" CTA ── */
-.floating-cta-btn{position:fixed;bottom:68px;right:16px;z-index:999;background:rgba(0,0,0,0.72);color:var(--white);border:2px solid var(--orange);border-radius:30px;padding:9px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.28);display:flex;align-items:center;gap:6px;letter-spacing:0.01em;transition:background 0.15s}
-.floating-cta-btn:hover{background:rgba(247,147,76,0.9)}
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- ══ ADVISOR HEADER ══════════════════════════════════════════════════ -->
-<div class="header-advisor" id="headerAdvisor">
-  <div class="header-inner">
-    <!-- LHS - QR card + Rosh -->
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="header-qr-box">
-        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
-          <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
-             style="text-decoration:none;display:block">
-            <div id="qrBizCard" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
-          </a>
+  <!-- ══ STATIONARY TOP · dark hero - "the crossover" ══════════════════ -->
+  <div class="top">
+    <header class="hero">
+      <div class="eyebrow">Rent vs Own</div>
+      <div class="display"><span class="num is-empty" id="xoYear">&mdash;</span></div>
+      <p class="hero-sub" id="xoSub">The crossover - the year owning pulls ahead of renting.</p>
+
+      <!-- Advisor identity strip (engine shows in ?mode=advisor) -->
+      <div class="hero-id" id="headerAdvisor">
+        <div class="who">
+          <span class="nm">Rosh Issac</span><span class="ro">Realtor&#174;</span>
+          <span class="nm">Sheena Issac</span><span class="ro">Licensed Property Manager</span>
         </div>
-        <span style="font-size:0.5rem;color:rgba(255,255,255,0.65);white-space:nowrap">Scan for business card</span>
-      </div>
-      <div class="header-agent">
-        <div><span class="agent-name">Rosh Issac</span> <span class="agent-role">Realtor&#174;</span></div>
-        <div class="agent-phone">825 449-5083</div>
-        <div class="agent-email">rosh@issacrealty.com</div>
-      </div>
-    </div>
-    <!-- Centre - Calculator title -->
-    <div class="header-text">
-      <h1>Rent vs Own Calculator</h1>
-      <p>What renting costs · What owning builds · 5 &amp; 10-year wealth comparison</p>
-    </div>
-    <!-- RHS - Sheena + QR placeholder -->
-    <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end">
-      <div class="header-agent header-agent-right">
-        <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
-        <div class="agent-phone">825 440-4583</div>
-        <div class="agent-email">sheena@issacrealty.com</div>
-      </div>
-      <div class="header-qr-box">
-        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
-          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center">
-            <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
-          </div>
+        <div class="reach">
+          <span class="adv-pill">Advisor view</span>
+          <a href="tel:+18254495083">825 449 5083</a>
         </div>
-        <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);white-space:nowrap">Scan for business card</span>
       </div>
-    </div>
+
+      <!-- Client identity strip (engine shows by default) -->
+      <div class="hero-id" id="headerClient" style="display:none">
+        <div class="who">
+          <span class="nm">Rosh Issac</span><span class="ro">Realtor&#174;</span>
+          <span class="nm">Sheena Issac</span><span class="ro">Licensed Property Manager</span>
+        </div>
+        <div class="reach">
+          <a href="tel:+18254495083">825 449 5083</a>
+        </div>
+      </div>
+    </header>
+  </div><!-- /top -->
+  <div class="seam"></div>
+
+  <!-- ══ SCROLLING WORKSPACE ═══════════════════════════════════════════ -->
+  <main class="work" id="workScroll">
+
+  <!-- Client mode banner (engine shows in client mode) -->
+  <div class="banner-client-mode" id="clientModeBanner" style="display:none">
+    Fill in what you know - mortgage assumptions default to Calgary averages.
+    Tap <strong>"Show My Comparison"</strong> when ready.
   </div>
-</div>
-
-<!-- ══ CLIENT HEADER ═══════════════════════════════════════════════════ -->
-<div class="header-client" id="headerClient" style="display:none">
-  <div class="header-inner">
-    <!-- LHS - QR card + Rosh (client header) -->
-    <div style="display:flex;align-items:center;gap:10px">
-      <div class="header-qr-box">
-        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
-          <a href="https://roshaissac.github.io/Businesscard" target="_blank" rel="noopener noreferrer"
-             style="text-decoration:none;display:block">
-            <div id="qrBizCardClient" style="width:48px;height:48px;background:#fff;flex-shrink:0"></div>
-          </a>
-        </div>
-        <span style="font-size:0.5rem;color:rgba(255,255,255,0.65);white-space:nowrap">Scan for business card</span>
-      </div>
-      <div class="header-agent">
-        <div><span class="agent-name">Rosh Issac</span> <span class="agent-role">Realtor&#174;</span></div>
-        <div class="agent-phone">825 449-5083</div>
-        <div class="agent-email">rosh@issacrealty.com</div>
-      </div>
-    </div>
-    <div class="header-text">
-      <h1>Rent vs Own - Your Numbers</h1>
-      <p>Fill in what you know. See what renting costs versus what owning builds.</p>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;justify-content:flex-end">
-      <div class="header-agent header-agent-right">
-        <div><span class="agent-name">Sheena Issac</span> <span class="agent-role">Licensed Property Manager</span></div>
-        <div class="agent-phone">825 440-4583</div>
-        <div class="agent-email">sheena@issacrealty.com</div>
-      </div>
-      <div class="header-qr-box">
-        <div style="border:1px solid var(--orange);border-radius:6px;padding:3px;flex-shrink:0">
-          <div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:3px;display:flex;align-items:center;justify-content:center">
-            <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);text-align:center;line-height:1.35">Coming<br>soon</span>
-          </div>
-        </div>
-        <span style="font-size:0.5rem;color:rgba(255,255,255,0.4);white-space:nowrap">Scan for business card</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Client mode banner -->
-<div class="banner banner-client-mode" id="clientModeBanner" style="display:none">
-  📋 Fill in what you know - mortgage assumptions default to Calgary averages. Click <strong>"Show My Comparison"</strong> when ready.
-</div>
-
-<div class="container">
 
   <!-- ── STEP INDICATOR ─────────────────────────────────────────────── -->
   <div class="step-bar" id="stepBar">
@@ -402,11 +497,11 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
   <!-- ══ STEP 1 - INPUTS ════════════════════════════════════════════ -->
   <div id="step1">
-    <div style="display:flex;flex-direction:column;gap:18px;margin-bottom:18px">
+    <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:14px">
 
       <!-- Card: Rental Situation -->
       <div class="card">
-        <div class="card-title">🏠 Your Current Rental Situation</div>
+        <div class="card-title">Your Current Rental Situation</div>
 
         <!-- Monthly rent + auto-annual side by side -->
         <div class="field">
@@ -418,24 +513,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
               </div>
             </div>
             <div>
-              <label style="font-size:0.74rem;color:#888">Annual (×12)</label>
-              <div id="annualRentDisplay" style="padding:10px 12px;background:#f5f5f5;border-radius:7px;border:1.5px solid #eee;font-weight:700;color:#555;font-size:0.88rem">$26,400</div>
+              <label style="font-size:.72rem;color:var(--c-muted-l)">Annual (&times;12)</label>
+              <div class="value-chip" id="annualRentDisplay">$26,400</div>
             </div>
           </div>
         </div>
 
         <!-- Parking + Storage fees -->
         <div class="field">
-          <label>Additional Monthly Costs <span style="font-weight:400;color:#888">(if applicable)</span></label>
+          <label>Additional Monthly Costs <span style="font-weight:400;color:var(--c-muted-l)">(if applicable)</span></label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
             <div>
-              <label style="font-size:0.73rem;color:#888;margin-bottom:4px;display:block">Parking</label>
+              <label style="font-size:.72rem;color:var(--c-muted-l);margin-bottom:4px">Parking</label>
               <div class="input-wrap"><span class="pre">$</span>
                 <input type="number" id="parkingFee" value="0" min="0" max="500" step="25" oninput="onRentalExtrasChange()">
               </div>
             </div>
             <div>
-              <label style="font-size:0.73rem;color:#888;margin-bottom:4px;display:block">Storage</label>
+              <label style="font-size:.72rem;color:var(--c-muted-l);margin-bottom:4px">Storage</label>
               <div class="input-wrap"><span class="pre">$</span>
                 <input type="number" id="storageFee" value="0" min="0" max="200" step="10" oninput="onRentalExtrasChange()">
               </div>
@@ -444,17 +539,17 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
         </div>
 
         <!-- Total rental commitment -->
-        <div style="background:#fff3e8;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:0.78rem;font-weight:600;color:#666">Total Monthly Rental Commitment</span>
-          <div style="text-align:right">
-            <span style="font-weight:800;color:#D95F0A;font-size:1rem" id="totalRentalMonthly">$2,200</span>
-            <span style="font-size:0.73rem;color:#999;margin-left:6px" id="totalRentalAnnual">/ $26,400 yr</span>
+        <div style="background:#fff8f0;border:1px solid #e7c48f;border-radius:11px;padding:10px 14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px">
+          <span style="font-size:.76rem;font-weight:600;color:#5a4020">Total Monthly Rental Commitment</span>
+          <div style="text-align:right;white-space:nowrap">
+            <span style="font-weight:800;color:var(--app-accent-ink);font-size:1rem;font-variant-numeric:tabular-nums" id="totalRentalMonthly">$2,200</span>
+            <span style="font-size:.72rem;color:var(--c-muted-l);margin-left:6px" id="totalRentalAnnual">/ $26,400 yr</span>
           </div>
         </div>
 
-        <!-- Property type -4 options, data-type for reliable matching -->
+        <!-- Property type - 4 options, data-type for reliable matching -->
         <div class="field">
-          <label>Property Type <span style="font-weight:400;color:#888">(what you'd buy)</span></label>
+          <label>Property Type <span style="font-weight:400;color:var(--c-muted-l)">(what you'd buy)</span></label>
           <div class="toggle-group" id="propTypeToggle">
             <button class="toggle-btn active" data-type="apartment"   onclick="setPropType('apartment')">Apartment</button>
             <button class="toggle-btn"         data-type="townhouse"  onclick="setPropType('townhouse')">Townhouse</button>
@@ -467,233 +562,243 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
 
       <!-- Card: What You Could Own -->
       <div class="card">
-        <div class="card-title">🏡 What You Could Own</div>
+        <div class="card-title">What You Could Own</div>
+
+        <!-- Client-mode note (engine shows in client mode) -->
+        <p class="hint" id="clientAssumptionsNote" style="display:none;margin:-8px 0 12px">
+          Everything below is pre-filled with Calgary averages - adjust anything you know, or leave it as-is.
+        </p>
 
         <div class="field">
-          <label>Monthly Ownership Budget <span style="font-weight:400;color:#888">(1.5× total rental commitment - edit if needed)</span></label>
+          <label>Monthly Ownership Budget <span style="font-weight:400;color:var(--c-muted-l)">(1.5&times; total rental commitment - edit if needed)</span></label>
           <div class="input-wrap"><span class="pre">$</span>
             <input type="number" id="ownershipBudget" value="3300" min="1000" max="30000" step="100" oninput="renderOwnershipCard()">
           </div>
-          <div class="hint">Owning typically costs ~1.5× rent all-in. Adjust to model different scenarios.</div>
+          <div class="hint">Owning typically costs ~1.5&times; rent all-in. Adjust to model different scenarios.</div>
         </div>
 
         <!-- Affordable home price hero -->
-        <div style="background:#f9f5f0;border-radius:8px;padding:13px 16px;margin-bottom:16px">
-          <div style="font-size:0.7rem;color:#999;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:4px">Your Purchase Price Target</div>
-          <div id="affordablePrice" style="font-size:1.75rem;font-weight:800;color:#111;letter-spacing:-0.02em">—</div>
-          <div id="affordableNote" style="font-size:0.72rem;color:#888;margin-top:3px">Adjust inputs to see your range</div>
+        <div class="price-inset">
+          <div class="k">Your Purchase Price Target</div>
+          <div class="v" id="affordablePrice">&mdash;</div>
+          <div class="n" id="affordableNote">Adjust inputs to see your range</div>
         </div>
 
         <!-- Monthly cost breakdown - interactive -->
-        <div style="font-size:0.77rem;font-weight:700;color:#333;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.06em">Monthly Cost Breakdown</div>
-        <table style="width:100%;border-collapse:collapse;font-size:0.8rem;margin-bottom:12px">
+        <div style="font-size:.72rem;font-weight:800;color:var(--c-charcoal);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">Monthly Cost Breakdown</div>
+        <table class="bd-table">
           <thead>
-            <tr style="border-bottom:2px solid #eee">
-              <th style="text-align:left;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">Item</th>
-              <th style="text-align:right;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">/month</th>
-              <th style="text-align:right;padding:5px 4px;color:#888;font-weight:600;font-size:0.71rem">/year</th>
+            <tr>
+              <th>Item</th>
+              <th>/month</th>
+              <th>/year</th>
             </tr>
           </thead>
           <tbody>
             <!-- Mortgage P+I - auto -->
-            <tr style="border-bottom:1px solid #f0f0f0">
-              <td style="padding:6px 4px;color:#444">Mortgage P+I</td>
-              <td style="text-align:right;padding:6px 4px;font-weight:600" id="brPI_mo">—</td>
-              <td style="text-align:right;padding:6px 4px;color:#777" id="brPI_yr">—</td>
+            <tr>
+              <td>Mortgage P+I</td>
+              <td style="text-align:right;font-weight:600" id="brPI_mo">&mdash;</td>
+              <td style="text-align:right;color:var(--c-muted-l)" id="brPI_yr">&mdash;</td>
             </tr>
             <!-- Condo / HOA fee - checkbox toggle -->
-            <tr style="border-bottom:1px solid #f0f0f0">
-              <td style="padding:6px 4px">
-                <label style="display:flex;align-items:center;gap:7px;cursor:pointer;color:#444;font-size:0.8rem;margin:0">
-                  <input type="checkbox" id="condoFeeYes" onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0">
+            <tr>
+              <td>
+                <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:.8rem;margin:0;font-weight:400;color:#3a352d">
+                  <input type="checkbox" id="condoFeeYes" onchange="renderOwnershipCard()" style="accent-color:var(--app-accent);width:15px;height:15px;flex-shrink:0">
                   Condo / HOA Fee
                 </label>
               </td>
-              <td style="text-align:right;padding:4px 4px" id="condoMonthCell">
-                <span id="condoFeeNone" style="color:#ccc;font-size:0.75rem">—</span>
-                <div id="condoFeeInputWrap" style="display:none;margin:0;max-width:88px;margin-left:auto" class="input-wrap">
-                  <span class="pre" style="font-size:0.75rem">$</span>
+              <td style="text-align:right" id="condoMonthCell">
+                <span id="condoFeeNone" class="bd-note">&mdash;</span>
+                <div id="condoFeeInputWrap" style="display:none;margin:0;max-width:92px;margin-left:auto" class="input-wrap">
+                  <span class="pre" style="font-size:.75rem">$</span>
                   <input type="number" id="condoFeeMonthly" value="500" min="0" max="2000" step="50"
-                         style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
+                         style="padding:6px 8px 6px 22px;font-size:.8rem;font-weight:600;min-height:34px"
                          oninput="renderOwnershipCard()">
                 </div>
               </td>
-              <td style="text-align:right;padding:6px 4px;color:#777" id="brCondo_yr">—</td>
+              <td style="text-align:right;color:var(--c-muted-l)" id="brCondo_yr">&mdash;</td>
             </tr>
             <!-- Property Tax - checkbox (pre-ticked) + editable (auto-filled from price) -->
-            <tr style="border-bottom:1px solid #f0f0f0">
-              <td style="padding:6px 4px">
-                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
-                  <input type="checkbox" id="propTaxYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
-                  <div>
-                    <div style="color:#444;font-size:0.8rem">Property Tax</div>
-                    <div style="font-size:0.67rem;color:#bbb">0.65%/yr Calgary avg - edit if known</div>
-                  </div>
+            <tr>
+              <td>
+                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0;font-weight:400">
+                  <input type="checkbox" id="propTaxYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--app-accent);width:15px;height:15px;flex-shrink:0;margin-top:3px">
+                  <span>
+                    <span style="display:block;color:#3a352d;font-size:.8rem">Property Tax</span>
+                    <span class="bd-note" style="display:block">0.65%/yr Calgary avg - edit if known</span>
+                  </span>
                 </label>
               </td>
-              <td style="text-align:right;padding:4px 4px">
-                <span id="propTaxNone" style="color:#ccc;font-size:0.75rem;display:none">—</span>
-                <div id="propTaxInputWrap" class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
-                  <span class="pre" style="font-size:0.75rem">$</span>
+              <td style="text-align:right">
+                <span id="propTaxNone" class="bd-note" style="display:none">&mdash;</span>
+                <div id="propTaxInputWrap" class="input-wrap" style="margin:0;max-width:92px;margin-left:auto">
+                  <span class="pre" style="font-size:.75rem">$</span>
                   <input type="number" id="propTaxMonthly" value="233" min="0" max="3000" step="10"
-                         style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
+                         style="padding:6px 8px 6px 22px;font-size:.8rem;font-weight:600;min-height:34px"
                          oninput="renderOwnershipTotals()">
                 </div>
               </td>
-              <td style="text-align:right;padding:6px 4px;color:#777" id="brTax_yr">—</td>
+              <td style="text-align:right;color:var(--c-muted-l)" id="brTax_yr">&mdash;</td>
             </tr>
             <!-- Home Insurance - checkbox (pre-ticked) + editable -->
-            <tr style="border-bottom:1px solid #f0f0f0">
-              <td style="padding:6px 4px">
-                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
-                  <input type="checkbox" id="homeInsYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
-                  <div>
-                    <div style="color:#444;font-size:0.8rem">Home Insurance</div>
-                    <div style="font-size:0.67rem;color:#bbb">est. - edit if known</div>
-                  </div>
+            <tr>
+              <td>
+                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0;font-weight:400">
+                  <input type="checkbox" id="homeInsYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--app-accent);width:15px;height:15px;flex-shrink:0;margin-top:3px">
+                  <span>
+                    <span style="display:block;color:#3a352d;font-size:.8rem">Home Insurance</span>
+                    <span class="bd-note" style="display:block">est. - edit if known</span>
+                  </span>
                 </label>
               </td>
-              <td style="text-align:right;padding:4px 4px">
-                <span id="homeInsNone" style="color:#ccc;font-size:0.75rem;display:none">—</span>
-                <div id="homeInsInputWrap" class="input-wrap" style="margin:0;max-width:88px;margin-left:auto">
-                  <span class="pre" style="font-size:0.75rem">$</span>
+              <td style="text-align:right">
+                <span id="homeInsNone" class="bd-note" style="display:none">&mdash;</span>
+                <div id="homeInsInputWrap" class="input-wrap" style="margin:0;max-width:92px;margin-left:auto">
+                  <span class="pre" style="font-size:.75rem">$</span>
                   <input type="number" id="homeInsMonthly" value="150" min="0" max="1000" step="10"
-                         style="padding:5px 8px 5px 22px;font-size:0.8rem;font-weight:600"
+                         style="padding:6px 8px 6px 22px;font-size:.8rem;font-weight:600;min-height:34px"
                          oninput="renderOwnershipCard()">
                 </div>
               </td>
-              <td style="text-align:right;padding:6px 4px;color:#777" id="brIns_yr">—</td>
+              <td style="text-align:right;color:var(--c-muted-l)" id="brIns_yr">&mdash;</td>
             </tr>
             <!-- Maintenance reserve - checkbox (pre-ticked) + range slider -->
-            <tr style="border-bottom:1px solid #f0f0f0">
-              <td style="padding:6px 4px">
-                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0">
-                  <input type="checkbox" id="maintYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0;margin-top:3px">
-                  <div>
-                    <div style="color:#444;font-size:0.8rem">Maintenance reserve</div>
-                    <div style="font-size:0.67rem;color:#bbb" id="maintPctLabel">est. 1.0%/yr of home value</div>
-                  </div>
+            <tr>
+              <td>
+                <label style="display:flex;align-items:flex-start;gap:6px;cursor:pointer;margin:0;font-weight:400">
+                  <input type="checkbox" id="maintYes" checked onchange="renderOwnershipCard()" style="accent-color:var(--app-accent);width:15px;height:15px;flex-shrink:0;margin-top:3px">
+                  <span>
+                    <span style="display:block;color:#3a352d;font-size:.8rem">Maintenance reserve</span>
+                    <span class="bd-note" style="display:block" id="maintPctLabel">est. 1.0%/yr of home value</span>
+                  </span>
                 </label>
               </td>
-              <td style="text-align:right;padding:4px 4px">
-                <span id="maintNone" style="color:#ccc;font-size:0.75rem;display:none">—</span>
+              <td style="text-align:right">
+                <span id="maintNone" class="bd-note" style="display:none">&mdash;</span>
                 <div id="maintSliderWrap" style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
-                  <span style="font-weight:600;font-size:0.8rem" id="brMaint_mo">—</span>
+                  <span style="font-weight:600;font-size:.8rem" id="brMaint_mo">&mdash;</span>
                   <input type="range" id="maintPct" min="0.5" max="2.5" step="0.1" value="1.0"
-                         style="width:80px;accent-color:var(--orange);margin:0"
+                         style="width:80px;margin:0"
                          oninput="renderOwnershipCard()">
                 </div>
               </td>
-              <td style="text-align:right;padding:6px 4px;color:#777" id="brMaint_yr">—</td>
+              <td style="text-align:right;color:var(--c-muted-l)" id="brMaint_yr">&mdash;</td>
             </tr>
           </tbody>
           <tfoot>
-            <tr style="border-top:2px solid #111">
-              <td style="padding:8px 4px;font-weight:700;font-size:0.82rem">Total Housing Cost</td>
-              <td id="ownerTotalMonthly" style="text-align:right;padding:8px 4px;font-weight:700;color:var(--orange)">—</td>
-              <td id="ownerTotalAnnual" style="text-align:right;padding:8px 4px;font-weight:700;color:var(--orange)">—</td>
+            <tr>
+              <td style="font-size:.82rem">Total Housing Cost</td>
+              <td id="ownerTotalMonthly" style="text-align:right;color:var(--app-accent-ink)">&mdash;</td>
+              <td id="ownerTotalAnnual" style="text-align:right;color:var(--app-accent-ink)">&mdash;</td>
             </tr>
           </tfoot>
         </table>
 
         <!-- Auto / Vehicle Loan - TDS adjustment -->
-        <div style="border:1px dashed #e0e0e0;border-radius:7px;padding:8px 12px;margin-bottom:10px;background:#fafafa">
-          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;margin:0;font-size:0.82rem;font-weight:600;color:#444">
-            <input type="checkbox" id="autoLoanYes" onchange="renderOwnershipCard()" style="accent-color:var(--orange);width:15px;height:15px;flex-shrink:0">
+        <div style="border:1.5px dashed #ddd6c8;border-radius:11px;padding:10px 12px;margin-bottom:12px;background:#faf8f3">
+          <label style="display:flex;align-items:center;gap:7px;cursor:pointer;margin:0;font-size:.82rem;font-weight:600;color:#3a352d">
+            <input type="checkbox" id="autoLoanYes" onchange="renderOwnershipCard()" style="accent-color:var(--app-accent);width:15px;height:15px;flex-shrink:0">
             Auto / Vehicle Loan (monthly payment)
           </label>
           <div id="autoLoanInputArea" style="display:none;margin-top:8px">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:end">
               <div>
-                <label style="font-size:0.71rem;color:#888;display:block;margin-bottom:3px">Monthly payment</label>
+                <label style="font-size:.71rem;color:var(--c-muted-l);margin-bottom:3px">Monthly payment</label>
                 <div class="input-wrap"><span class="pre">$</span>
                   <input type="number" id="autoLoanMonthly" value="650" min="0" max="3000" step="50"
                          oninput="renderOwnershipCard()">
                 </div>
               </div>
               <div>
-                <label style="font-size:0.71rem;color:#888;display:block;margin-bottom:3px">Annual</label>
-                <div id="autoLoanAnnual" style="padding:10px 12px;background:#f0f0f0;border-radius:7px;font-weight:700;color:#555;font-size:0.88rem">$7,800</div>
+                <label style="font-size:.71rem;color:var(--c-muted-l);margin-bottom:3px">Annual</label>
+                <div class="value-chip" id="autoLoanAnnual">$7,800</div>
               </div>
             </div>
-            <div id="autoLoanImpact" style="margin-top:6px;font-size:0.72rem;color:#D95F0A;font-style:italic"></div>
+            <div id="autoLoanImpact" style="margin-top:6px;font-size:.72rem;color:var(--app-accent-ink);font-style:italic"></div>
           </div>
-          <div style="font-size:0.67rem;color:#bbb;margin-top:4px">Car payment is deducted from your monthly budget - purchase price target adjusts accordingly (TDS impact)</div>
+          <div class="bd-note" style="margin-top:4px">Car payment is deducted from your monthly budget - purchase price target adjusts accordingly (TDS impact)</div>
         </div>
 
         <!-- Mortgage assumptions - row 1: rates -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
           <div class="field" style="margin:0">
-            <label style="font-size:0.71rem">Contract Rate <span style="font-weight:400;color:#aaa">(actual)</span></label>
+            <label style="font-size:.71rem">Contract Rate <span style="font-weight:400;color:var(--c-muted)">(actual)</span></label>
             <div class="input-wrap"><input type="number" id="ownerRate" value="4.5" min="0.5" max="15" step="0.05" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
           </div>
           <div class="field" style="margin:0">
-            <label style="font-size:0.71rem">Stress Test Rate <span style="font-weight:400;color:#aaa">(qualifying)</span></label>
-            <div id="stressRateDisplay" style="padding:9px 12px;background:#fff8f3;border-radius:7px;border:1.5px solid #fbd38d;font-weight:700;color:#D95F0A;font-size:0.88rem">6.50%</div>
+            <label style="font-size:.71rem">Stress Test Rate <span style="font-weight:400;color:var(--c-muted)">(qualifying)</span></label>
+            <div class="value-chip accent" id="stressRateDisplay">6.50%</div>
           </div>
         </div>
 
         <!-- Mortgage assumptions - row 2: amort + down -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
           <div class="field" style="margin:0">
-            <label style="font-size:0.71rem">Amortization</label>
-            <select id="ownerAmort" style="width:100%;padding:9px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:0.82rem" onchange="renderOwnershipCard()">
+            <label style="font-size:.71rem">Amortization</label>
+            <select id="ownerAmort" onchange="renderOwnershipCard()">
               <option value="30" selected>30 yr</option>
               <option value="25">25 yr</option>
               <option value="20">20 yr</option>
             </select>
           </div>
           <div class="field" style="margin:0">
-            <label style="font-size:0.71rem">Down Payment %</label>
+            <label style="font-size:.71rem">Down Payment %</label>
             <div class="input-wrap"><input type="number" id="ownerDown" value="5" min="5" max="50" step="5" class="suf-pad" oninput="renderOwnershipCard()"><span class="suf">%</span></div>
           </div>
         </div>
 
         <!-- Stress test explanation note -->
-        <div style="background:#fff8f3;border:1px solid #fbd38d;border-radius:6px;padding:8px 12px;margin-bottom:10px;font-size:0.71rem;color:#7a3b10;line-height:1.5">
-          <strong>Stress test = contract rate + 2%</strong> - banks qualify you at this higher rate to ensure you can handle future rate increases. Your actual monthly payments use the contract rate. The stress test is not an additional cost, but it reduces the maximum mortgage you qualify for, and therefore your purchase price target.
+        <div class="info-box" style="margin-bottom:12px">
+          <strong>Stress test - the higher of your contract rate + 2% or the 5.25% floor rate.</strong> Under Canada's mortgage rules (OSFI), banks must qualify you at this minimum qualifying rate - whichever of the two is higher - to make sure you could still afford payments if rates rise. Your actual monthly payments use the contract rate. The stress test is not an extra cost, but it reduces the maximum mortgage you qualify for, and therefore your purchase price target.
         </div>
 
-        <div style="font-size:0.7rem;color:#bbb;line-height:1.5;font-style:italic">
-          Property tax auto-estimated at 0.65%/yr (Calgary avg) - edit above if known. Maintenance reserve adjustable via slider (0.5–2.5%/yr). Untick any line to exclude it and see the impact instantly. Mortgage uses Canadian semi-annual compounding.
+        <div class="bd-note" style="line-height:1.5;font-style:italic">
+          Property tax auto-estimated at 0.65%/yr (Calgary avg) - edit above if known. Maintenance reserve adjustable via slider (0.5&ndash;2.5%/yr). Untick any line to exclude it and see the impact instantly. Mortgage uses Canadian semi-annual compounding.
+        </div>
+      </div>
+
+      <!-- Advisor toolbox (engine hides in client mode) -->
+      <div class="card" id="advancedSection">
+        <div class="card-title">Advisor Toolbox</div>
+        <div class="link-share-box">
+          <div class="link-share-label">Client link - share for self-serve</div>
+          <div class="link-share-row">
+            <input type="text" readonly class="link-share-input" value="https://affordability-calculator.rosh-4d0.workers.dev/rent-vs-own" onclick="this.select()">
+            <button class="link-share-copy" onclick="copyShareLink(this,'https://affordability-calculator.rosh-4d0.workers.dev/rent-vs-own')">Copy</button>
+          </div>
+          <div class="hint" style="margin-top:6px">The bare link opens in client mode. Your advisor view is this page with <strong>?mode=advisor</strong> - bookmark it.</div>
         </div>
       </div>
 
     </div><!-- /flex-col step1 -->
 
     <!-- Contact strip + CTA -->
-    <div class="card" style="border:1.5px solid var(--orange);margin-top:4px">
-      <div class="card-title">👤 A few details to personalise your comparison</div>
+    <div class="card" style="border:1.5px solid var(--app-accent)">
+      <div class="card-title">A few details to personalise your comparison</div>
       <div class="grid-2" style="margin-bottom:14px">
         <div class="field" style="margin:0">
-          <label id="lbl-leadFirstName">First Name <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
-          <input type="text" id="leadFirstName" placeholder="Jane"
-                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
-                 oninput="clearReqState(this)">
+          <label id="lbl-leadFirstName">First Name <span class="req-mark" style="display:none;color:var(--err);font-size:.73rem;font-weight:600"> * required</span></label>
+          <input type="text" id="leadFirstName" placeholder="Jane" oninput="clearReqState(this)">
         </div>
         <div class="field" style="margin:0">
-          <label id="lbl-leadLastName">Last Name <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
-          <input type="text" id="leadLastName" placeholder="Smith"
-                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
-                 oninput="clearReqState(this)">
+          <label id="lbl-leadLastName">Last Name <span class="req-mark" style="display:none;color:var(--err);font-size:.73rem;font-weight:600"> * required</span></label>
+          <input type="text" id="leadLastName" placeholder="Smith" oninput="clearReqState(this)">
         </div>
         <div class="field" style="margin:0">
-          <label id="lbl-leadPhone">Cell Phone <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
-          <input type="tel" id="leadPhone" placeholder="825 555 0100"
-                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
-                 oninput="clearReqState(this)">
+          <label id="lbl-leadPhone">Cell Phone <span class="req-mark" style="display:none;color:var(--err);font-size:.73rem;font-weight:600"> * required</span></label>
+          <input type="tel" id="leadPhone" placeholder="825 555 0100" oninput="clearReqState(this)">
         </div>
         <div class="field" style="margin:0">
-          <label id="lbl-leadEmail">Email <span class="req-mark" style="display:none;color:#e53e3e;font-size:0.73rem;font-weight:600"> * required</span></label>
-          <input type="email" id="leadEmail" placeholder="jane@email.com"
-                 style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:0.88rem"
-                 oninput="clearReqState(this)">
+          <label id="lbl-leadEmail">Email <span class="req-mark" style="display:none;color:var(--err);font-size:.73rem;font-weight:600"> * required</span></label>
+          <input type="email" id="leadEmail" placeholder="jane@email.com" oninput="clearReqState(this)">
         </div>
       </div>
-      <button class="btn btn-black btn-block" style="font-size:1rem;padding:15px" onclick="showComparison()">
-        📊 Show My Comparison →
+      <button class="btn btn-gold btn-block" style="font-size:1rem;padding:15px" onclick="showComparison()">
+        Show My Comparison &rarr;
       </button>
-      <div id="leadCaptureStatus" style="margin-top:8px;font-size:0.78rem;color:var(--text-muted);text-align:center;min-height:1.2em"></div>
+      <div id="leadCaptureStatus" style="margin-top:8px;font-size:.78rem;color:var(--c-muted-l);text-align:center;min-height:1.2em"></div>
     </div>
 
   </div><!-- /step1 -->
@@ -702,72 +807,71 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
   <div id="step2" style="display:none">
 
     <!-- Result hero -->
-    <div class="result-hero" id="resultHero">
+    <div class="result-hero" id="resultHero" style="margin-bottom:14px">
       <div class="hero-tabs">
         <button class="hero-tab" id="heroTab5" onclick="setHeroTab('5')">5 yr</button>
         <button class="hero-tab" id="heroTab10" onclick="setHeroTab('10')">10 yr</button>
         <button class="hero-tab active" id="heroTabLng" onclick="setHeroTab('long')">30 yr</button>
       </div>
       <h2 id="heroLabel">Net cost of renting over 30 years</h2>
-      <div class="price-big" id="heroValue">—</div>
+      <div class="price-big" id="heroValue">&mdash;</div>
       <div class="price-note" id="heroNote"></div>
       <div class="stats-grid">
         <div class="stat-box">
           <div class="stat-box-label" id="statEquityLabel">Equity built</div>
-          <div class="stat-box-value col-green" id="stat5yrEquity">—</div>
-          <div class="stat-box-sub" id="statEquitySub">Net appreciation − mortgage balance</div>
+          <div class="stat-box-value col-green" id="stat5yrEquity">&mdash;</div>
+          <div class="stat-box-sub" id="statEquitySub">Net appreciation &minus; mortgage balance</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label" id="statGapLabel">Wealth gap</div>
-          <div class="stat-box-value col-orange" id="stat5yrGap">—</div>
-          <div class="stat-box-sub">Owner net position − renter net position</div>
+          <div class="stat-box-value col-orange" id="stat5yrGap">&mdash;</div>
+          <div class="stat-box-sub">Owner net position &minus; renter net position</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label" id="statCumRentLabel">Cumulative rent paid</div>
-          <div class="stat-box-value" id="statCumRent">—</div>
+          <div class="stat-box-value" id="statCumRent">&mdash;</div>
           <div class="stat-box-sub" id="statCumRentSub">Total rent paid over period</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label" id="statLongLabel">Owner cash out</div>
-          <div class="stat-box-value" id="statLongGap">—</div>
+          <div class="stat-box-value" id="statLongGap">&mdash;</div>
           <div class="stat-box-sub" id="statLongSub">DP + closing + all payments</div>
         </div>
         <div class="stat-box">
           <div class="stat-box-label">Monthly: Rent vs Own</div>
-          <div class="stat-box-value" id="statMonthlyDiff">—</div>
+          <div class="stat-box-value" id="statMonthlyDiff">&mdash;</div>
           <div class="stat-box-sub" id="statMonthlyDiffNote"></div>
         </div>
       </div>
     </div>
 
-    <!-- Projection Assumptions - moved from Step 1, editable in context -->
-    <div class="card span-2" style="margin-bottom:14px;background:#fafafa;padding:14px 20px">
-      <div style="font-size:0.71rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#999;margin-bottom:10px">
-        ⚙ Projection Assumptions
-        <span style="font-weight:400;font-style:italic;color:#bbb;text-transform:none;letter-spacing:0"> - pre-filled with Calgary averages, edit to adjust</span>
+    <!-- Projection Assumptions - editable in context -->
+    <div class="card span-2" style="margin-bottom:14px">
+      <div class="card-title">Projection Assumptions
+        <span style="font-weight:400;font-style:italic;color:var(--c-muted);text-transform:none;letter-spacing:0">- Calgary averages, edit to adjust</span>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px">
+      <div class="grid-3-inputs">
         <div class="field" style="margin:0">
-          <label style="font-size:0.73rem">Time renting so far</label>
+          <label style="font-size:.73rem">Time renting so far</label>
           <div class="input-wrap"><input type="number" id="monthsRenting" value="36" min="0" max="600" step="6" class="suf-pad" oninput="refreshComparison()"><span class="suf">mo</span></div>
-          <div class="hint" style="font-size:0.67rem;margin-top:3px">Calculates sunk rent cost in comparison</div>
+          <div class="hint" style="font-size:.67rem">Calculates sunk rent cost in comparison</div>
         </div>
         <div class="field" style="margin:0">
-          <label style="font-size:0.73rem">Annual Rent Increase</label>
+          <label style="font-size:.73rem">Annual Rent Increase</label>
           <div class="input-wrap"><input type="number" id="rentInflation" value="4.0" min="0" max="15" step="0.5" class="suf-pad" oninput="refreshComparison()"><span class="suf">%</span></div>
-          <div class="hint" style="font-size:0.67rem;margin-top:3px">Calgary avg ~4%/yr (CMHC 2024)</div>
+          <div class="hint" style="font-size:.67rem">Calgary avg ~4%/yr (CMHC 2024)</div>
         </div>
         <div class="field" style="margin:0">
-          <label style="font-size:0.73rem">Home Appreciation / yr</label>
+          <label style="font-size:.73rem">Home Appreciation / yr</label>
           <div class="input-wrap"><input type="number" id="appreciation" value="3.5" min="0" max="15" step="0.5" class="suf-pad" oninput="refreshComparison()"><span class="suf">%</span></div>
-          <div class="hint" style="font-size:0.67rem;margin-top:3px">Calgary 10-yr avg ~4% (CREA/CMHC)</div>
+          <div class="hint" style="font-size:.67rem">Calgary 10-yr avg ~4% (CREA/CMHC)</div>
         </div>
       </div>
     </div>
 
     <!-- Monthly cost comparison -->
-    <div class="card span-2" style="margin-bottom:18px">
-      <div class="card-title">📋 Monthly Cost Comparison</div>
+    <div class="card span-2" style="margin-bottom:14px">
+      <div class="card-title">Monthly Cost Comparison</div>
       <div style="overflow-x:auto">
         <table class="comp-table" id="monthlyTable">
           <thead>
@@ -782,145 +886,139 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
       </div>
     </div>
 
-    <!-- Charts — all 3 in one row -->
-    <div class="grid-3" style="margin-bottom:18px">
+    <!-- Charts - all 3 in one row -->
+    <div class="grid-3" style="margin-bottom:14px">
       <div class="card">
-        <div class="card-title">📊 5-Year Wealth Position</div>
+        <div class="card-title">5-Year Wealth Position</div>
         <div class="chart-wrap"><canvas id="chart5yr"></canvas></div>
-        <div id="chart5Legend" style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);text-align:center"></div>
+        <div id="chart5Legend" class="chart-legend"></div>
       </div>
       <div class="card">
-        <div class="card-title">📊 10-Year Wealth Position</div>
+        <div class="card-title">10-Year Wealth Position</div>
         <div class="chart-wrap"><canvas id="chart10yr"></canvas></div>
-        <div id="chart10Legend" style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);text-align:center"></div>
+        <div id="chart10Legend" class="chart-legend"></div>
       </div>
       <div class="card">
-        <div class="card-title" id="chartLongTitle">📊 Long-Term Wealth Position</div>
+        <div class="card-title" id="chartLongTitle">Long-Term Wealth Position</div>
         <div class="chart-wrap"><canvas id="chartLong"></canvas></div>
-        <div id="chartLongLegend" style="margin-top:8px;font-size:0.72rem;color:var(--text-muted);text-align:center"></div>
+        <div id="chartLongLegend" class="chart-legend"></div>
       </div>
     </div>
 
-    <!-- Detailed breakdown -3 columns -->
-    <div class="card span-2" style="margin-bottom:18px">
-      <div class="card-title" id="breakdownTitle">🔢 Wealth Breakdown -5, 10 &amp; Long-Term</div>
+    <!-- Detailed breakdown - 3 columns -->
+    <div class="card span-2" style="margin-bottom:14px">
+      <div class="card-title" id="breakdownTitle">Wealth Breakdown - 5, 10 &amp; Long-Term</div>
       <div style="overflow-x:auto" id="breakdownGrid"></div>
-      <div style="margin-top:16px;padding:14px 16px;background:#fffbf5;border-left:3px solid var(--orange);border-radius:6px;font-size:0.82rem;line-height:1.6;color:var(--text)">
-        <strong style="color:var(--orange);font-size:0.85rem">💡 What is the Wealth Gap - Owner Advantage?</strong><br>
+      <div class="gap-note">
+        <strong class="hd">What is the Wealth Gap - Owner Advantage?</strong><br>
         This is the most important number in this comparison. It measures the total financial difference between owning and renting over the same period - taking everything into account: the equity built through mortgage payments and home appreciation, the opportunity cost of the down payment (modelled as a HISA investment if renting), and all cash spent in each scenario.<br><br>
         <strong>A positive number means the owner ends up ahead</strong> - even after accounting for higher monthly costs of ownership. This is common over 10+ years because mortgage payments build equity while rent is entirely spent. Over a full amortisation period, the gap compounds significantly as appreciation works on the full home value while the mortgage shrinks.<br><br>
-        <em style="color:var(--text-muted)">Note: Projections use fixed assumptions for appreciation, rent growth, and investment returns. Actual results will vary. This is illustrative, not financial advice.</em>
+        <em>Note: Projections use fixed assumptions for appreciation, rent growth, and investment returns. Actual results will vary. This is illustrative, not financial advice.</em>
       </div>
     </div>
 
     <!-- Ownership cost breakdown -->
-    <div class="card span-2" style="margin-bottom:18px">
-      <div class="card-title">🏡 Ownership Assumptions Used</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px" id="assumptionsGrid"></div>
+    <div class="card span-2" style="margin-bottom:14px">
+      <div class="card-title">Ownership Assumptions Used</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 24px" id="assumptionsGrid"></div>
     </div>
 
     <!-- Back button -->
-    <div style="display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap">
-      <button class="btn btn-outline" onclick="goBack()">← Edit inputs</button>
-      <button class="btn btn-black" onclick="downloadReport(); window.scrollTo({top:document.getElementById('ctaCard').offsetTop-20,behavior:'smooth'})">📥 Get the full report</button>
+    <div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+      <button class="btn btn-outline" onclick="goBack()">&larr; Edit inputs</button>
+      <button class="btn btn-black" onclick="downloadReport(); var w=document.querySelector('.work'); if(w) w.scrollTo({top:document.getElementById('ctaCard').offsetTop-20,behavior:'smooth'})">Get the full report</button>
     </div>
 
     <!-- ── STEP 3 - CTA ── -->
     <div class="cta-card" id="ctaCard">
-      <h3>📄 Send the personalised PDF report to the renter</h3>
-      <p>A full 4-page comparison report - their numbers, the 5 &amp; 10-year wealth charts, and what to do next. Lands in their inbox in seconds.</p>
-      <div style="display:flex;flex-direction:column;gap:10px;max-width:420px;margin:0 auto">
+      <h3>Send the personalised PDF report</h3>
+      <p>A full 5-page comparison report - your numbers, the 5 &amp; 10-year wealth charts, and what to do next. Lands in your inbox in seconds.</p>
+      <div class="cta-stack">
 
-        <!-- Link box 1: business card -->
+        <button class="cta-btn primary" onclick="openModal('email')">
+          <span><strong>Email me the report</strong><span class="sub">PDF arrives in minutes - the clearest way to see the numbers</span></span>
+        </button>
+        <button class="cta-btn ghost" onclick="openModal('whatsapp')">
+          <span><strong>Chat with Rosh on WhatsApp</strong><span class="sub">Quick questions? Message Rosh directly</span></span>
+        </button>
+        <button class="cta-btn ghost" onclick="openModal('booking')">
+          <span><strong>Book a free consultation</strong><span class="sub">Pick a time - 15-min call, no obligation</span></span>
+        </button>
+        <a class="cta-btn ghost"
+           href="https://wa.me/?text=See%20exactly%20what%20renting%20is%20costing%20you%20-%20free%20Rent%20vs%20Own%20calculator%20by%20Sheena%20%26%20Rosh%20Issac%20Property%20Group%20-%20Associates%20of%20Dreamhouse%20Realty%20Ltd.%0A%0Ahttps%3A%2F%2Faffordability-calculator.rosh-4d0.workers.dev%2Frent-vs-own"
+           target="_blank" rel="noopener noreferrer">
+          <span><strong>Share this calculator</strong><span class="sub">Forward to a friend or family via WhatsApp</span></span>
+        </a>
+
+        <!-- Link box: business card -->
         <div class="link-share-box">
-          <div class="link-share-label">🪪 Rosh's Digital Business Card</div>
+          <div class="link-share-label">Rosh's Digital Business Card</div>
           <div class="link-share-row">
             <input type="text" readonly class="link-share-input" value="https://roshaissac.github.io/Businesscard" onclick="this.select()">
             <button class="link-share-copy" onclick="copyShareLink(this,'https://roshaissac.github.io/Businesscard')">Copy</button>
           </div>
         </div>
 
-        <button class="btn btn-orange btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px" onclick="openModal('email')">
-          <span style="font-size:1.3rem">📧</span>
-          <span><strong>Email me the report</strong><br><span style="font-size:0.78rem;opacity:0.85">PDF arrives in minutes - it's the clearest way to see the numbers</span></span>
-        </button>
-        <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="openModal('whatsapp')">
-          <span style="font-size:1.3rem">💬</span>
-          <span><strong>Chat with Rosh on WhatsApp</strong><br><span style="font-size:0.78rem;opacity:0.85">Quick questions? Message Rosh directly</span></span>
-        </button>
-        <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="openModal('booking')">
-          <span style="font-size:1.3rem">📅</span>
-          <span><strong>Book a free consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time -15-min call, no obligation</span></span>
-        </button>
-        <a href="https://wa.me/?text=%F0%9F%8F%A0%20See%20exactly%20what%20renting%20is%20costing%20you%0A%0AFree%20Rent%20vs%20Own%20calculator%20by%20Rosh%20Issac%2C%20Realtor%C2%AE%20%E2%80%93%20Issac%20Real%20Estate%20Team%0A%0Ahttps%3A%2F%2Froshaissac.github.io%2Faffordability-calculator%2Frent-vs-own.html"
-           target="_blank" rel="noopener noreferrer"
-           style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:transparent;color:#25D366;border:2px solid #25D366;border-radius:8px;text-decoration:none">
-          <span style="font-size:1.3rem">📤</span>
-          <span><strong>Share this calculator</strong><br><span style="font-size:0.78rem;opacity:0.85">Forward to a friend or family via WhatsApp</span></span>
-        </a>
-
-        <!-- Link box 2: affordability calculator -->
+        <!-- Link box: this calculator -->
         <div class="link-share-box">
-          <div class="link-share-label">🧮 Share this Affordability Calculator</div>
+          <div class="link-share-label">Share this Rent vs Own Calculator</div>
           <div class="link-share-row">
-            <input type="text" readonly class="link-share-input" value="https://affordability-calculator.rosh-4d0.workers.dev/?mode=client" onclick="this.select()">
-            <button class="link-share-copy" onclick="copyShareLink(this,'https://affordability-calculator.rosh-4d0.workers.dev/?mode=client')">Copy</button>
+            <input type="text" readonly class="link-share-input" value="https://affordability-calculator.rosh-4d0.workers.dev/rent-vs-own" onclick="this.select()">
+            <button class="link-share-copy" onclick="copyShareLink(this,'https://affordability-calculator.rosh-4d0.workers.dev/rent-vs-own')">Copy</button>
           </div>
         </div>
 
+      </div>
+
+      <!-- Self-hosted QR pair (the layer script fills these; engine ids preserved) -->
+      <div class="cta-qrs">
+        <div class="cta-qr">
+          <span class="qr-holder"><span id="qrBizCard" style="width:96px;height:96px;display:block"></span></span>
+          <div class="cta-qr-label">Scan for Rosh's business card</div>
+        </div>
+        <div class="cta-qr">
+          <span class="qr-holder"><span id="qrCalc" style="width:96px;height:96px;display:block"></span></span>
+          <div class="cta-qr-label">Scan to open this calculator</div>
+        </div>
+        <span id="qrBizCardClient" style="display:none"></span>
       </div>
     </div>
 
   </div><!-- /step2 -->
 
-</div><!-- /container -->
+  </main>
+
+  <!-- ══ STATIONARY BAND · RECA brokerage disclosure ══════════════════ -->
+  <footer class="band">
+    <div class="b-txt">
+      <span class="b-team"><b>Sheena &amp; Rosh Issac Property Group</b> - Associates of Dreamhouse Realty Ltd.</span>
+      <span class="b-fine">For information only - not a lender commitment. Numbers are estimates; actual qualification and costs may vary. Lender referrals available upon request.</span>
+    </div>
+    <span class="logo"><img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."></span>
+  </footer>
+
+</div><!-- /app -->
 
 <!-- ══ FLOATING "SHOW MY COMPARISON" CTA ════════════════════════════ -->
 <button id="floatingShowCTA" class="floating-cta-btn" onclick="showComparison()">
-  📊 Show My Comparison
+  Show My Comparison
 </button>
-
-<!-- ══ FLOATING FOOTER ═══════════════════════════════════════════════ -->
-<div class="floating-footer">
-  <!-- LHS brand -->
-  <div class="float-foot-brand">
-    <div class="float-foot-brand-text">
-      <div><span class="name">Issac Realty Team</span></div>
-      <div class="brokerage"><em>Associates of</em> Dreamhouse Realty Ltd., Alberta Canada</div>
-    </div>
-  </div>
-  <!-- Centre disclaimer -->
-  <div class="float-foot-disclaimer">
-    For information only - not a lender commitment. Numbers are estimates; actual qualification &amp; costs may vary. Lender referrals available upon request.
-  </div>
-  <!-- Affordability Calculator QR + link -->
-  <a href="https://roshaissac.github.io/affordability-calculator/rent-vs-own.html?mode=client"
-     target="_blank" rel="noopener noreferrer" class="float-foot-calc-qr">
-    <div id="qrCalc" style="width:56px;height:56px;background:#fff;flex-shrink:0;border:1px solid rgba(0,0,0,0.15)"></div>
-    <span>Affordability<br>Calculator</span>
-  </a>
-  <!-- RHS logo -->
-  <div class="float-foot-logo-wrap">
-    <img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd."
-      class="float-foot-logo" onerror="this.parentElement.style.display='none'">
-  </div>
-</div>
 
 <!-- ══ CONTACT MODAL ═════════════════════════════════════════════════ -->
 <div id="contactModal">
   <div class="modal-inner">
-    <button class="modal-close" onclick="closeModal()">×</button>
+    <button class="modal-close" onclick="closeModal()">&times;</button>
     <p class="modal-eyebrow">Almost done</p>
-    <h3 id="cm-heading" style="margin:0 0 6px;font-size:1.2rem;font-weight:800">Where should we send your report?</h3>
-    <p id="cm-subhead" style="margin:0 0 20px;font-size:0.85rem;color:var(--text-muted)">Your financial numbers stay private. We just need a way to reach you.</p>
+    <h3 id="cm-heading" style="margin:0 0 6px;font-size:1.3rem">Where should we send your report?</h3>
+    <p id="cm-subhead" style="margin:0 0 20px;font-size:.85rem;color:var(--c-muted-l)">Your financial numbers stay private. We just need a way to reach you.</p>
     <div class="modal-grid-2">
       <div>
-        <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px">First Name *</label>
-        <input id="cm-first" type="text" placeholder="Jane" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem">
+        <label style="font-size:.78rem;font-weight:600;display:block;margin-bottom:4px">First Name *</label>
+        <input id="cm-first" type="text" placeholder="Jane">
       </div>
       <div>
-        <label style="font-size:0.78rem;font-weight:600;display:block;margin-bottom:4px">Last Name</label>
-        <input id="cm-last" type="text" placeholder="Smith" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:0.9rem">
+        <label style="font-size:.78rem;font-weight:600;display:block;margin-bottom:4px">Last Name</label>
+        <input id="cm-last" type="text" placeholder="Smith">
       </div>
     </div>
     <div class="modal-field">
@@ -933,16 +1031,14 @@ select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/
     </div>
     <div class="consent-row">
       <input type="checkbox" id="cm-consent" checked>
-      <span>I agree to be contacted by Rosh Issac, Realtor&#174; (Issac Realty Team, Associates of Dreamhouse Realty Ltd.) about my real estate inquiry. I can unsubscribe at any time.</span>
+      <span>I agree to be contacted by Rosh Issac, Realtor&#174; (Sheena &amp; Rosh Issac Property Group - Associates of Dreamhouse Realty Ltd.) about my real estate inquiry. I can unsubscribe at any time.</span>
     </div>
-    <button id="cm-submit" onclick="submitLead()"
-      style="width:100%;padding:13px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:700;cursor:pointer">
-      Send my report →
+    <button id="cm-submit" onclick="submitLead()">
+      Send my report &rarr;
     </button>
-    <div id="cm-status" style="margin-top:12px;font-size:0.82rem;text-align:center;color:#666"></div>
+    <div id="cm-status" style="margin-top:12px;font-size:.82rem;text-align:center;color:var(--c-muted-l)"></div>
   </div>
 </div>
-
 <script>
 'use strict';
 
@@ -2021,14 +2117,14 @@ function generatePDF(firstName, lastName, email) {
     doc.setTextColor(...C.white);
     doc.text(S(title), M, 16);
     doc.setFontSize(8); doc.setTextColor(...C.orange);
-    doc.text('Rent vs Own - Issac Real Estate Team', W - M, 16, { align:'right' });
+    doc.text('Rent vs Own - Personalised Wealth Comparison', W - M, 16, { align:'right' });
   }
 
   function pFoot(n) {
     doc.setDrawColor(...C.orange); doc.setLineWidth(0.5);
     doc.line(M, 282, W - M, 282);
     doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...C.grey);
-    doc.text('Issac Realty Team - Associates of Dreamhouse Realty Ltd.  |  For information only - not a lender commitment.', W/2, 287, { align:'center' });
+    doc.text('Sheena & Rosh Issac Property Group - Associates of Dreamhouse Realty Ltd.  |  For information only - not a lender commitment.', W/2, 287, { align:'center' });
     if (n) doc.text(String(n), W - M, 287, { align:'right' });
   }
 
@@ -2067,7 +2163,7 @@ function generatePDF(firstName, lastName, email) {
   doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...C.black);
   doc.text('Rosh Issac, Realtor(R)', M + 6, 72);
   doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...C.grey);
-  doc.text('Issac Realty Team - Associates of Dreamhouse Realty Ltd., Calgary, Alberta', M + 6, 79);
+  doc.text('Sheena & Rosh Issac Property Group - Associates of Dreamhouse Realty Ltd., Calgary, Alberta', M + 6, 79);
   doc.text('825 449 5083  |  rosh@issacrealty.com  |  roshaissac.github.io', M + 6, 85);
 
   // Key numbers
@@ -2389,7 +2485,7 @@ function generatePDF(firstName, lastName, email) {
   doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...C.black);
   doc.text('Ready to take the next step?', M + 8, y5 + 18);
   doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...C.grey);
-  doc.text('Rosh Issac, Realtor(R) - Issac Realty Team - Associates of Dreamhouse Realty Ltd.', M + 8, y5 + 27);
+  doc.text('Rosh Issac, Realtor(R) - Sheena & Rosh Issac Property Group - Associates of Dreamhouse Realty Ltd.', M + 8, y5 + 27);
   doc.text('825 449 5083  |  rosh@issacrealty.com  |  roshaissac.github.io', M + 8, y5 + 34);
   doc.setFont('helvetica','italic'); doc.setFontSize(8);
   doc.text('RECA Licence #: 00579553 - Licensed to trade in real estate in Alberta', M + 8, y5 + 40);
@@ -2481,5 +2577,176 @@ window.addEventListener('load', () => {
   }
 });
 </script>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   HOUSE-STYLE LAYER (decoupled - the engine above is untouched)
+   1. Lazy third-party: the CDN <script> tags are gone from <head> - zero
+      third-party on first paint. Chart.js loads on idle / first
+      comparison; jsPDF + AutoTable load when a report is requested (and
+      prefetch on modal open so the submit path stays synchronous for
+      iOS popup allowances).
+   2. syncCrossover(): the hero motif - wraps the engine's global
+      renderOwnershipCard / setHeroTab so every render re-tallies the
+      year owning pulls ahead of renting (via the engine's own
+      computeWealth; the engine is never edited).
+   3. QR localisation: without the QR lib the engine's load handler
+      renders text-link fallbacks; this layer (registered after it)
+      swaps in self-hosted PNGs - same-origin only.
+   4. Shell plumbing: the ivory workspace scrolls, not the window -
+      re-emit its scroll events for the engine's floating-CTA logic and
+      mirror the engine's scroll-to-top intents onto the container.
+   ════════════════════════════════════════════════════════════════════ */
+(function () {
+  var work = document.querySelector('.work');
+
+  /* ── lazy script loading ── */
+  function load(src) {
+    return new Promise(function (res) {
+      var s = document.createElement('script');
+      s.src = src;
+      s.onload = res;
+      s.onerror = res; /* resolve either way - the engine degrades gracefully */
+      document.head.appendChild(s);
+    });
+  }
+  var _chartP = null;
+  function ensureChart() {
+    if (window.Chart) return Promise.resolve();
+    if (!_chartP) _chartP = load('https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js');
+    return _chartP;
+  }
+  var _pdfP = null;
+  function ensurePdf() {
+    if (!_pdfP) {
+      _pdfP = load('https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js').then(function () {
+        return load('https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js');
+      });
+    }
+    return _pdfP;
+  }
+
+  /* ── the crossover (hero motif) ── */
+  function crossoverYear() {
+    try {
+      if (!STATE.homePrice) return null;     /* no data yet */
+      var amort = getAmort();
+      for (var y = 1; y <= amort; y++) {
+        if (computeWealth(y).wealthGap > 0) return y;
+      }
+      return -1;                             /* computed, but renting stays ahead */
+    } catch (e) { return null; }
+  }
+  function fmtShort(n) {
+    n = Math.round(n);
+    if (Math.abs(n) >= 1000000) return '$' + (n / 1000000).toFixed(2).replace(/\.?0+$/, '') + 'M';
+    if (Math.abs(n) >= 10000) return '$' + Math.round(n / 1000).toLocaleString('en-CA') + 'K';
+    return '$' + n.toLocaleString('en-CA');
+  }
+  function syncCrossover() {
+    var yEl = document.getElementById('xoYear');
+    var sEl = document.getElementById('xoSub');
+    if (!yEl || !sEl) return;
+    var y = crossoverYear();
+    if (y === null) {
+      yEl.textContent = '—';
+      yEl.classList.add('is-empty');
+      sEl.textContent = 'The crossover - the year owning pulls ahead of renting.';
+    } else if (y === -1) {
+      yEl.textContent = '—';
+      yEl.classList.add('is-empty');
+      sEl.textContent = 'No crossover on these numbers - renting stays ahead over ' + getAmort() + ' years.';
+    } else {
+      yEl.textContent = 'Year ' + y;
+      yEl.classList.remove('is-empty');
+      try {
+        var amort = getAmort();
+        sEl.textContent = 'Owning pulls ahead of renting - ' + amort + '-yr owner advantage ' +
+          fmtShort(computeWealth(amort).wealthGap);
+      } catch (e) {
+        sEl.textContent = 'The crossover - owning pulls ahead of renting in year ' + y + '.';
+      }
+    }
+  }
+
+  /* ── wrap the engine's globals (function declarations - reassignable) ── */
+  var _renderOwnershipCard = renderOwnershipCard;
+  renderOwnershipCard = function () {
+    _renderOwnershipCard();
+    syncCrossover();
+  };
+
+  var _setHeroTab = setHeroTab;
+  setHeroTab = function (period) {
+    _setHeroTab(period);
+    syncCrossover();
+  };
+
+  var _showComparison = showComparison;
+  showComparison = function () {
+    var after = function () {
+      _showComparison();
+      ensurePdf(); /* prefetch - the report is one tap away */
+      var step2 = document.getElementById('step2');
+      if (work && step2 && step2.style.display !== 'none') work.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    if (window.Chart) { after(); } else { ensureChart().then(after); }
+  };
+
+  var _goBack = goBack;
+  goBack = function () {
+    _goBack();
+    if (work) work.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  var _openModal = openModal;
+  openModal = function (dest) {
+    ensurePdf(); /* prefetch so submitLead can run synchronously (iOS window.open) */
+    _openModal(dest);
+  };
+
+  var _downloadReport = downloadReport;
+  downloadReport = function () {
+    if (window.jspdf) { _downloadReport(); return; }
+    ensurePdf().then(function () { _downloadReport(); });
+  };
+
+  var _submitLead = submitLead;
+  submitLead = function () {
+    if (window.jspdf) { _submitLead(); return; }
+    ensurePdf().then(function () { _submitLead(); });
+  };
+
+  /* ── after the engine's own load handler ── */
+  window.addEventListener('load', function () {
+    /* self-hosted QR swap (engine rendered text fallbacks) */
+    [
+      ['qrBizCard',       'assets/qr-businesscard.png', "Rosh Issac's digital business card"],
+      ['qrCalc',          'assets/qr-rvo.png',          'Open the Rent vs Own calculator'],
+      ['qrBizCardClient', 'assets/qr-businesscard.png', "Rosh Issac's digital business card"]
+    ].forEach(function (q) {
+      var node = document.getElementById(q[0]);
+      if (!node) return;
+      if (q[0] === 'qrBizCardClient') {
+        node.style.cssText = 'display:none';
+        node.innerHTML = '';
+        return;
+      }
+      node.style.cssText = 'width:96px;height:96px;display:block';
+      node.innerHTML = '<img src="' + q[1] + '" alt="' + q[2] + ' - QR code" width="96" height="96" style="display:block;width:100%;height:100%">';
+    });
+
+    /* the workspace scrolls, not the window - feed the engine's listeners */
+    if (work) {
+      work.addEventListener('scroll', function () {
+        window.dispatchEvent(new Event('scroll'));
+      }, { passive: true });
+    }
+
+    /* idle prefetch: charts are the next thing every user needs */
+    setTimeout(ensureChart, 1500);
+  });
+})();
+</script>
+
 </body>
 </html>

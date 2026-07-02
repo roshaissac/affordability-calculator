@@ -2,13 +2,21 @@
    Caches the app shell + CDN scripts so it loads offline/on spotty LTE.
    Version bump CACHE_NAME to force refresh after major updates. */
 
-const CACHE_NAME = 'rvo-v21';
+const CACHE_NAME = 'rvo-v22';
 const SHELL = [
   './rent-vs-own.html',
+  './manifest-rvo.json',
+  './assets/fraunces-latin-var.woff2',
+  './assets/qr-businesscard.png',
+  './assets/qr-rvo.png',
+  './assets/icon-rvo-180.png',
+  './assets/icon-rvo-192.png',
+  './assets/dreamhouse-logo.png',
+  // lazy-loaded off first paint by the layer script; pre-cached here so the
+  // charts + PDF report still work offline in the field
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js',
-  'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'
+  'https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js'
 ];
 
 // Install: pre-cache the app shell
