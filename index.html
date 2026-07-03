@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Mortgage Affordability Calculator — Rosh Issac, Realtor®</title>
-<meta property="og:title" content="Mortgage Affordability Calculator — Rosh Issac, Realtor®">
+<title>Mortgage Affordability Calculator - Sheena &amp; Rosh Issac Property Group, Associates of Dreamhouse Realty Ltd.</title>
+<meta property="og:title" content="Mortgage Affordability Calculator - Sheena &amp; Rosh Issac Property Group, Associates of Dreamhouse Realty Ltd.">
 <meta property="og:description" content="Find out how much home you can comfortably afford. Free, instant, based on your actual numbers.">
 <meta property="og:image" content="https://affordability-calculator.rosh-4d0.workers.dev/assets/og-mortgage.png">
 <meta property="og:image:width" content="1200">
@@ -12,7 +12,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://affordability-calculator.rosh-4d0.workers.dev/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Mortgage Affordability Calculator — Rosh Issac, Realtor®">
+<meta name="twitter:title" content="Mortgage Affordability Calculator - Sheena &amp; Rosh Issac Property Group, Associates of Dreamhouse Realty Ltd.">
 <meta name="twitter:image" content="https://affordability-calculator.rosh-4d0.workers.dev/assets/og-mortgage.png">
 
 <!-- PWA / App -->
@@ -27,9 +27,9 @@
 <link rel="apple-touch-icon" sizes="152x152" href="assets/icon-152.png">
 <style>
 /* ════════════════════════════════════════════════════════════════════════
-   B-3 · AFFORDABILITY — The Issac House Style
+   B-3 · AFFORDABILITY - The Issac House Style
    Shared kit tokens + per-app knob (--app-accent: amber #e3a049).
-   Self-hosted Fraunces (one woff2, same-origin) — zero third-party on paint.
+   Self-hosted Fraunces (one woff2, same-origin) - zero third-party on paint.
    ════════════════════════════════════════════════════════════════════════ */
 @font-face{
   font-family:'Fraunces';font-style:normal;font-weight:400 600;font-display:swap;
@@ -46,12 +46,12 @@
   --ok:#3f9d6d; --err:#c0563a;
   --grad-gold:linear-gradient(120deg,#dcbf86,#c9a25e 50%,#b08438);
 
-  /* ── PER-APP KNOB — B-3 amber ────────────────────────────────────────── */
+  /* ── PER-APP KNOB - B-3 amber ────────────────────────────────────────── */
   --app-accent:#e3a049;
   --app-accent-soft:rgba(227,160,73,.16);
   --app-accent-ink:#7a4e12;          /* accent text on ivory, AA-safe */
 
-  /* ── Legacy aliases — keep verbatim inline-styled markup on-theme ────── */
+  /* ── Legacy aliases - keep verbatim inline-styled markup on-theme ────── */
   --orange:var(--app-accent); --text-muted:var(--c-muted-l);
   --grey-light:#f1ece3; --border:var(--c-hair-l);
 
@@ -73,7 +73,7 @@ a{color:inherit;text-decoration:none}
 .app{position:relative;width:100%;max-width:1180px;height:100dvh;margin:0 auto;
   background:var(--c-ivory);display:flex;flex-direction:column;overflow:hidden}
 
-/* ── Stationary top unit (hero + intro banner) — does not scroll ── */
+/* ── Stationary top unit (hero + intro banner) - does not scroll ── */
 .top{flex:0 0 auto;background:var(--c-ivory)}
 .top>.banner,.top>.banner-client-mode{margin:5px 16px 0}
 
@@ -94,7 +94,7 @@ a{color:inherit;text-decoration:none}
 .display #heroPrice.is-empty{color:var(--c-muted)}
 .hero-sub{color:var(--c-ink-soft);font-size:12.5px;margin-top:5px;max-width:none;line-height:1.35}
 
-/* identity strip — compact single row (keeps #headerAdvisor / #headerClient for mode toggle) */
+/* identity strip - compact single row (keeps #headerAdvisor / #headerClient for mode toggle) */
 .hero-id{margin-top:7px;padding-top:7px;border-top:1px solid var(--c-hair-d);
   display:flex;justify-content:space-between;align-items:center;gap:6px 14px;flex-wrap:wrap}
 .hero-id .who{display:flex;flex-direction:row;align-items:center;gap:8px;flex-wrap:wrap}
@@ -168,7 +168,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
   border-radius:999px;font-size:.9rem;font-weight:700;cursor:pointer;transition:transform .12s var(--ease),box-shadow .15s,background .15s;letter-spacing:.01em;font-family:var(--sans);min-height:44px}
 .btn:active{transform:scale(.985)}
 .btn-block{display:flex;width:100%;margin-top:10px;padding:15px}
-/* primary CTA — gold pill, the suite signature */
+/* primary CTA - gold pill, the suite signature */
 .btn-black{background:var(--grad-gold);color:#241a07;box-shadow:0 8px 22px rgba(176,132,56,.30)}
 .btn-black:hover{box-shadow:0 10px 26px rgba(176,132,56,.40)}
 .btn-orange{background:var(--app-accent);color:#2a1a05}
@@ -304,7 +304,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
 .jump-fab:active{transform:scale(.94)}
 .jump-fab svg{display:block;margin:0 auto;transition:transform .25s var(--ease)}
 .jump-fab.up svg{transform:rotate(180deg)}
-/* manual recompute pill (client mode) — revealed via JS */
+/* manual recompute pill (client mode) - revealed via JS */
 .calc-fab{display:none;position:fixed;right:16px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:60;
   align-items:center;gap:8px;padding:11px 16px;border:none;border-radius:999px;cursor:pointer;
   background:var(--grad-gold);color:#241a07;font-family:var(--sans);font-weight:700;font-size:13px;
@@ -352,13 +352,13 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
 <body>
 <div class="app">
 
-  <!-- ══ STATIONARY TOP · hero (living number) + intro banner — does not scroll ══ -->
+  <!-- ══ STATIONARY TOP · hero (living number) + intro banner - does not scroll ══ -->
   <div class="top">
   <header class="hero">
     <div class="hero-inner">
       <div class="eyebrow">Mortgage Affordability</div>
       <div class="display">$<span class="num" id="heroPrice">—</span></div>
-      <p class="hero-sub" id="heroSub">Your estimated buying power — updates live as you type.</p>
+      <p class="hero-sub" id="heroSub">Your estimated buying power - updates live as you type.</p>
 
       <!-- ADVISOR identity (visible by default; hidden in client mode by applyMode) -->
       <div class="hero-id" id="headerAdvisor">
@@ -368,7 +368,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
           <span class="mode-pill">Advisor Mode</span>
         </div>
         <div class="reach">
-          <a href="tel:+18254495083">825 449 5083</a>
+          <a href="tel:+18254495083">+1 825 449 5083</a>
           <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a>
         </div>
       </div>
@@ -380,7 +380,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
           <span class="ro">Realtor&#174;</span>
         </div>
         <div class="reach">
-          <a href="tel:+18254495083">825 449 5083</a>
+          <a href="tel:+18254495083">+1 825 449 5083</a>
           <a href="mailto:rosh@issacrealty.com">rosh@issacrealty.com</a>
         </div>
       </div>
@@ -389,7 +389,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
 
     <!-- Client mode instructions banner (part of the stationary top) -->
     <div class="banner-client-mode" id="clientInstructionsBanner" style="display:none">
-      Fill in what you know &mdash; Rosh completes the rest and shares your full estimate.
+      Fill in what you know - Rosh completes the rest and shares your full estimate.
     </div>
 
     <!-- Advisor banner: shown when client data pre-loaded -->
@@ -399,13 +399,13 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
 
   </div><!-- /top -->
 
-  <!-- ══ SCROLLING WORKSPACE — only the centre data section scrolls ══════ -->
+  <!-- ══ SCROLLING WORKSPACE - only the centre data section scrolls ══════ -->
   <main class="work">
 
   <!-- ── SHARE PANEL (advisor only) ──────────────────────────────────── -->
   <div class="share-panel advisor-only" id="sharePanelAdvisor" style="margin-bottom:20px">
     <div class="share-panel-title">📤 Send Client Intake Link</div>
-    <p style="font-size:0.81rem;color:#555;margin-bottom:10px">Copy the link below and send it to your client. They fill in their income &amp; debts, then click Send — their data arrives pre-filled in your calculator.</p>
+    <p style="font-size:0.81rem;color:#555;margin-bottom:10px">Copy the link below and send it to your client. They fill in their income &amp; debts, then click Send - their data arrives pre-filled in your calculator.</p>
     <div class="share-row">
       <div class="share-url-box" id="clientPortalURL">Loading…</div>
       <button class="btn btn-orange btn-sm" onclick="copyClientPortalLink()">📋 Copy Link</button>
@@ -420,11 +420,11 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
     <div class="card">
       <div class="card-title">💰 Income &amp; Down Payment</div>
       <div class="field">
-        <label>Annual Gross Income — Applicant 1</label>
+        <label>Annual Gross Income - Applicant 1</label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="income1" value="120000" min="0" step="1000"></div>
       </div>
       <div class="field">
-        <label>Annual Gross Income — Applicant 2 <span style="font-weight:400;color:#888">(if any)</span></label>
+        <label>Annual Gross Income - Applicant 2 <span style="font-weight:400;color:#888">(if any)</span></label>
         <div class="input-wrap"><span class="pre">$</span><input type="number" id="income2" value="0" min="0" step="1000"></div>
       </div>
       <div class="field">
@@ -563,7 +563,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
       <div class="field">
         <label>Profession / Lender Program</label>
         <select id="profType" onchange="onProfChange()" style="padding:9px 12px;width:100%">
-          <option value="standard">Standard — No Special Program</option>
+          <option value="standard">Standard - No Special Program</option>
           <optgroup label="─── Healthcare Professionals ───">
             <option value="physician">Physician / Medical Doctor (MD, DO, Resident)</option>
             <option value="dentist">Dentist (DDS, DMD)</option>
@@ -593,20 +593,20 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
         <div class="hint">All debts + housing. Standard: 44%. Healthcare programs: up to 50%.</div>
       </div>
       <div class="field">
-        <label>Closing Costs — % of Purchase Price</label>
+        <label>Closing Costs - % of Purchase Price</label>
         <div class="input-wrap"><input type="number" id="closingPct" value="2.5" min="0.5" max="10" step="0.25" class="suf-pad"><span class="suf">%</span></div>
         <div class="hint">Legal, title insurance, appraisal. Typically 1.5–3% in AB (no provincial LTT).</div>
       </div>
       <div class="info-box" style="margin-top:10px">
-        <strong>🧪 Stress Test — OSFI B-20</strong>
+        <strong>🧪 Stress Test - OSFI B-20</strong>
         Qualification uses <strong>max(contract rate + 2%, 5.25%)</strong>. Actual payments use contract rate.
       </div>
       <button class="btn btn-black btn-block" onclick="calculate()">⚡ Execute Affordability Estimate</button>
     </div>
 
-    <!-- CLIENT SUBMIT CARD — visibility controlled by calculate() in client mode -->
+    <!-- CLIENT SUBMIT CARD - visibility controlled by calculate() in client mode -->
     <div class="client-submit-card span-2" id="clientSubmitCard" style="display:none">
-      <h3>✅ Your Estimate is Ready — Connect with Rosh</h3>
+      <h3>✅ Your Estimate is Ready - Connect with Rosh</h3>
       <p style="margin-bottom:6px">Based on standard Canadian mortgage assumptions, your estimated home affordability is approximately:</p>
       <div class="client-afford-estimate" id="clientAffordEstimate">—</div>
       <div class="client-afford-note"><span id="clientRateNote">Using 5.5% rate</span> · 25-yr amortization · Alberta property tax · GDS 39% / TDS 44%<br>Rosh will refine this with your actual details.</div>
@@ -622,10 +622,10 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
         </button>
         <button class="btn btn-block" style="font-size:0.97rem;padding:14px 20px;text-align:left;display:flex;align-items:center;gap:10px;background:#1a1a2e;color:#fff;border:none;border-radius:8px;cursor:pointer" onclick="showContactModal('booking')">
           <span style="font-size:1.3rem">📅</span>
-          <span><strong>Book a Free Consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time — 15-min call, no obligation</span></span>
+          <span><strong>Book a Free Consultation</strong><br><span style="font-size:0.78rem;opacity:0.85">Pick a time - 15-min call, no obligation</span></span>
         </button>
       </div>
-      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">We collect your contact info before connecting — your financial numbers stay private.</p>
+      <p style="font-size:0.74rem;color:var(--text-muted);margin-top:14px">We collect your contact info before connecting - your financial numbers stay private.</p>
     </div>
 
 
@@ -638,7 +638,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
         <span style="font-size:1.05rem">💳</span>
         <div>
           <div class="cc-header-title">Anticipated Closing &amp; Move-In Expenses</div>
-          <div style="font-size:0.73rem;color:var(--text-muted);margin-top:1px">Detailed itemized budget — informational, not factored into affordability</div>
+          <div style="font-size:0.73rem;color:var(--text-muted);margin-top:1px">Detailed itemized budget - informational, not factored into affordability</div>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
@@ -647,7 +647,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
       </div>
     </div>
     <div class="cc-body" id="ccBody">
-      <div class="cc-info">⚠️ <strong>Budget awareness only.</strong> These are real one-time costs beyond your down payment. Amounts are estimates — edit any cell to match your situation.</div>
+      <div class="cc-info">⚠️ <strong>Budget awareness only.</strong> These are real one-time costs beyond your down payment. Amounts are estimates - edit any cell to match your situation.</div>
       <div id="ccItemsContainer"></div>
       <div class="cc-totals">
         <div class="cc-total-box">
@@ -668,7 +668,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
   <div id="results-area" class="advisor-only">
 
     <div id="printMeta">
-      <strong>Home Affordability Estimate</strong> · Prepared by Rosh Issac, REALTOR&#174; — Dreamhouse Realty Ltd.
+      <strong>Home Affordability Estimate</strong> · Prepared by Rosh Issac, REALTOR&#174; - Dreamhouse Realty Ltd.
       · rosh@issacrealty.com · +1 (825) 449-5083 · <span id="printDate"></span>
     </div>
 
@@ -718,7 +718,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
     </div>
 
     <div class="card span-2" style="margin-top:18px">
-      <div class="card-title">🔄 Sensitivity — Price vs. Rate &amp; Down Payment</div>
+      <div class="card-title">🔄 Sensitivity - Price vs. Rate &amp; Down Payment</div>
       <div style="font-size:0.78rem;color:var(--text-muted);margin-bottom:4px">★ = your current inputs. Highlighted row = your rate.</div>
       <div style="overflow-x:auto"><table class="scenario-table" id="scenarioTable"></table></div>
     </div>
@@ -728,9 +728,9 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
       <div class="breakdown-grid">
         <div>
           <div class="bk-title">Ratios</div>
-          <div class="bk-row"><span class="bk-label"><strong>GDS</strong> — Gross Debt Service</span></div>
+          <div class="bk-row"><span class="bk-label"><strong>GDS</strong> - Gross Debt Service</span></div>
           <div class="bk-row sub"><span class="bk-label">(P&amp;I + Tax + Heating + 50% Condo + 100% HOA/mo) ÷ Gross Income ≤ 39%</span></div>
-          <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>TDS</strong> — Total Debt Service</span></div>
+          <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>TDS</strong> - Total Debt Service</span></div>
           <div class="bk-row sub"><span class="bk-label">(GDS items + all other debts) ÷ Gross Income ≤ 44%</span></div>
           <div class="bk-row" style="margin-top:4px"><span class="bk-label"><strong>Stress Test</strong> OSFI B-20</span></div>
           <div class="bk-row sub"><span class="bk-label">Qualify at max(contract + 2%, 5.25%). Actual payments use contract rate.</span></div>
@@ -760,9 +760,9 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
       </div>
     </div>
 
-    <!-- ── NEXT STEPS (advisor — shown only when viewing a client submission) ── -->
+    <!-- ── NEXT STEPS (advisor - shown only when viewing a client submission) ── -->
     <div class="card span-2" id="nextStepsCard" style="display:none;margin-top:18px;border:2px solid var(--orange);background:#fff8f3">
-      <div class="card-title" style="color:var(--orange)">✅ Next Steps — Client Submission Review</div>
+      <div class="card-title" style="color:var(--orange)">✅ Next Steps - Client Submission Review</div>
       <p style="font-size:0.85rem;color:#444;margin:0 0 16px">
         You're viewing a client's pre-filled numbers. Review the results above, then choose an action below.
       </p>
@@ -790,8 +790,8 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
   <!-- ══ BAND · RECA brokerage disclosure (sticky) ═══════════════════════ -->
   <footer class="band">
     <div class="b-txt">
-      <span class="b-team"><b>Sheena &amp; Rosh Issac Property Group</b> &mdash; Associates of Dreamhouse Realty Ltd.</span>
-      <span class="b-fine">Illustration only — not financial advice. Subject to lender approval.</span>
+      <span class="b-team"><b>Sheena &amp; Rosh Issac Property Group</b> - Associates of Dreamhouse Realty Ltd., Calgary</span>
+      <span class="b-fine">Estimates are for illustrative purposes only and are based on assumed variables like rates and terms. This information does not constitute financial, mortgage, legal, tax, or investment advice. Referrals to licensed professionals are available upon request.</span>
     </div>
     <span class="logo"><img src="assets/dreamhouse-logo.png" alt="Dreamhouse Realty Ltd." onerror="this.parentElement.style.display='none'"></span>
   </footer>
@@ -805,7 +805,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
     </svg>
   </button>
 
-  <!-- Manual recompute (client mode) — shown via JS only when CLIENT_MODE -->
+  <!-- Manual recompute (client mode) - shown via JS only when CLIENT_MODE -->
   <button class="calc-fab" id="calcFab" type="button" onclick="forceCalc()"
           aria-label="Update estimate" title="Update estimate">
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none"
@@ -817,7 +817,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
 
   <!-- Print-only footer (screen shows the sticky band above) -->
   <div class="page-footer">
-    Sheena &amp; Rosh Issac Property Group &mdash; Associates of Dreamhouse Realty Ltd. &nbsp;·&nbsp; 2000 Pegasus Rd NE, Unit 2, Calgary, Alberta, T2E 8K7 &nbsp;·&nbsp; +1 (825) 449-5083 &nbsp;·&nbsp; rosh@issacrealty.com<br>
+    Sheena &amp; Rosh Issac Property Group - Associates of Dreamhouse Realty Ltd. &nbsp;·&nbsp; 2000 Pegasus Rd NE, Unit 2, Calgary, Alberta, T2E 8K7 &nbsp;·&nbsp; +1 825 449 5083 &nbsp;·&nbsp; rosh@issacrealty.com<br>
     Rosh Issac is a licensed REALTOR&#174;, not a mortgage advisor. This tool provides informational estimates only and does not constitute mortgage advice or a lender commitment. For an accurate assessment and pre-approval, we are glad to refer trusted mortgage brokers.
   </div>
 
@@ -876,7 +876,7 @@ input[type=number]::-webkit-inner-spin-button{opacity:.45}
 <script>
 // ─── Mode detection ──────────────────────────────────────────────────────
 const URL_PARAMS   = new URLSearchParams(window.location.search);
-// Client mode is the DEFAULT — the bare URL is safe to share anywhere.
+// Client mode is the DEFAULT - the bare URL is safe to share anywhere.
 // Advisor mode only via the explicit ?mode=advisor link Rosh bookmarks
 // (June 2026: clients could previously reach advisor view by trimming
 // the URL or tapping the old "Advisor →" button).
@@ -935,15 +935,15 @@ function updateProvinceLTTNote() {
 // ─── Profession profiles ─────────────────────────────────────────────────
 const PROF = {
   standard:    { gds:39, tds:44, note:null },
-  physician:   { gds:39, tds:50, note:'<strong>Healthcare Professional Mortgage Program</strong> — Licensed physicians and residents. TDS up to 50% at Scotiabank, TD, National Bank, BMO, RBC. Requires proof of licensure or signed employment/residency contract.' },
-  dentist:     { gds:39, tds:50, note:'<strong>Healthcare Professional Program</strong> — Dentists (DDS/DMD) qualify same as physicians. TDS up to 50% at major lenders.' },
-  veterinarian:{ gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> — Licensed DVMs may access professional mortgage programs with TDS up to 48% at select lenders.' },
-  pharmacist:  { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> — Licensed pharmacists (RPh/PharmD). TDS up to 48% at select lenders. Proof of provincial college registration required.' },
-  optometrist: { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> — Optometrists (OD) registered with their provincial college. TDS up to 48% at select lenders.' },
-  allied:      { gds:39, tds:46, note:'<strong>Allied Healthcare Program</strong> — Nurse Practitioners, Physiotherapists, Chiropractors, Midwives. TDS up to ~46% at select lenders. Confirm eligibility with a broker.' },
-  lawyer:      { gds:39, tds:46, note:'<strong>Professional Mortgage Program</strong> — Lawyers and notaries called to the bar. TDS up to 46% at select lenders. Requires proof of bar admission.' },
-  cpa:         { gds:39, tds:44, note:'<strong>CPA Designation</strong> — Standard ratios typically apply. Some lenders offer preferential rates. TDS 44%.' },
-  engineer:    { gds:39, tds:44, note:'<strong>P.Eng Designation</strong> — Standard mortgage ratios apply. Some lenders may offer preferential pricing.' },
+  physician:   { gds:39, tds:50, note:'<strong>Healthcare Professional Mortgage Program</strong> - Licensed physicians and residents. TDS up to 50% at Scotiabank, TD, National Bank, BMO, RBC. Requires proof of licensure or signed employment/residency contract.' },
+  dentist:     { gds:39, tds:50, note:'<strong>Healthcare Professional Program</strong> - Dentists (DDS/DMD) qualify same as physicians. TDS up to 50% at major lenders.' },
+  veterinarian:{ gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> - Licensed DVMs may access professional mortgage programs with TDS up to 48% at select lenders.' },
+  pharmacist:  { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> - Licensed pharmacists (RPh/PharmD). TDS up to 48% at select lenders. Proof of provincial college registration required.' },
+  optometrist: { gds:39, tds:48, note:'<strong>Healthcare Professional Program</strong> - Optometrists (OD) registered with their provincial college. TDS up to 48% at select lenders.' },
+  allied:      { gds:39, tds:46, note:'<strong>Allied Healthcare Program</strong> - Nurse Practitioners, Physiotherapists, Chiropractors, Midwives. TDS up to ~46% at select lenders. Confirm eligibility with a broker.' },
+  lawyer:      { gds:39, tds:46, note:'<strong>Professional Mortgage Program</strong> - Lawyers and notaries called to the bar. TDS up to 46% at select lenders. Requires proof of bar admission.' },
+  cpa:         { gds:39, tds:44, note:'<strong>CPA Designation</strong> - Standard ratios typically apply. Some lenders offer preferential rates. TDS 44%.' },
+  engineer:    { gds:39, tds:44, note:'<strong>P.Eng Designation</strong> - Standard mortgage ratios apply. Some lenders may offer preferential pricing.' },
 };
 
 function onProfChange() {
@@ -961,15 +961,15 @@ function onProfChange() {
 const CC_ITEMS = [
   { id:'legal',      grp:'Transaction & Legal Fees',    label:'Legal / Notary Fees',                hint:'Lawyer/notary for title transfer, mortgage registration, disbursements. Ask for all-in quote.',       range:'$1,500–$3,000',    def:2000, on:true  },
   { id:'titleins',   grp:'Transaction & Legal Fees',    label:'Title Insurance',                     hint:'Protects against title defects, errors, fraud. Required by most lenders.',                           range:'$250–$600',        def:400,  on:true  },
-  { id:'appraisal',  grp:'Transaction & Legal Fees',    label:'Property Appraisal',                  hint:'Independent valuation — lender may require on unusual properties.',                                  range:'$300–$600',        def:400,  on:true  },
+  { id:'appraisal',  grp:'Transaction & Legal Fees',    label:'Property Appraisal',                  hint:'Independent valuation - lender may require on unusual properties.',                                  range:'$300–$600',        def:400,  on:true  },
   { id:'taxadj',     grp:'Transaction & Legal Fees',    label:'Property Tax Adjustment',             hint:'Pro-rated reimbursement to seller for taxes prepaid beyond closing date.',                           range:'$500–$3,000',      def:1200, on:true  },
   { id:'survey',     grp:'Transaction & Legal Fees',    label:'Real Property Report / Survey',       hint:'May be waived with title insurance. Needed if lender requires it.',                                  range:'$800–$2,000',      def:0,    on:false },
   { id:'statuscert', grp:'Transaction & Legal Fees',    label:'Status Certificate (Condos only)',    hint:'Reviews condo corp financials, reserve fund, special assessments, bylaws.',                          range:'$100–$250',        def:0,    on:false },
   { id:'discharge',  grp:'Transaction & Legal Fees',    label:'Mortgage Discharge / Break Penalty',  hint:'If breaking an existing mortgage early. IRD penalty or 3-months interest.',                          range:'$300–$10,000+',    def:0,    on:false },
   { id:'intadj',     grp:'Transaction & Legal Fees',    label:'Interest Adjustment (mid-month)',     hint:'Interest on new mortgage from closing date to month-end, paid at closing.',                          range:'$0–$1,500',        def:0,    on:false },
   { id:'homeinspect',grp:'Inspections & Insurance',     label:'Home Inspection',                     hint:'Strongly recommended. Licensed inspector checks structure, roof, systems, electrical, plumbing.',     range:'$400–$700',        def:500,  on:true  },
-  { id:'homeins',    grp:'Inspections & Insurance',     label:"Homeowner's Insurance — 1st Year",    hint:'Required by lender before closing. Covers fire, theft, liability. Compare quotes.',                  range:'$1,200–$3,500/yr', def:1800, on:true  },
-  { id:'lifeins',    grp:'Inspections & Insurance',     label:'Mortgage Life / Disability Insurance',hint:'Optional — pays mortgage if you die or are disabled. Buy independently for better value.',            range:'Varies',           def:0,    on:false },
+  { id:'homeins',    grp:'Inspections & Insurance',     label:"Homeowner's Insurance - 1st Year",    hint:'Required by lender before closing. Covers fire, theft, liability. Compare quotes.',                  range:'$1,200–$3,500/yr', def:1800, on:true  },
+  { id:'lifeins',    grp:'Inspections & Insurance',     label:'Mortgage Life / Disability Insurance',hint:'Optional - pays mortgage if you die or are disabled. Buy independently for better value.',            range:'Varies',           def:0,    on:false },
   { id:'warranty',   grp:'Inspections & Insurance',     label:'Home Warranty (resale program)',      hint:'New builds: Tarion or provincial warranty. Resale: optional extended warranty plans.',                range:'$600–$1,200/yr',   def:0,    on:false },
   { id:'radon',      grp:'Inspections & Insurance',     label:'Radon Gas Testing',                   hint:"Recommended for homes with basements. Radon is Canada's #2 cause of lung cancer.",                   range:'$150–$350',        def:0,    on:false },
   { id:'septic',     grp:'Inspections & Insurance',     label:'Septic / Sewage Inspection',          hint:'Essential for rural properties. Includes pump-out, inspection, written report.',                      range:'$300–$700',        def:0,    on:false },
@@ -977,8 +977,8 @@ const CC_ITEMS = [
   { id:'moving',     grp:'Moving & Initial Setup',      label:'Moving Company',                      hint:'Local 1-BR: ~$800–$1,500 | Local 3-BR: ~$2,000–$4,000 | Long-distance: varies. Get 3 quotes.',       range:'$800–$10,000+',    def:2000, on:true  },
   { id:'storage',    grp:'Moving & Initial Setup',      label:'Storage & Packing Supplies',          hint:'Boxes, bubble wrap, tape. Add temp storage if closing dates misalign.',                              range:'$200–$800',        def:400,  on:true  },
   { id:'utilities',  grp:'Moving & Initial Setup',      label:'Utility Connection & Setup Fees',     hint:'Hydro, natural gas, internet, water meter activation and deposits.',                                  range:'$300–$900',        def:500,  on:true  },
-  { id:'locks',      grp:'Moving & Initial Setup',      label:'Lock Replacement / Rekeying',         hint:'Rekey or replace all exterior locks on possession day — standard security practice.',                 range:'$200–$600',        def:300,  on:true  },
-  { id:'cleaning',   grp:'Moving & Initial Setup',      label:'Professional Move-In Cleaning',       hint:'Deep clean before moving in — especially for vacant or tenanted properties.',                         range:'$200–$600',        def:0,    on:false },
+  { id:'locks',      grp:'Moving & Initial Setup',      label:'Lock Replacement / Rekeying',         hint:'Rekey or replace all exterior locks on possession day - standard security practice.',                 range:'$200–$600',        def:300,  on:true  },
+  { id:'cleaning',   grp:'Moving & Initial Setup',      label:'Professional Move-In Cleaning',       hint:'Deep clean before moving in - especially for vacant or tenanted properties.',                         range:'$200–$600',        def:0,    on:false },
   { id:'address',    grp:'Moving & Initial Setup',      label:'Address Changes & Mail Forwarding',   hint:"Canada Post, driver's license, CRA, bank accounts, vehicle registration, subscriptions.",            range:'$100–$300',        def:150,  on:false },
   { id:'repairs',    grp:'Immediate Home Costs',        label:'Immediate Repairs & Touch-Ups',       hint:'Minor fixes from inspection, paint, caulking. Budget conservatively.',                               range:'$1,000–$15,000',   def:3000, on:true  },
   { id:'appliances', grp:'Immediate Home Costs',        label:'New Appliances (if not included)',    hint:'Fridge, stove, dishwasher, washer/dryer. Bundle for savings.',                                       range:'$1,500–$8,000',    def:0,    on:false },
@@ -1121,7 +1121,7 @@ function closeContactModal() {
 
 // POST to Apps Script and read back its JSON confirmation.
 // Plain-text body keeps this a CORS "simple request" (no preflight, and no
-// iOS Safari Google sign-in sheet — that bug was specific to mode:'no-cors').
+// iOS Safari Google sign-in sheet - that bug was specific to mode:'no-cors').
 // credentials:'omit' ensures no Google cookies ride along.
 function postToBackend(data, timeoutMs = 12000) {
   const ctrl  = new AbortController();
@@ -1138,7 +1138,7 @@ function postToBackend(data, timeoutMs = 12000) {
 }
 
 function leadMailtoHref(c) {
-  const subj = 'Home Affordability Lead — ' + c.firstName + (c.lastName ? ' ' + c.lastName : '');
+  const subj = 'Home Affordability Lead - ' + c.firstName + (c.lastName ? ' ' + c.lastName : '');
   const body = 'Hi Rosh,\n\nName: ' + c.firstName + ' ' + c.lastName +
     '\nEmail: ' + c.email + '\nPhone: ' + c.phone +
     '\nCombined Income: ' + c.income + '\nDown Payment: ' + c.downPayment +
@@ -1190,7 +1190,7 @@ function submitToRosh() {
     const waMsg = encodeURIComponent(
       'Hi Rosh! I just completed the Home Affordability Calculator on your website. ' +
       'My name is ' + firstName + (lastName ? ' ' + lastName : '') + '. ' +
-      'I\'d love to chat about my options — my estimated buying power is ' + (afford || 'shown in the calculator') + '.'
+      'I\'d love to chat about my options - my estimated buying power is ' + (afford || 'shown in the calculator') + '.'
     );
     window.open('https://wa.me/' + ROSH_WHATSAPP + '?text=' + waMsg, '_blank');
   } else if (_cmDest === 'booking') {
@@ -1200,7 +1200,7 @@ function submitToRosh() {
   postToBackend(payload).then(() => {
     btn.textContent = '✅ Done!';
     const destMessages = {
-      email    : 'Your info is on its way to Rosh — he\'ll email you shortly!',
+      email    : 'Your info is on its way to Rosh - he\'ll email you shortly!',
       whatsapp : 'Info saved. Continue the chat on WhatsApp!',
       booking  : 'Info saved. Pick a time on the booking calendar!',
     };
@@ -1217,11 +1217,11 @@ function submitToRosh() {
     btn.textContent = 'Try Again';
     status.style.color = '#c53030';
     status.innerHTML = 'We couldn\'t confirm your info reached Rosh. Please try again, or ' +
-      '<a href="' + leadMailtoHref(payload) + '" style="color:var(--orange);font-weight:700">email Rosh directly</a> — your details are pre-filled.';
+      '<a href="' + leadMailtoHref(payload) + '" style="color:var(--orange);font-weight:700">email Rosh directly</a> - your details are pre-filled.';
   });
 }
 
-// ─── Advisory email — sent server-side via Apps Script (no Gmail app needed) ─
+// ─── Advisory email - sent server-side via Apps Script (no Gmail app needed) ─
 function sendAdvisoryEmail() {
   const clientEmail = (document.getElementById('advisoryClientEmail')?.value || '').trim();
   if (!clientEmail || !clientEmail.includes('@')) {
@@ -1366,15 +1366,15 @@ function calculate() {
       el('dpDerived').textContent = dpMode === 'pct'
         ? `≈ ${fmt(est * dpPctIn)} (${fmtPct(dpPctIn * 100)})`
         : `= ${fmtPct(dpPct * 100)} of price`;
-      const cmhcMsg = cmhcRate(dpPct) > 0 ? 'CMHC premium applies — estimated.' : 'No CMHC required (≥ 20% down).';
-      const budgetMsg = budgetBound ? ` Capped by your ${fmt(budgetM)}/mo comfort budget — you may qualify for more.` : '';
+      const cmhcMsg = cmhcRate(dpPct) > 0 ? 'CMHC premium applies - estimated.' : 'No CMHC required (≥ 20% down).';
+      const budgetMsg = budgetBound ? ` Capped by your ${fmt(budgetM)}/mo comfort budget - you may qualify for more.` : '';
       el('cmhc-note').textContent = `Based on your estimated max home price of ${fmt(est)}.${budgetMsg} ${cmhcMsg}`;
       // Flag a down payment below the regulatory minimum (advisor view has
       // this check, but clients in fixed-$ mode never saw it).
       const minDP = minDownAmt(est);
       const dpEntered = dpMode === 'pct' ? est * dpPctIn : dpAmtIn;
       if (dpEntered < minDP * 0.99) {
-        el('cmhc-note').textContent = `⚠️ For a ${fmt(est)} home the minimum down payment is about ${fmt(minDP)}. Your estimate will be refined by Rosh — consider a larger down payment.`;
+        el('cmhc-note').textContent = `⚠️ For a ${fmt(est)} home the minimum down payment is about ${fmt(minDP)}. Your estimate will be refined by Rosh - consider a larger down payment.`;
       }
       card.style.display = '';
     } else {
@@ -1430,7 +1430,7 @@ function calculate() {
   // first-time buyers and new builds (Dec 2024 rules).
   if (amortYears > 25 && dpPct < 0.20 && !ftbEligible) {
     amortYears = 25; n = 300; CMHC_SURCHARGE = 0;
-    amortNote = '⚠️ <strong>30-year amortization with less than 20% down</strong> is limited to first-time buyers and new builds. Recalculated at 25 years — tick "First-time buyer or new build" if it applies.';
+    amortNote = '⚠️ <strong>30-year amortization with less than 20% down</strong> is limited to first-time buyers and new builds. Recalculated at 25 years - tick "First-time buyer or new build" if it applies.';
     solveAll();
   }
 
@@ -1478,7 +1478,7 @@ function calculate() {
   el('rMortgage').textContent   = fmt(totalMortg);
   el('rMortgageSub').textContent  = cm > 0 ? `Base: ${fmt(baseMortg)} + CMHC: ${fmt(cmhcPrem)} (${fmtPct(cm*100)})` : 'No CMHC premium (≥ 20% down)';
   el('dpDerived').textContent   = dpMode === 'pct' ? `≈ ${fmt(dpAmt)} (${fmtPct(dpPct*100)})` : `= ${fmtPct(dpPct*100)} of price`;
-  el('cmhc-note').textContent   = cm > 0 ? `CMHC: ${fmtPct(cm*100)} premium — added to mortgage balance.` : 'No CMHC required (≥ 20% down).';
+  el('cmhc-note').textContent   = cm > 0 ? `CMHC: ${fmtPct(cm*100)} premium - added to mortgage balance.` : 'No CMHC required (≥ 20% down).';
 
   // Breakdown sections
   const bDiv = el('breakdownGrid'); bDiv.innerHTML = '';
@@ -1566,7 +1566,7 @@ function calculate() {
   const wEl   = document.getElementById('dpWarnBox');
   if (dpAmt < minDP * 0.99) {
     const capMsg = maxPrice > 1500000 && dpPct < 0.20
-      ? 'Mortgage default insurance is unavailable above $1.5M — a minimum 20% down payment is required at this price.'
+      ? 'Mortgage default insurance is unavailable above $1.5M - a minimum 20% down payment is required at this price.'
       : 'Increase down payment or reduce target price.';
     const box = wEl || document.createElement('div');
     box.id = 'dpWarnBox'; box.className = 'warning-box';
@@ -1592,7 +1592,7 @@ function applyMode() {
     document.querySelectorAll('.client-only').forEach(e => e.style.display = '');
     document.querySelectorAll('.advisor-only').forEach(e => e.style.display = 'none');
     el('clientInstructionsBanner').style.display = 'block';
-    // Province hidden in client mode — fix to AB so math runs immediately
+    // Province hidden in client mode - fix to AB so math runs immediately
     const provEl = el('province');
     if (provEl) provEl.value = 'AB';
     // Client mode starts blank: no estimate from placeholder numbers.
@@ -1624,10 +1624,10 @@ window.addEventListener('load', () => {
 });
 document.addEventListener('input', calculate);
 
-/* ── Hero "living number" — mirrors the computed estimate into the cinematic
+/* ── Hero "living number" - mirrors the computed estimate into the cinematic
    hero. Fully decoupled from the engine: it only READS the value calculate()
    already wrote (#rPrice in advisor mode, #clientAffordEstimate in client
-   mode) and sets it directly — instant and reliable on every device. ── */
+   mode) and sets it directly - instant and reliable on every device. ── */
 const _reduceMotion = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
 function syncHero(){
   const heroEl = document.getElementById('heroPrice');
@@ -1644,7 +1644,7 @@ document.addEventListener('input', syncHero);
 document.addEventListener('change', syncHero);
 window.addEventListener('load', () => syncHero());
 
-/* ── Manual "Update estimate" control (client mode) — forces a recompute on
+/* ── Manual "Update estimate" control (client mode) - forces a recompute on
    demand, alongside the now-reliable live updates. ── */
 function forceCalc(){ try{ calculate(); }catch(e){} syncHero(); }
 window.addEventListener('load', () => {
