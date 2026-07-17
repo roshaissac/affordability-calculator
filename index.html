@@ -1222,12 +1222,25 @@ function submitToRosh() {
 }
 
 // ─── Advisory email - sent server-side via Apps Script (no Gmail app needed) ─
+// The backend requires an advisor key (Script Property ADVISOR_KEY): the /exec
+// URL is public, so unauthenticated sendAdvisory would let anyone send email
+// from Rosh's account. Asked once, remembered on this device.
+function getAdvisorKey(forceAsk) {
+  let key = localStorage.getItem('advisorKey') || '';
+  if (!key || forceAsk) {
+    key = (prompt('Advisor PIN (one-time on this device):', '') || '').trim();
+    if (key) localStorage.setItem('advisorKey', key);
+  }
+  return key;
+}
 function sendAdvisoryEmail() {
   const clientEmail = (document.getElementById('advisoryClientEmail')?.value || '').trim();
   if (!clientEmail || !clientEmail.includes('@')) {
     alert('Please enter the client\'s email address first.');
     return;
   }
+  const advisorKey = getAdvisorKey(false);
+  if (!advisorKey) { alert('An Advisor PIN is required to send the advisory.'); return; }
   const btn    = document.getElementById('advisorySendBtn');
   const status = document.getElementById('advisoryStatus');
   btn.disabled = true;
@@ -1236,6 +1249,7 @@ function sendAdvisoryEmail() {
 
   const payload = {
     action    : 'sendAdvisory',
+    advisorKey,
     clientEmail,
     price     : document.getElementById('rPrice')?.textContent        || '',
     mortgage  : document.getElementById('rMortgage')?.textContent     || '',
@@ -1254,7 +1268,12 @@ function sendAdvisoryEmail() {
     btn.disabled = false;
     btn.textContent = '\u{1F4E7} Send Advisory to Client';
     status.style.color = '#c53030';
-    status.textContent = 'Delivery not confirmed (' + (err.message || 'network error') + '). Check your Gmail Sent folder before retrying to avoid duplicates.';
+    if ((err.message || '').includes('unauthorized')) {
+      localStorage.removeItem('advisorKey'); // wrong PIN - re-ask next time
+      status.textContent = 'Advisor PIN not accepted. Click Send again to re-enter it.';
+    } else {
+      status.textContent = 'Delivery not confirmed (' + (err.message || 'network error') + '). Check your Gmail Sent folder before retrying to avoid duplicates.';
+    }
   });
 }
 
@@ -1335,6 +1354,11 @@ function calculate() {
   const monthlyGross = (inc1 + inc2) / 12 + incOth;
   const totalDebts   = getVal('autoLoan') + getVal('studentLoan') + getVal('ccPayment') + getVal('otherDebt');
   el('totalDebtsDisplay').textContent = fmt(totalDebts) + ' / mo';
+
+  // Keep the hero "living number" in sync even when this recompute came from
+  // a programmatic caller (DP/tax-mode toggles, province/profession changes)
+  // rather than a keystroke - those fire no input/change event.
+  setTimeout(syncHero, 0);
 
   // ── Client mode: simplified estimate with Alberta defaults ──────────────
   if (CLIENT_MODE) {
